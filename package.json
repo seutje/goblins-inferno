@@ -4,7 +4,7 @@
   "description": "A rogue-lite bullet heaven game.",
   "main": "index.html",
   "scripts": {
-    "start": "http-server -p 8000"
+    "start": "http-server src -p 8000"
   },
   "keywords": [],
   "author": "AI Agents",
