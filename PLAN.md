@@ -21,10 +21,10 @@ This document outlines a phased approach for the development of "Goblin's Infern
 
 **Objective:** Build the fundamental mechanics of the game.
 
-* [ ] **2.1 Implement Player Controls & Movement:**  
-  * [ ] The **Code Goblin** will write the code for player movement and collision detection.  
-  * [ ] The **Code Goblin** will implement the automatic firing system for the player's primary weapon.  
-  * [ ] The **Test Goblin** will perform initial QA on movement and firing mechanics.  
+* [x] **2.1 Implement Player Controls & Movement:**  
+  * [x] The **Code Goblin** will write the code for player movement and collision detection.  
+  * [x] The **Code Goblin** will implement the automatic firing system for the player's primary weapon.  
+  * [x] The **Test Goblin** will perform initial QA on movement and firing mechanics.  
 * [ ] **2.2 Implement Basic Weapon System:**  
   * [x] The **Code Goblin** will create the base class for projectiles (fireballs) with properties for damage, speed, and size.
   * [x] The **Code Goblin** will implement the logic for the Inferno Blast, Flame Stream, and Volatile Orb starting weapons.
