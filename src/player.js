@@ -1,4 +1,5 @@
 import { fireInfernoBlast, fireFlameStream, fireVolatileOrb } from './projectile.js';
+import { spawnFirePatch } from './hazard.js';
 
 export default class Player {
     constructor(canvas, gameState) {
@@ -33,6 +34,9 @@ export default class Player {
         this.frame = 0;
         this.frameTimer = 0;
         this.frameInterval = 10;
+
+        // Internal timers
+        this._trailTimer = 0;
     }
 
     update() {
@@ -62,6 +66,19 @@ export default class Player {
             }
         } else {
             this.fireCooldown--;
+        }
+
+        // Ignis trait: fire trail that leaves damaging patches periodically
+        if (this.gameState.trait === 'fireTrail') {
+            if (this._trailTimer <= 0) {
+                spawnFirePatch(this.gameState, this.x, this.y, { radius: 16, duration: 90, dps: 0.4 });
+                // Spawn frequency scales with fire rate slightly
+                const base = 18;
+                const scale = Math.max(6, Math.floor(base / this.stats.fireRateMultiplier));
+                this._trailTimer = scale;
+            } else {
+                this._trailTimer--;
+            }
         }
 
         this.frameTimer++;

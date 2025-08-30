@@ -82,19 +82,41 @@ export class DebtSkeleton extends Enemy {
 }
 
 export class LoanerImp extends Enemy {
-    constructor(canvas, gameState) {
-        super(canvas, gameState);
-        this.speed = 2;
-        this.hp = 20;
-        this.sprite.src = 'img/sprite-imp.png';
-        this.angle = Math.random() * Math.PI * 2;
-    }
+  constructor(canvas, gameState) {
+    super(canvas, gameState);
+    this.speed = 2;
+    this.hp = 20;
+    this.sprite.src = 'img/sprite-imp.png';
+    this.angle = Math.random() * Math.PI * 2;
+  }
 
-    update() {
-        super.update();
-        this.x += Math.sin(this.angle) * 2;
-        this.angle += 0.1;
+  update() {
+    // Move toward player like base, at higher speed
+    const player = this.gameState.player;
+    if (player) {
+      const dx = player.x - this.x;
+      const dy = player.y - this.y;
+      const dist = Math.hypot(dx, dy);
+      if (dist > 0) {
+        const nx = dx / dist;
+        const ny = dy / dist;
+        // Forward progress
+        this.x += nx * this.speed;
+        this.y += ny * this.speed;
+        this.state = 'walk';
+        // Perpendicular wobble that doesn't reduce forward movement
+        const px = -ny; // perpendicular unit vector
+        const py = nx;
+        const wobble = Math.sin(this.angle) * 1.0; // amplitude
+        this.x += px * wobble;
+        this.y += py * wobble;
+      } else {
+        this.state = 'idle';
+      }
     }
+    this.angle += 0.1;
+    this.advanceFrame();
+  }
 }
 
 export class BailiffOgre extends Enemy {

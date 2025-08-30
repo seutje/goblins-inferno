@@ -4,6 +4,7 @@ import { updateSpawner } from './spawner.js';
 import { initLevelSystem, updateLevelSystem, drawGems } from './level.js';
 import { createDebtState, updateDebt, initDebtUI } from './debt.js';
 import { applyCharacterToPlayer } from './characters.js';
+import { updateHazards, drawHazards } from './hazard.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -31,7 +32,8 @@ const gameState = window.gameState = {
     _refreshDebtHUD: null,
     character: null,
     trait: null,
-    _buffs: []
+    _buffs: [],
+    hazards: []
 };
 
 function updatePlayer() {
@@ -118,6 +120,7 @@ function gameLoop() {
         updatePlayer();
         updateEnemies();
         updateProjectiles(gameState, canvas);
+        updateHazards(gameState);
         checkCollisions();
         if (gameState.player) updateLevelSystem(gameState, canvas);
         if (gameState.debt) updateDebt(gameState.debt);
@@ -126,6 +129,7 @@ function gameLoop() {
     drawPlayer();
     drawEnemies();
     drawProjectiles(gameState, ctx);
+    drawHazards(gameState, ctx);
     drawGems(gameState, ctx);
     requestAnimationFrame(gameLoop);
 }
