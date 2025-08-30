@@ -5,6 +5,8 @@ export class Enemy {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
         this.speed = 1;
+        // Basic combat properties
+        this.hp = 10;
         this.frameWidth = 32;
         this.frameHeight = 32;
         this.size = this.frameWidth / 2;
@@ -74,6 +76,7 @@ export class DebtSkeleton extends Enemy {
     constructor(canvas, gameState) {
         super(canvas, gameState);
         this.speed = 1;
+        this.hp = 10;
         this.sprite.src = 'img/sprite-skeleton.png';
     }
 }
@@ -82,6 +85,7 @@ export class LoanerImp extends Enemy {
     constructor(canvas, gameState) {
         super(canvas, gameState);
         this.speed = 2;
+        this.hp = 20;
         this.sprite.src = 'img/sprite-imp.png';
         this.angle = Math.random() * Math.PI * 2;
     }
@@ -97,6 +101,7 @@ export class BailiffOgre extends Enemy {
     constructor(canvas, gameState) {
         super(canvas, gameState);
         this.speed = 0.75;
+        this.hp = 150;
         this.sprite.src = 'img/sprite-ogre.png';
         this.chargeCooldown = 0;
     }
