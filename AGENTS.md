@@ -23,6 +23,8 @@ The project consists of modular files in the `src` directory plus a simple scrip
 
 ## **Automated Testing Methodology**
 
+To run the test suite, execute `./setup-tests.sh` instead of `npm test`; this script prepares the environment and invokes the tests.
+
 Given the file-based structure, a black-box functional testing approach is required. The Test Goblin agent should use a headless browser environment to simulate player actions and verify outcomes.
 
 * **Simulation:** The tests must simulate keyboard inputs (WASD) and mouse movements/clicks to control the player.
