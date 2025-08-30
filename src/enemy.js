@@ -1,4 +1,4 @@
-export default class Enemy {
+export class Enemy {
     constructor(canvas, gameState) {
         this.canvas = canvas;
         this.gameState = gameState;
@@ -9,7 +9,6 @@ export default class Enemy {
         this.frameHeight = 32;
         this.size = this.frameWidth / 2;
         this.sprite = new Image();
-        this.sprite.src = 'img/sprite-skeleton.png';
         this.animations = {
             idle: { row: 0, frames: 2 },
             walk: { row: 1, frames: 4 },
@@ -20,6 +19,15 @@ export default class Enemy {
         this.frame = 0;
         this.frameTimer = 0;
         this.frameInterval = 15;
+    }
+
+    advanceFrame() {
+        this.frameTimer++;
+        if (this.frameTimer >= this.frameInterval) {
+            this.frameTimer = 0;
+            const animation = this.animations[this.state];
+            this.frame = (this.frame + 1) % animation.frames;
+        }
     }
 
     update() {
@@ -36,13 +44,7 @@ export default class Enemy {
                 this.state = 'idle';
             }
         }
-
-        this.frameTimer++;
-        if (this.frameTimer >= this.frameInterval) {
-            this.frameTimer = 0;
-            const animation = this.animations[this.state];
-            this.frame = (this.frame + 1) % animation.frames;
-        }
+        this.advanceFrame();
     }
 
     draw(ctx) {
@@ -65,5 +67,60 @@ export default class Enemy {
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
         }
+    }
+}
+
+export class DebtSkeleton extends Enemy {
+    constructor(canvas, gameState) {
+        super(canvas, gameState);
+        this.speed = 1;
+        this.sprite.src = 'img/sprite-skeleton.png';
+    }
+}
+
+export class LoanerImp extends Enemy {
+    constructor(canvas, gameState) {
+        super(canvas, gameState);
+        this.speed = 2;
+        this.sprite.src = 'img/sprite-imp.png';
+        this.angle = Math.random() * Math.PI * 2;
+    }
+
+    update() {
+        super.update();
+        this.x += Math.sin(this.angle) * 2;
+        this.angle += 0.1;
+    }
+}
+
+export class BailiffOgre extends Enemy {
+    constructor(canvas, gameState) {
+        super(canvas, gameState);
+        this.speed = 0.75;
+        this.sprite.src = 'img/sprite-ogre.png';
+        this.chargeCooldown = 0;
+    }
+
+    update() {
+        const player = this.gameState.player;
+        if (player) {
+            const dx = player.x - this.x;
+            const dy = player.y - this.y;
+            const dist = Math.hypot(dx, dy);
+            if (dist < 80 && this.chargeCooldown <= 0) {
+                this.x += (dx / dist) * this.speed * 4;
+                this.y += (dy / dist) * this.speed * 4;
+                this.state = 'attack';
+                this.chargeCooldown = 60;
+            } else if (dist > 0) {
+                this.x += (dx / dist) * this.speed;
+                this.y += (dy / dist) * this.speed;
+                this.state = 'walk';
+            } else {
+                this.state = 'idle';
+            }
+        }
+        if (this.chargeCooldown > 0) this.chargeCooldown--;
+        this.advanceFrame();
     }
 }

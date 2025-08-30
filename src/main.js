@@ -1,6 +1,6 @@
 import Player from './player.js';
-import Enemy from './enemy.js';
 import { updateProjectiles, drawProjectiles } from './projectile.js';
+import { updateSpawner } from './spawner.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -9,7 +9,10 @@ const gameState = window.gameState = {
     keys: {},
     player: null,
     enemies: [],
-    projectiles: []
+    projectiles: [],
+    spawnTimer: 0,
+    spawnInterval: 120,
+    difficulty: 0
 };
 
 function updatePlayer() {
@@ -21,6 +24,7 @@ function drawPlayer() {
 }
 
 function updateEnemies() {
+    updateSpawner(gameState, canvas);
     gameState.enemies.forEach(enemy => enemy.update());
 }
 
@@ -45,7 +49,6 @@ function gameLoop() {
 
 function init() {
     gameState.player = new Player(canvas, gameState);
-    gameState.enemies.push(new Enemy(canvas, gameState));
     window.addEventListener('keydown', e => {
         gameState.keys[e.code] = true;
         if (e.code === 'Digit1') gameState.player.weapon = 'inferno';
