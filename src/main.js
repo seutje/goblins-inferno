@@ -5,6 +5,7 @@ import { initLevelSystem, updateLevelSystem, drawGems } from './level.js';
 import { createDebtState, updateDebt, initDebtUI } from './debt.js';
 import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
+import { updateBoss, drawBossHUD } from './boss.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -79,21 +80,28 @@ function checkCollisions() {
 
             if (dx * dx + dy * dy <= r * r) {
                 // Hit registered
-                if (typeof e.hp === 'number') {
-                    let dmg = (p.damage || 0);
-                    // Gnorp trait: extra damage when enemy is close to player
-                    if (gameState.character === 'Gnorp' && gameState.player) {
-                        const pdx = gameState.player.x - e.x;
-                        const pdy = gameState.player.y - e.y;
-                        const pd = Math.hypot(pdx, pdy);
-                        if (pd < 80) dmg *= 1.25;
-                    }
+                let dmg = (p.damage || 0);
+                // Gnorp trait: extra damage when enemy is close to player
+                if (gameState.character === 'Gnorp' && gameState.player) {
+                    const pdx = gameState.player.x - e.x;
+                    const pdy = gameState.player.y - e.y;
+                    const pd = Math.hypot(pdx, pdy);
+                    if (pd < 80) dmg *= 1.25;
+                }
+                // Optional specialized boss/enemy hit handling
+                if (typeof e.takeHit === 'function') {
+                    // Temporarily override projectile damage if needed
+                    const originalDamage = p.damage;
+                    p.damage = dmg;
+                    e.takeHit(p, gameState);
+                    p.damage = originalDamage;
+                } else if (typeof e.hp === 'number') {
                     e.hp -= dmg;
                 }
                 // Remove projectile on hit
                 gameState.projectiles.splice(pi, 1);
-                // Remove enemy if dead
-                if (e.hp !== undefined && e.hp <= 0) {
+                // Remove enemy if dead (non-boss auto removal; boss cleanup is in updateBoss)
+                if (!e.isBoss && e.hp !== undefined && e.hp <= 0) {
                     gameState.enemies.splice(ei, 1);
                 }
                 break; // Proceed to next projectile
@@ -118,6 +126,7 @@ function gameLoop() {
             }
         }
         updatePlayer();
+        updateBoss(gameState, canvas);
         updateEnemies();
         updateProjectiles(gameState, canvas);
         updateHazards(gameState);
@@ -131,6 +140,7 @@ function gameLoop() {
     drawProjectiles(gameState, ctx);
     drawHazards(gameState, ctx);
     drawGems(gameState, ctx);
+    drawBossHUD(gameState, ctx, canvas);
     requestAnimationFrame(gameLoop);
 }
 

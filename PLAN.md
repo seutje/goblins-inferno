@@ -51,9 +51,9 @@ This document outlines a phased approach for the development of "Goblin's Infern
   * [x] The **Code Goblin** will implement the logic for the special traits of Gnorp, Ignis, and Fizzle.  
   * [x] The **Code Goblin** added Ignis's fire trail via a hazards system (lingering fire patches that damage enemies over time).  
   * [ ] The **Asset Goblin** will create the character sprites and animations.  
-* [ ] **3.3 Design & Implement Boss Fights:**  
-  * [ ] The **Game Designer AI** will script the attack patterns and phases for all three bosses.  
-  * [ ] The **Code Goblin** will implement the boss logic, health bars, and attack scripts.  
+* [x] **3.3 Design & Implement Boss Fights:**  
+  * [x] The **Game Designer AI** scripted initial attack patterns and phases: Champion slams spawn fire zones; Dragon rains fire volleys; Debt Collector absorbs then reflects.  
+  * [x] The **Code Goblin** implemented boss classes, spawn thresholds, health bar HUD, and phase/attack scripts.  
   * [ ] The **Asset Goblin** will create the large, detailed sprites or models for each boss.  
 * [ ] **3.4 Create & Integrate Art Assets:**  
   * [ ] The **Asset Goblin** will generate all final 2D sprites, backgrounds, and environment art.  
