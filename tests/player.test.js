@@ -1,28 +1,33 @@
-const puppeteer = require('puppeteer');
-const path = require('path');
+import Player from '../src/player.js';
 
-(async () => {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-  const page = await browser.newPage();
-  await page.goto('file://' + path.resolve(__dirname, '../src/index.html'));
-  await page.waitForFunction('window.gameState && window.gameState.player');
-  const initialX = await page.evaluate(() => gameState.player.x);
-  await page.keyboard.down('KeyD');
-  await page.waitForTimeout(100);
-  await page.keyboard.up('KeyD');
-  const movedX = await page.evaluate(() => gameState.player.x);
-  if (movedX <= initialX) {
-    console.error('Player did not move right');
-    await browser.close();
-    process.exit(1);
-  }
-  await page.waitForTimeout(500);
-  const projectileCount = await page.evaluate(() => gameState.projectiles.length);
-  if (projectileCount === 0) {
-    console.error('No projectiles fired');
-    await browser.close();
-    process.exit(1);
-  }
-  await browser.close();
-  console.log('All tests passed');
-})();
+beforeAll(() => {
+  globalThis.Image = class {
+    constructor() {
+      this.complete = true;
+    }
+  };
+});
+
+describe('Player', () => {
+  const createPlayer = () => {
+    const canvas = { width: 100, height: 100 };
+    const gameState = { keys: {}, projectiles: [] };
+    const player = new Player(canvas, gameState);
+    return { player, gameState };
+  };
+
+  test('moves right when KeyD is pressed', () => {
+    const { player, gameState } = createPlayer();
+    const initialX = player.x;
+    gameState.keys['KeyD'] = true;
+    player.update();
+    expect(player.x).toBeGreaterThan(initialX);
+  });
+
+  test('fires a projectile when cooldown allows', () => {
+    const { player, gameState } = createPlayer();
+    expect(gameState.projectiles).toHaveLength(0);
+    player.update();
+    expect(gameState.projectiles.length).toBeGreaterThan(0);
+  });
+});

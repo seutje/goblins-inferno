@@ -23,16 +23,13 @@ The project consists of modular files in the `src` directory plus a simple scrip
 
 ## **Automated Testing Methodology**
 
-To run the test suite, execute `./setup-tests.sh` instead of `npm test`; this script prepares the environment and invokes the tests.
+Run the test suite with `npm test`, which executes unit tests using Jest. Tests should focus on game logic modules without requiring a browser environment.
 
-Given the file-based structure, a black-box functional testing approach is required. The Test Goblin agent should use a headless browser environment to simulate player actions and verify outcomes.
-
-* **Simulation:** The tests must simulate keyboard inputs (WASD) and mouse movements/clicks to control the player.
-* **State Verification:** Tests should programmatically inspect the `gameState` object at various points in the game loop to verify that core mechanics are working correctly. For example:
+* **State Verification:** Unit tests must inspect the `gameState` object and other module outputs to ensure mechanics work correctly. For example:
   * Check that the player's position changes after a key press.
   * Verify that an enemy's health decreases after a collision with a fireball.
   * Assert that the debt counter updates after collecting gold.
-* **Performance Monitoring:** The testing suite must include checks for performance metrics, such as frame rate and CPU usage, to ensure that new features do not negatively impact game performance.
+* **Performance Monitoring:** The testing suite should continue to include checks for performance metrics, such as frame rate and CPU usage, to ensure that new features do not negatively impact game performance.
 
 ## **Game Serving**
 
