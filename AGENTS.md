@@ -4,7 +4,7 @@ This document provides specific instructions for AI agents regarding the technic
 
 ## **Code Structure**
 
-Game logic resides in `src/script.js`, and styling resides in `src/style.css`. Keep JavaScript modular using ES6 classes.
+Game logic is split into modular ES6 files (`src/main.js`, `src/player.js`, `src/projectile.js`), and styling resides in `src/style.css`. Keep JavaScript modular using ES6 classes.
 
 * **Classes & Objects:** Use JavaScript ES6 classes to represent game entities such as Player, Enemy, and Projectile.
 * **Game Loop:** Manage game logic with a single continuous game loop triggered by `window.requestAnimationFrame()`.
@@ -13,11 +13,12 @@ Game logic resides in `src/script.js`, and styling resides in `src/style.css`. K
 
 ## **File Structure**
 
-The project consists of three main files in the `src` directory plus a simple script for serving them.
+The project consists of modular files in the `src` directory plus a simple script for serving them.
 
 * `index.html`: Contains the basic HTML structure and the `<canvas>` element where the game will be rendered. It links to the external CSS and JavaScript files.
 * `style.css`: Holds all CSS styles for the game.
-* `script.js`: Contains all JavaScript game logic.
+* `main.js`: Entry point for the game's JavaScript; imports other modules.
+* `player.js` and `projectile.js`: Provide modular game logic for the player and projectiles.
 * **Server:** A simple npm-based HTTP server will be used to serve the `index.html` file.
 
 ## **Automated Testing Methodology**
