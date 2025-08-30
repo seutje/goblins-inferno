@@ -115,6 +115,27 @@ export function updateLevelSystem(gameState, canvas) {
       // Collect
       gameState.xp += g.value;
       gameState.totalGems += g.value;
+      // Treat gem as gold to drive debt interactions
+      if (gameState.debt) {
+        gameState.debt.gold += g.value;
+        if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
+      }
+      // Fizzle trait: small chance to grant a temporary potion effect
+      if (gameState.character === 'Fizzle' && Math.random() < 0.15) {
+        const duration = 60 * 5;
+        if (!gameState._buffs) gameState._buffs = [];
+        const roll = Math.floor(Math.random() * 3);
+        if (roll === 0) {
+          gameState.player.stats.speedMultiplier *= 1.25;
+          gameState._buffs.push({ remaining: duration, undo: () => { gameState.player.stats.speedMultiplier /= 1.25; } });
+        } else if (roll === 1) {
+          gameState.player.stats.damageMultiplier *= 1.25;
+          gameState._buffs.push({ remaining: duration, undo: () => { gameState.player.stats.damageMultiplier /= 1.25; } });
+        } else {
+          gameState.player.stats.fireRateMultiplier *= 1.25;
+          gameState._buffs.push({ remaining: duration, undo: () => { gameState.player.stats.fireRateMultiplier /= 1.25; } });
+        }
+      }
       gameState.gems.splice(i, 1);
       // Level-up check
       while (gameState.xp >= gameState.nextLevelXp) {
@@ -154,4 +175,3 @@ function sampleUpgrades(pool, n) {
   }
   return result;
 }
-

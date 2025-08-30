@@ -12,6 +12,33 @@ canvas {
     background: #222;
 }
 
+/* HUD */
+.hud {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    background: rgba(0,0,0,0.5);
+    color: #eee;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    z-index: 9;
+}
+
+.hud-btn {
+    background: #444;
+    color: #eee;
+    border: 1px solid #666;
+    border-radius: 4px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+
+.hud-btn:hover { background: #555; }
+
 /* Upgrade modal */
 .modal {
     position: fixed;

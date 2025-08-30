@@ -43,12 +43,12 @@ This document outlines a phased approach for the development of "Goblin's Infern
 **Objective:** Add the unique, themed elements and content to the core game.
 
 * [ ] **3.1 Implement The Debt System & Loan Shark:**  
-  * [ ] The **Code Goblin** will create the state management for the player's debt.  
-  * [ ] The **UI/UX Designer AI** will design and implement the debt counter and the Loan Shark's UI screen.  
-  * [ ] The **Code Goblin** will write the logic for taking out loans and the automatic debt repayment system.  
+  * [x] The **Code Goblin** will create the state management for the player's debt.  
+  * [x] The **UI/UX Designer AI** will design and implement the debt counter and the Loan Shark's UI screen.  
+  * [x] The **Code Goblin** will write the logic for taking out loans and the automatic debt repayment system.  
 * [ ] **3.2 Implement Character Selection & Unique Abilities:**  
-  * [ ] The **UI/UX Designer AI** will create the character selection screen.  
-  * [ ] The **Code Goblin** will implement the logic for the special traits of Gnorp, Ignis, and Fizzle.  
+  * [x] The **UI/UX Designer AI** will create the character selection screen.  
+  * [x] The **Code Goblin** will implement the logic for the special traits of Gnorp, Ignis, and Fizzle.  
   * [ ] The **Asset Goblin** will create the character sprites and animations.  
 * [ ] **3.3 Design & Implement Boss Fights:**  
   * [ ] The **Game Designer AI** will script the attack patterns and phases for all three bosses.  

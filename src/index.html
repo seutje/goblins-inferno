@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div id="hud" class="hud">
+        <div>Debt: <span id="hud-debt">0</span></div>
+        <div>Gold: <span id="hud-gold">0</span></div>
+        <button id="btnLoan" class="hud-btn">Loan Shark</button>
+    </div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
     <div id="upgradeModal" class="modal" style="display:none;">
         <div class="modal-content">
@@ -23,6 +28,51 @@
                 <button id="choice2" class="choice">
                     <div id="choice2-title" class="choice-title">—</div>
                     <div id="choice2-desc" class="choice-desc">—</div>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Loan Shark Modal -->
+    <div id="loanModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>The Loan Shark</h2>
+            <p>Take a loan to power up — but it adds to your debt.</p>
+            <div class="choices">
+                <button id="loanSimple" class="choice">
+                    <div class="choice-title">Simple Loan</div>
+                    <div class="choice-desc">+500 gold (10% interest)</div>
+                </button>
+                <button id="loanGear" class="choice">
+                    <div class="choice-title">Gear Loan</div>
+                    <div class="choice-desc">+1000 gold (25% interest)</div>
+                </button>
+                <button id="loanCursed" class="choice">
+                    <div class="choice-title">Cursed Loan</div>
+                    <div class="choice-desc">+2000 gold (50% interest)</div>
+                </button>
+            </div>
+            <div style="margin-top:12px; text-align:right;">
+                <button id="loanClose" class="hud-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Character Selection Modal -->
+    <div id="charModal" class="modal" style="display:flex;">
+        <div class="modal-content">
+            <h2>Choose Your Goblin</h2>
+            <div class="choices">
+                <button id="pickGnorp" class="choice">
+                    <div class="choice-title">Gnorp the Pyromaniac</div>
+                    <div class="choice-desc">High damage. Extra close-range damage.</div>
+                </button>
+                <button id="pickIgnis" class="choice">
+                    <div class="choice-title">Ignis the Arsonist</div>
+                    <div class="choice-desc">Fast and mobile. Leaves fire trails.</div>
+                </button>
+                <button id="pickFizzle" class="choice">
+                    <div class="choice-title">Fizzle the Alchemist</div>
+                    <div class="choice-desc">Potions on gem pickup.</div>
                 </button>
             </div>
         </div>
