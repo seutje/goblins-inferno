@@ -29,10 +29,10 @@ This document outlines a phased approach for the development of "Goblin's Infern
   * [x] The **Code Goblin** will create the base class for projectiles (fireballs) with properties for damage, speed, and size.
   * [x] The **Code Goblin** will implement the logic for the Inferno Blast, Flame Stream, and Volatile Orb starting weapons.
   * [ ] The **Asset Goblin** will create the visual particle effects and sprites for the fireballs.  
-* [ ] **2.3 Implement Enemy Spawning & AI:**  
-  * [ ] The **Code Goblin** will implement an enemy spawner that incrementally increases enemy count and difficulty over time.  
-  * [ ] The **Code Goblin** will create the AI scripts for Debt-Skeletons, Loaner-Imps, and Bailiff-Ogres.  
-  * [ ] The **Asset Goblin** will create the animated sprites for all standard enemies.  
+* [ ] **2.3 Implement Enemy Spawning & AI:**
+  * [x] The **Code Goblin** will implement an enemy spawner that incrementally increases enemy count and difficulty over time.
+  * [x] The **Code Goblin** will create the AI scripts for Debt-Skeletons, Loaner-Imps, and Bailiff-Ogres.
+  * [ ] The **Asset Goblin** will create the animated sprites for all standard enemies.
 * [ ] **2.4 Implement Level Up & Upgrade System:**  
   * [ ] The **Code Goblin** will implement a system to track collected gems and handle player level-ups.  
   * [ ] The **UI/UX Designer AI** will create the UI for the three random upgrade choices.  
