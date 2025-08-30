@@ -33,10 +33,10 @@ This document outlines a phased approach for the development of "Goblin's Infern
   * [x] The **Code Goblin** will implement an enemy spawner that incrementally increases enemy count and difficulty over time.
   * [x] The **Code Goblin** will create the AI scripts for Debt-Skeletons, Loaner-Imps, and Bailiff-Ogres.
   * [ ] The **Asset Goblin** will create the animated sprites for all standard enemies.
-* [ ] **2.4 Implement Level Up & Upgrade System:**  
-  * [ ] The **Code Goblin** will implement a system to track collected gems and handle player level-ups.  
-  * [ ] The **UI/UX Designer AI** will create the UI for the three random upgrade choices.  
-  * [ ] The **Game Designer AI** will write the logic for the randomized upgrade selection pool.
+* [x] **2.4 Implement Level Up & Upgrade System:**  
+  * [x] The **Code Goblin** will implement a system to track collected gems and handle player level-ups.  
+  * [x] The **UI/UX Designer AI** will create the UI for the three random upgrade choices.  
+  * [x] The **Game Designer AI** will write the logic for the randomized upgrade selection pool.
 
 ## **Phase 3: Features & Content Implementation**
 

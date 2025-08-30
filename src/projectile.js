@@ -24,15 +24,27 @@ export class Projectile {
 }
 
 export function fireInfernoBlast(gameState, x, y) {
-    gameState.projectiles.push(new Projectile(x, y - 10, { damage: 1, speed: 6, size: 5, color: 'red' }));
+    const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
+    gameState.projectiles.push(new Projectile(
+        x, y - 10,
+        { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red' }
+    ));
 }
 
 export function fireFlameStream(gameState, x, y) {
-    gameState.projectiles.push(new Projectile(x, y - 10, { damage: 0.5, speed: 8, size: 3, color: 'orange' }));
+    const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
+    gameState.projectiles.push(new Projectile(
+        x, y - 10,
+        { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange' }
+    ));
 }
 
 export function fireVolatileOrb(gameState, x, y) {
-    gameState.projectiles.push(new Projectile(x, y - 10, { damage: 3, speed: 2, size: 10, color: 'purple' }));
+    const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
+    gameState.projectiles.push(new Projectile(
+        x, y - 10,
+        { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple' }
+    ));
 }
 
 export function updateProjectiles(gameState, canvas) {

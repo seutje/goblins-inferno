@@ -6,12 +6,19 @@ export default class Player {
         this.gameState = gameState;
         this.x = canvas.width / 2;
         this.y = canvas.height / 2;
-        this.speed = 3;
+        this.baseSpeed = 3;
         this.frameWidth = 32;
         this.frameHeight = 32;
         this.size = this.frameWidth / 2;
         this.fireCooldown = 0;
         this.weapon = 'inferno';
+
+        this.stats = {
+            speedMultiplier: 1,
+            fireRateMultiplier: 1,
+            damageMultiplier: 1,
+            projSizeMultiplier: 1
+        };
 
         this.sprite = new Image();
         this.sprite.src = 'img/sprite-goblin.png';
@@ -31,10 +38,11 @@ export default class Player {
     update() {
         const keys = this.gameState.keys;
         let moving = false;
-        if (keys['KeyW']) { this.y -= this.speed; moving = true; }
-        if (keys['KeyS']) { this.y += this.speed; moving = true; }
-        if (keys['KeyA']) { this.x -= this.speed; moving = true; }
-        if (keys['KeyD']) { this.x += this.speed; moving = true; }
+        const speed = this.baseSpeed * this.stats.speedMultiplier;
+        if (keys['KeyW']) { this.y -= speed; moving = true; }
+        if (keys['KeyS']) { this.y += speed; moving = true; }
+        if (keys['KeyA']) { this.x -= speed; moving = true; }
+        if (keys['KeyD']) { this.x += speed; moving = true; }
 
         this.state = moving ? 'walk' : 'idle';
 
@@ -44,13 +52,13 @@ export default class Player {
         if (this.fireCooldown <= 0) {
             if (this.weapon === 'inferno') {
                 fireInfernoBlast(this.gameState, this.x, this.y - this.size);
-                this.fireCooldown = 15;
+                this.fireCooldown = Math.max(1, Math.floor(15 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'flame') {
                 fireFlameStream(this.gameState, this.x, this.y - this.size);
-                this.fireCooldown = 3;
+                this.fireCooldown = Math.max(1, Math.floor(3 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'orb') {
                 fireVolatileOrb(this.gameState, this.x, this.y - this.size);
-                this.fireCooldown = 45;
+                this.fireCooldown = Math.max(1, Math.floor(45 / this.stats.fireRateMultiplier));
             }
         } else {
             this.fireCooldown--;
