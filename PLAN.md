@@ -26,8 +26,8 @@ This document outlines a phased approach for the development of "Goblin's Infern
   * [ ] The **Code Goblin** will implement the automatic firing system for the player's primary weapon.  
   * [ ] The **Test Goblin** will perform initial QA on movement and firing mechanics.  
 * [ ] **2.2 Implement Basic Weapon System:**  
-  * [ ] The **Code Goblin** will create the base class for projectiles (fireballs) with properties for damage, speed, and size.  
-  * [ ] The **Code Goblin** will implement the logic for the Inferno Blast, Flame Stream, and Volatile Orb starting weapons.  
+  * [x] The **Code Goblin** will create the base class for projectiles (fireballs) with properties for damage, speed, and size.
+  * [x] The **Code Goblin** will implement the logic for the Inferno Blast, Flame Stream, and Volatile Orb starting weapons.
   * [ ] The **Asset Goblin** will create the visual particle effects and sprites for the fireballs.  
 * [ ] **2.3 Implement Enemy Spawning & AI:**  
   * [ ] The **Code Goblin** will implement an enemy spawner that incrementally increases enemy count and difficulty over time.  
