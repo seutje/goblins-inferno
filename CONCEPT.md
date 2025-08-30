@@ -99,3 +99,59 @@ The enemies are themed around various mythical creatures that have succumbed to 
 
 * **Art:** A stylized, cartoonish art style with a focus on vibrant colors and dynamic animations. Goblins are designed to be quirky and sympathetic. Fireball effects are exaggerated and visually impressive, with lots of explosions, screen shake, and particle effects.  
 * **Sound:** A mischievous and intense soundtrack that shifts dynamically with the action. The sound of gold coins dropping and collecting is highly satisfying, and the sounds of fireballs and explosions are punchy and impactful. The Loan Shark NPC has a deep, slimy voice.
+
+## **8. Game Balance & Metrics**
+
+This section outlines the initial balancing for player stats, enemy health, and item drops. These values are subject to change based on playtesting.
+
+### **Player Stats (Base)**
+
+*   **Gnorp the Pyromaniac:**
+    *   **Health:** 120
+    *   **Speed:** 3
+    *   **Inferno Blast Damage:** 40
+    *   **Close-Range Damage Bonus:** +20%
+*   **Ignis the Arsonist:**
+    *   **Health:** 80
+    *   **Speed:** 5
+    *   **Flame Stream Damage:** 8 (per fireball)
+    *   **Fire Trail Damage:** 5 (per second)
+*   **Fizzle the Alchemist:**
+    *   **Health:** 100
+    *   **Speed:** 4
+    *   **Volatile Orb Damage:** 25 (initial explosion), 10 (smaller fireballs)
+    *   **Potion Effect Chance:** 15% on gem pickup
+
+### **Enemy Stats**
+
+*   **Debt-Skeletons:**
+    *   **Health:** 30
+    *   **Damage:** 10 (melee)
+    *   **Movement Speed:** 2
+*   **Loaner-Imps:**
+    *   **Health:** 20
+    *   **Damage:** 15 (projectile)
+    *   **Movement Speed:** 4
+*   **Bailiff-Ogres:**
+    *   **Health:** 150
+    *   **Damage:** 25 (charge)
+    *   **Movement Speed:** 2.5
+
+### **Item Drop Rates**
+
+*   **Gold Coins:** 80% chance from standard enemies.
+*   **Gems (Experience):** 20% chance from standard enemies.
+*   **Potions (Fizzle's Trait):** 15% chance on gem pickup.
+*   **Bosses:** Guaranteed to drop a large chest containing a significant amount of gold and gems, plus a choice of one rare upgrade.
+
+## **9. Narrative & Worldbuilding**
+
+### **The Inferno**
+
+The "Inferno" is not a literal hell, but a chaotic, fiery dimension that feeds on greed and desperation. It is a place where the very air crackles with arcane energy, and the ground is littered with the crystallized souls of those who failed to pay their debts (the gems that players collect). The landscape is a twisted reflection of a goblin's worst financial nightmares: rivers of molten gold, mountains of paperwork, and monstrous creatures born from the anxieties of debt.
+
+### **The Loan Shark**
+
+The Loan Shark, a grotesque and ancient being, is the self-proclaimed king of the Inferno. He was once a simple goblin who, through a series of cunning and ruthless deals, managed to trap a powerful fire demon and harness its power. He now uses this power to offer loans to desperate goblins, knowing full well that the interest rates are impossible to repay.
+
+His true goal is not to collect the gold, but to enslave the goblins who default on their loans. These unfortunate souls are transformed into the very monsters that populate the Inferno, forced to mine for more gold and gems to fuel the Loan Shark's ever-growing power. The player characters are among the few who have a chance to break this cycle by paying off their debt and escaping the Inferno for good.

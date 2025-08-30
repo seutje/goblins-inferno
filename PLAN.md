@@ -6,10 +6,10 @@ This document outlines a phased approach for the development of "Goblin's Infern
 
 **Objective:** Finalize the core design, establish the artistic and technical foundation, and assign initial roles to AI agents.
 
-* \[ \] **1.1 Finalize Game Design Document:**  
-  * \[ \] Review the "CONCEPT.md" for clarity and feasibility.  
-  * \[ \] The **Game Designer AI** will add specific metrics for enemy health, player damage, and item drop rates.  
-  * \[ \] The **Narrative AI** will expand on the backstory of the Loan Shark and the Inferno.  
+* [x] **1.1 Finalize Game Design Document:**  
+  * [x] Review the "CONCEPT.md" for clarity and feasibility.  
+  * [x] The **Game Designer AI** will add specific metrics for enemy health, player damage, and item drop rates.  
+  * [x] The **Narrative AI** will expand on the backstory of the Loan Shark and the Inferno.  
 * \[ \] **1.2 Define Art & Sound Style:**  
   * \[ \] The **Art Director AI** will generate concept art for the goblins, enemies, and environment.  
   * \[ \] The **Sound Designer AI** will create a mood board of sound effects and music styles (e.g., mischievous, intense, chaotic).  
