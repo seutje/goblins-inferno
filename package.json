@@ -1,0 +1,15 @@
+{
+  "name": "goblins-inferno",
+  "version": "1.0.0",
+  "description": "A rogue-lite bullet heaven game.",
+  "main": "index.html",
+  "scripts": {
+    "start": "http-server -p 8000"
+  },
+  "keywords": [],
+  "author": "AI Agents",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}
