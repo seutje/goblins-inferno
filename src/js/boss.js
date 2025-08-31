@@ -206,12 +206,20 @@ export function updateBoss(gameState, canvas) {
     // Rewards
     if (gameState.debt) gameState.debt.gold += 250;
     for (let i = 0; i < 10; i++) {
+      const sprite = new Image();
+      sprite.src = versioned('src/img/sprite-gem.png');
       const gem = {
         x: Math.max(16, Math.min(canvas.width - 16, gameState.boss.x + (Math.random() - 0.5) * 80)),
         y: Math.max(16, Math.min(canvas.height - 16, gameState.boss.y + (Math.random() - 0.5) * 80)),
         size: 12,
         value: 2,
-        color: '#9ff'
+        color: '#9ff',
+        // animation (matches little gems): row 2 (index 1)
+        sprite,
+        frame: 0,
+        frameTimer: 0,
+        frameInterval: 8,
+        row: 1
       };
       gameState.gems.push(gem);
     }
