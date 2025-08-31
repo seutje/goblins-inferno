@@ -85,3 +85,36 @@ canvas {
 .rarity-rare { color: #33aaff; }
 .rarity-epic { color: #a64cff; }
 .rarity-legendary { color: #ffa500; }
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+.loading-box {
+  background: #1b1b1b;
+  color: #eee;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 16px;
+  width: 360px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+.loading-title { margin-bottom: 8px; font-weight: bold; }
+.loading-bar {
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 4px;
+  height: 10px;
+  overflow: hidden;
+}
+.loading-progress {
+  background: linear-gradient(90deg, #33aaff, #4cf);
+  height: 100%;
+  width: 0%;
+}

@@ -7,6 +7,7 @@ import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { updateBoss, drawBossHUD } from './boss.js';
 import { initAudio, playSound, setMuted } from './audio.js';
+import { preloadAll } from './preload.js';
 import { initMeta, applyMetaAtRunStart } from './meta.js';
 import { updatePickups, drawPickups, spawnHealthPickup } from './pickups.js';
 
@@ -283,4 +284,16 @@ function init() {
     gameLoop();
 }
 
-init();
+function boot() {
+    const overlay = document.getElementById('loadingOverlay');
+    const bar = document.getElementById('loadingProgress');
+    function onProgress(ratio) {
+        if (bar) bar.style.width = Math.max(0, Math.min(100, Math.floor(ratio * 100))) + '%';
+    }
+    preloadAll(onProgress).then(() => {
+        if (overlay) overlay.style.display = 'none';
+        init();
+    });
+}
+
+boot();
