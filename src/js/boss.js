@@ -209,7 +209,7 @@ export function updateBoss(gameState, canvas) {
       const gem = {
         x: Math.max(16, Math.min(canvas.width - 16, gameState.boss.x + (Math.random() - 0.5) * 80)),
         y: Math.max(16, Math.min(canvas.height - 16, gameState.boss.y + (Math.random() - 0.5) * 80)),
-        size: 6,
+        size: 12,
         value: 2,
         color: '#9ff'
       };

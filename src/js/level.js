@@ -1,5 +1,11 @@
 // Leveling, gems, and upgrades
 import { playSound } from './audio.js';
+import { versioned } from './assets.js';
+
+const GEM_SHEET_COLS = 6;
+const GEM_SHEET_ROWS = 5;
+const GEM_FRAME_W = 170;
+const GEM_FRAME_H = 205;
 
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -96,12 +102,22 @@ export function initLevelSystem(gameState, canvas) {
 export function updateLevelSystem(gameState, canvas) {
   // Spawn gems periodically for now (until enemy loot is wired)
   if (gameState._gemTimer-- <= 0) {
+    const sprite = new Image();
+    sprite.src = versioned('src/img/sprite-gem.png');
     const gem = {
       x: randInt(16, canvas.width - 16),
       y: randInt(16, canvas.height - 16),
-      size: 5,
+      size: 14,
       value: 1,
-      color: '#3ff'
+      color: '#3ff',
+      // animation fields
+      sprite,
+      frame: 0,
+      frameTimer: 0,
+      frameInterval: 8,
+      frameWidth: GEM_FRAME_W,
+      frameHeight: GEM_FRAME_H,
+      row: 1 // use second row
     };
     gameState.gems.push(gem);
     // Scale frequency modestly with difficulty using balance
@@ -110,9 +126,20 @@ export function updateLevelSystem(gameState, canvas) {
     gameState._gemTimer = Math.max(min, base - Math.floor(gameState.difficulty));
   }
 
-  // Attract nearby gems toward the player
+  // Animate and attract nearby gems toward the player
   const p = gameState.player;
   if (p) {
+    // animate
+    for (let i = 0; i < gameState.gems.length; i++) {
+      const g = gameState.gems[i];
+      if (g.sprite) {
+        g.frameTimer++;
+        if (g.frameTimer >= g.frameInterval) {
+          g.frameTimer = 0;
+          g.frame = (g.frame + 1) % GEM_SHEET_COLS;
+        }
+      }
+    }
     const attractRadius = gameState.magnetRadius ?? 110;
     const maxPull = gameState.magnetMaxPull ?? 6; // px/frame near the player
     for (let i = 0; i < gameState.gems.length; i++) {
@@ -180,10 +207,26 @@ export function updateLevelSystem(gameState, canvas) {
 
 export function drawGems(gameState, ctx) {
   gameState.gems.forEach(g => {
-    ctx.fillStyle = g.color;
-    ctx.beginPath();
-    ctx.arc(g.x, g.y, g.size, 0, Math.PI * 2);
-    ctx.fill();
+    const s = (g.size || 6) * 2;
+    const hasSprite = g.sprite && g.sprite.complete && (g.sprite.naturalWidth || 0) > 0;
+    if (hasSprite) {
+      const sx = (g.frame % GEM_SHEET_COLS) * (g.frameWidth || GEM_FRAME_W);
+      const sy = (g.row % GEM_SHEET_ROWS) * (g.frameHeight || GEM_FRAME_H);
+      const destH = s; // base height equal to diameter
+      const destW = destH * (GEM_FRAME_W / GEM_FRAME_H);
+      ctx.drawImage(
+        g.sprite,
+        sx, sy, (g.frameWidth || GEM_FRAME_W), (g.frameHeight || GEM_FRAME_H),
+        g.x - destW / 2,
+        g.y - destH / 2,
+        destW, destH
+      );
+    } else {
+      ctx.fillStyle = g.color || '#3ff';
+      ctx.beginPath();
+      ctx.arc(g.x, g.y, g.size || 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
   });
 }
 
