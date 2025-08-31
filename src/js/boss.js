@@ -67,7 +67,7 @@ export class InterestDragon extends BaseBoss {
     this.hpMax = this.hp;
     this.speed = 0.8;
     this.volleyCooldown = 90;
-    this.sprite.src = versioned('src/img/boss-dragon.png');
+    this.sprite.src = versioned('src/img/sprite-dragon.png');
   }
 
   update() {

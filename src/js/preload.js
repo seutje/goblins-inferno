@@ -11,7 +11,7 @@ const ASSETS = [
   'src/img/sprite-ogre.png',
   // Bosses
   'src/img/sprite-champion.png',
-  'src/img/boss-dragon.png',
+  'src/img/sprite-dragon.png',
   'src/img/boss-collector.png',
   // Projectiles and pickups
   'src/img/sprite-projectile.png',
