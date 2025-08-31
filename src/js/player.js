@@ -74,13 +74,13 @@ export default class Player {
 
         if (this.fireCooldown <= 0) {
             if (this.weapon === 'inferno') {
-                fireInfernoBlast(this.gameState, this.x, this.y - this.size, aim);
+                fireInfernoBlast(this.gameState, this.x, this.y, aim);
                 this.fireCooldown = Math.max(1, Math.floor(15 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'flame') {
-                fireFlameStream(this.gameState, this.x, this.y - this.size, aim);
+                fireFlameStream(this.gameState, this.x, this.y, aim);
                 this.fireCooldown = Math.max(1, Math.floor(3 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'orb') {
-                fireVolatileOrb(this.gameState, this.x, this.y - this.size, aim);
+                fireVolatileOrb(this.gameState, this.x, this.y, aim);
                 this.fireCooldown = Math.max(1, Math.floor(45 / this.stats.fireRateMultiplier));
             }
         } else {

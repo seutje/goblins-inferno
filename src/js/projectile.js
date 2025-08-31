@@ -48,7 +48,7 @@ export function fireInfernoBlast(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
-        x, y - 10,
+        x, y,
         { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: 'src/img/sprite-blast.png', frameWidth: 16, frameHeight: 16, dx: v.dx, dy: v.dy }
     ));
     playSound('fire');
@@ -58,7 +58,7 @@ export function fireFlameStream(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
-        x, y - 10,
+        x, y,
         { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: 'src/img/sprite-flame.png', frameWidth: 12, frameHeight: 12, dx: v.dx, dy: v.dy }
     ));
     playSound('fire');
@@ -68,7 +68,7 @@ export function fireVolatileOrb(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
-        x, y - 10,
+        x, y,
         { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: 'src/img/sprite-orb.png', frameWidth: 20, frameHeight: 20, dx: v.dx, dy: v.dy }
     ));
     playSound('fire');
