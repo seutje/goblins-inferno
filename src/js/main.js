@@ -8,6 +8,7 @@ import { updateHazards, drawHazards } from './hazard.js';
 import { updateBoss, drawBossHUD } from './boss.js';
 import { initAudio, playSound, setMuted } from './audio.js';
 import { preloadAll } from './preload.js';
+import { repay } from './debt.js';
 import { initMeta, applyMetaAtRunStart } from './meta.js';
 import { updatePickups, drawPickups, spawnHealthPickup } from './pickups.js';
 
@@ -84,10 +85,48 @@ function damagePlayer(amount) {
 function onPlayerDeath() {
     gameState.paused = true;
     gameState.gameOver = true;
+    // End-of-run repayment: apply all gold to debt
+    try { repay(gameState.debt, gameState.debt.gold || 0); } catch {}
     const modal = document.getElementById('gameOverModal');
     const statsEl = document.getElementById('gameOverStats');
     if (statsEl) statsEl.textContent = `Level ${gameState.level} | Gems ${gameState.totalGems}`;
     if (modal) modal.style.display = 'flex';
+}
+
+function restartRun() {
+    // Clear dynamic state but preserve meta and debt
+    gameState.paused = false;
+    gameState.gameOver = false;
+    gameState.player = null;
+    gameState.enemies = [];
+    gameState.projectiles = [];
+    gameState.hazards = [];
+    gameState.gems = [];
+    gameState.pickups = [];
+    gameState._buffs = [];
+    gameState._injectBounces = undefined;
+    gameState.spawnTimer = 0;
+    gameState.difficulty = 0;
+    gameState.xp = 0;
+    gameState.level = 1;
+    gameState.nextLevelXp = 5;
+    gameState.totalGems = 0;
+    gameState.character = null;
+    gameState.trait = null;
+    gameState.upgradeChoices = [];
+    // Reset boss state
+    gameState.boss = null;
+    gameState._bossInit = false;
+    gameState._bossIndex = 0;
+    // Clear input
+    gameState.keys = {};
+    gameState.mouse = null;
+    // Hide game over modal, show character selection
+    const over = document.getElementById('gameOverModal');
+    if (over) over.style.display = 'none';
+    const charModal = document.getElementById('charModal');
+    if (charModal) charModal.style.display = 'flex';
+    if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
 }
 
 function checkCollisions() {
@@ -271,7 +310,7 @@ function init() {
         btnMute.textContent = muted ? 'Unmute' : 'Mute';
     });
     const btnRestart = document.getElementById('btnRestart');
-    if (btnRestart) btnRestart.addEventListener('click', () => window.location.reload());
+    if (btnRestart) btnRestart.addEventListener('click', restartRun);
     window.addEventListener('keydown', e => {
         gameState.keys[e.code] = true;
         if (!gameState.player) return;
