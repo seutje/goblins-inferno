@@ -35,5 +35,8 @@ export function applyCharacterToPlayer(player, gameState, characterKey) {
   player.stats.fireRateMultiplier *= cfg.stats.fireRateMultiplier;
   player.stats.projSizeMultiplier *= cfg.stats.projSizeMultiplier;
   gameState.trait = cfg.trait;
+  // set character-specific sprite
+  if (characterKey === 'Gnorp') player.sprite.src = 'img/sprite-gnorp.png';
+  else if (characterKey === 'Ignis') player.sprite.src = 'img/sprite-ignis.png';
+  else if (characterKey === 'Fizzle') player.sprite.src = 'img/sprite-fizzle.png';
 }
-
