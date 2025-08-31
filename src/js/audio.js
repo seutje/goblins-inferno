@@ -50,6 +50,10 @@ export function playSound(kind) {
     case 'upgrade':
       beep({ freq: 520, duration: 0.05, type: 'triangle', gain: 0.03 });
       break;
+    case 'heal':
+      beep({ freq: 600, duration: 0.05, type: 'sine', gain: 0.03 });
+      beep({ freq: 800, duration: 0.04, type: 'sine', gain: 0.02 });
+      break;
     case 'loan':
       beep({ freq: 400, duration: 0.05, type: 'triangle', gain: 0.03 });
       break;

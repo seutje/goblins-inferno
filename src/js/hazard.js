@@ -1,4 +1,5 @@
 // Hazards: lingering area effects like Ignis's fire trail
+import { spawnHealthPickup } from './pickups.js';
 
 export class FirePatch {
   constructor(x, y, { radius = 18, duration = 120, dps = 0.5, color = 'rgba(255,80,0,0.35)' } = {}) {
@@ -23,6 +24,9 @@ export class FirePatch {
         if (typeof e.hp === 'number') {
           e.hp -= this.dps;
           if (e.hp <= 0) {
+            if (!e.isBoss && Math.random() < 0.10) {
+              spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
+            }
             gameState.enemies.splice(i, 1);
           }
         }

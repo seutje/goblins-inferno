@@ -7,6 +7,7 @@ import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { updateBoss, drawBossHUD } from './boss.js';
 import { initAudio, playSound, setMuted } from './audio.js';
+import { updatePickups, drawPickups, spawnHealthPickup } from './pickups.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -131,6 +132,9 @@ function checkCollisions() {
                 // Remove enemy if dead (non-boss auto removal; boss cleanup is in updateBoss)
                 if (!e.isBoss && e.hp !== undefined && e.hp <= 0) {
                     playSound('enemy_die');
+                    if (Math.random() < 0.10) {
+                        spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
+                    }
                     gameState.enemies.splice(ei, 1);
                 }
                 break; // Proceed to next projectile
@@ -201,6 +205,7 @@ function gameLoop() {
         updateEnemies();
         updateProjectiles(gameState, canvas);
         updateHazards(gameState);
+        updatePickups(gameState);
         checkCollisions();
         checkPlayerDamage();
         if (gameState.player) updateLevelSystem(gameState, canvas);
@@ -211,6 +216,7 @@ function gameLoop() {
     drawEnemies();
     drawProjectiles(gameState, ctx);
     drawHazards(gameState, ctx);
+    drawPickups(gameState, ctx);
     drawGems(gameState, ctx);
     drawBossHUD(gameState, ctx, canvas);
     // HUD dynamic info
