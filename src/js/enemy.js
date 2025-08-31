@@ -1,7 +1,7 @@
 import { versioned } from './assets.js';
 
 const SHEET_COLS = 6;
-const SHEET_ROWS = 6;
+const SHEET_ROWS = 5; // updated: 5 rows tall, 6 columns wide
 
 export class Enemy {
   constructor(canvas, gameState) {
@@ -12,9 +12,9 @@ export class Enemy {
         this.speed = 1;
         // Basic combat properties
         this.hp = 10;
-        // Enemy sprite sheets are 6x6 with 170x170px frames
+        // Enemy sprite sheets are 6x5 with 170x205px frames
         this.frameWidth = 170;
-        this.frameHeight = 170;
+        this.frameHeight = 205;
         // decouple visual frame size from gameplay hit radius
         this.size = 16;
     this.sprite = new Image();
