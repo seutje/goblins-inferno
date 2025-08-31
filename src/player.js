@@ -8,10 +8,11 @@ export default class Player {
         this.x = canvas.width / 2;
         this.y = canvas.height / 2;
         this.baseSpeed = 3;
-        // Updated for larger character sprites
-        this.frameWidth = 64;
-        this.frameHeight = 64;
-        this.size = this.frameWidth / 2;
+        // Updated for much larger character sprites (170x170 frames)
+        this.frameWidth = 175;
+        this.frameHeight = 200;
+        // Use a gameplay hit radius decoupled from visual frame size
+        this.size = 24;
         this.fireCooldown = 0;
         this.weapon = 'inferno';
 
@@ -102,6 +103,8 @@ export default class Player {
 
     draw(ctx) {
         const animation = this.animations[this.state];
+        const destW = this.size * 2;
+        const destH = this.size * 2;
         if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
             ctx.drawImage(
                 this.sprite,
@@ -109,10 +112,10 @@ export default class Player {
                 animation.row * this.frameHeight,
                 this.frameWidth,
                 this.frameHeight,
-                this.x - this.frameWidth / 2,
-                this.y - this.frameHeight / 2,
-                this.frameWidth,
-                this.frameHeight
+                this.x - destW / 2,
+                this.y - destH / 2,
+                destW,
+                destH
             );
         } else {
             ctx.fillStyle = 'lime';
