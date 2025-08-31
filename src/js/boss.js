@@ -31,7 +31,7 @@ export class CreditorChampion extends BaseBoss {
     this.hpMax = this.hp;
     this.speed = 1.1;
     this.slamCooldown = 120; // frames
-    this.sprite.src = versioned('src/img/boss-champion.png');
+    this.sprite.src = versioned('src/img/sprite-champion.png');
   }
 
   update() {
