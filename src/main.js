@@ -6,7 +6,7 @@ import { createDebtState, updateDebt, initDebtUI } from './debt.js';
 import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { updateBoss, drawBossHUD } from './boss.js';
-import { initAudio, playSound } from './audio.js';
+import { initAudio, playSound, setMuted } from './audio.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -123,6 +123,13 @@ function gameLoop() {
     clearCanvas();
 
     if (!gameState.paused) {
+        // FPS calc (smoothed)
+        const now = performance.now();
+        if (!gameState._lastTs) gameState._lastTs = now;
+        const dt = now - gameState._lastTs;
+        gameState._lastTs = now;
+        const fps = 1000 / Math.max(1, dt);
+        gameState._fps = Math.round((gameState._fps || fps) * 0.9 + fps * 0.1);
         // expire temporary buffs
         if (gameState._buffs && gameState._buffs.length) {
             for (let i = gameState._buffs.length - 1; i >= 0; i--) {
@@ -150,6 +157,10 @@ function gameLoop() {
     drawHazards(gameState, ctx);
     drawGems(gameState, ctx);
     drawBossHUD(gameState, ctx, canvas);
+    // HUD dynamic info
+    const fpsEl = document.getElementById('hud-fps');
+    if (fpsEl && gameState._fps) fpsEl.textContent = String(gameState._fps);
+    if (typeof gameState._refreshDebtHUD === 'function' && !gameState.paused) gameState._refreshDebtHUD();
     requestAnimationFrame(gameLoop);
 }
 
@@ -175,12 +186,20 @@ function init() {
     if (btnGnorp) btnGnorp.addEventListener('click', () => startAs('Gnorp'));
     if (btnIgnis) btnIgnis.addEventListener('click', () => startAs('Ignis'));
     if (btnFizzle) btnFizzle.addEventListener('click', () => startAs('Fizzle'));
+    const btnMute = document.getElementById('btnMute');
+    let muted = false;
+    if (btnMute) btnMute.addEventListener('click', () => {
+        muted = !muted;
+        setMuted(muted);
+        btnMute.textContent = muted ? 'Unmute' : 'Mute';
+    });
     window.addEventListener('keydown', e => {
         gameState.keys[e.code] = true;
         if (!gameState.player) return;
         if (e.code === 'Digit1') gameState.player.weapon = 'inferno';
         if (e.code === 'Digit2') gameState.player.weapon = 'flame';
         if (e.code === 'Digit3') gameState.player.weapon = 'orb';
+        if (e.code === 'KeyP') gameState.paused = !gameState.paused;
     });
     window.addEventListener('keyup', e => gameState.keys[e.code] = false);
     gameLoop();

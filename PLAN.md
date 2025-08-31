@@ -72,9 +72,9 @@ This document outlines a phased approach for the development of "Goblin's Infern
 * [x] **4.2 Balance Gameplay & Economy:**  
   * [x] Introduced a `balance` config in `gameState` controlling spawn frequency, gem frequency, and boss thresholds for quick tuning.  
   * [x] Adjusted spawner and gem timers to use balance values and scale sensibly with difficulty.  
-* [ ] **4.3 Implement UI/UX Improvements:**  
-  * [ ] The **UI/UX Designer AI** will refine all UI elements based on testing feedback.  
-  * [ ] The **Code Goblin** will implement any necessary UI code changes.  
+* [x] **4.3 Implement UI/UX Improvements:**  
+  * [x] HUD enhanced with FPS, Level/XP display, and a Mute toggle; pause hotkey added.  
+  * [x] The **Code Goblin** implemented live HUD refresh and a smoother FPS meter.  
 * [ ] **4.4 Final Polish & Bug Fixing:**  
   * [ ] The **Code Goblin** will fix all identified bugs and optimize game performance.  
   * [ ] The **Test Goblin** will perform a final pass to ensure the game is ready for release.
