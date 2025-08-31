@@ -102,8 +102,10 @@ export function updateLevelSystem(gameState, canvas) {
       color: '#3ff'
     };
     gameState.gems.push(gem);
-    // Scale frequency modestly with difficulty
-    gameState._gemTimer = Math.max(90, 180 - Math.floor(gameState.difficulty));
+    // Scale frequency modestly with difficulty using balance
+    const base = gameState.balance?.gemTimerBase ?? 180;
+    const min = gameState.balance?.gemTimerMin ?? 90;
+    gameState._gemTimer = Math.max(min, base - Math.floor(gameState.difficulty));
   }
 
   // Check gem pickup

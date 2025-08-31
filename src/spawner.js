@@ -11,7 +11,9 @@ export function updateSpawner(gameState, canvas) {
             EnemyType = LoanerImp;
         }
         gameState.enemies.push(new EnemyType(canvas, gameState));
-        gameState.spawnTimer = Math.max(30, gameState.spawnInterval - Math.floor(difficulty));
+        const base = gameState.balance?.spawnIntervalBase ?? gameState.spawnInterval;
+        const min = gameState.balance?.spawnIntervalMin ?? 30;
+        gameState.spawnTimer = Math.max(min, base - Math.floor(difficulty));
         gameState.difficulty += 1;
     } else {
         gameState.spawnTimer--;

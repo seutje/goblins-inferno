@@ -180,7 +180,7 @@ export function updateBoss(gameState, canvas) {
   if (!gameState._bossInit) {
     gameState._bossInit = true;
     gameState._bossIndex = 0;
-    gameState._bossThresholds = [30, 80, 140]; // difficulty milestones
+    gameState._bossThresholds = gameState.balance?.bossThresholds || [30, 80, 140]; // difficulty milestones
   }
 
   // Spawn next boss when threshold is reached and no active boss

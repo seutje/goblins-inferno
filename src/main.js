@@ -19,6 +19,13 @@ const gameState = window.gameState = {
     spawnTimer: 0,
     spawnInterval: 120,
     difficulty: 0,
+    balance: {
+        spawnIntervalBase: 120,
+        spawnIntervalMin: 30,
+        gemTimerBase: 180,
+        gemTimerMin: 90,
+        bossThresholds: [30, 80, 140]
+    },
     // Level & upgrade system
     xp: 0,
     level: 1,
