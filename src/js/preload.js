@@ -17,6 +17,7 @@ const ASSETS = [
   'src/img/sprite-projectile.png',
   'src/img/sprite-heart.png',
   'src/img/sprite-gem.png',
+  'src/img/sprite-coin.png',
   // Hazard fire
   'src/img/sprite-fire.png'
 ];

@@ -102,15 +102,16 @@ export function initLevelSystem(gameState, canvas) {
 export function updateLevelSystem(gameState, canvas) {
   // Spawn gems periodically for now (until enemy loot is wired)
   if (gameState._gemTimer-- <= 0) {
+    // Regular world pickups are coins (boss drops remain gems)
     const sprite = new Image();
-    sprite.src = versioned('src/img/sprite-gem.png');
-    const gem = {
+    sprite.src = versioned('src/img/sprite-coin.png');
+    const coin = {
       x: randInt(16, canvas.width - 16),
       y: randInt(16, canvas.height - 16),
       size: 14,
       value: 1,
-      color: '#3ff',
-      // animation fields
+      color: '#fc3',
+      // animation fields (same sheet layout as gem/heart)
       sprite,
       frame: 0,
       frameTimer: 0,
@@ -119,7 +120,7 @@ export function updateLevelSystem(gameState, canvas) {
       frameHeight: GEM_FRAME_H,
       row: 1 // use second row
     };
-    gameState.gems.push(gem);
+    gameState.gems.push(coin);
     // Scale frequency modestly with difficulty using balance
     const base = gameState.balance?.gemTimerBase ?? 180;
     const min = gameState.balance?.gemTimerMin ?? 90;
