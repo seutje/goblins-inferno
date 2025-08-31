@@ -9,7 +9,8 @@ export class Enemy {
         this.hp = 10;
         this.frameWidth = 32;
         this.frameHeight = 32;
-        this.size = this.frameWidth / 2;
+        // decouple visual frame size from gameplay hit radius
+        this.size = 16;
     this.sprite = new Image();
     this.contactDamage = 10;
         this.animations = {
@@ -22,6 +23,21 @@ export class Enemy {
         this.frame = 0;
         this.frameTimer = 0;
         this.frameInterval = 15;
+        this._framesComputed = false;
+    }
+
+    _computeFramesFromSprite() {
+        if (!this.sprite || !this.sprite.complete) return;
+        const sw = this.sprite.naturalWidth || 0;
+        const sh = this.sprite.naturalHeight || 0;
+        if (sw <= 0 || sh <= 0) return;
+        const rows = 1 + Math.max(...Object.values(this.animations).map(a => a.row || 0));
+        const cols = Math.max(...Object.values(this.animations).map(a => a.frames || 1));
+        if (rows > 0 && cols > 0) {
+            this.frameWidth = Math.floor(sw / cols);
+            this.frameHeight = Math.floor(sh / rows);
+            this._framesComputed = true;
+        }
     }
 
     advanceFrame() {
@@ -52,6 +68,9 @@ export class Enemy {
 
   draw(ctx) {
         const animation = this.animations[this.state];
+        if (!this._framesComputed) this._computeFramesFromSprite();
+        const destW = this.size * 2;
+        const destH = this.size * 2;
         if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
             ctx.drawImage(
                 this.sprite,
@@ -59,10 +78,10 @@ export class Enemy {
                 animation.row * this.frameHeight,
                 this.frameWidth,
                 this.frameHeight,
-                this.x - this.frameWidth / 2,
-                this.y - this.frameHeight / 2,
-                this.frameWidth,
-                this.frameHeight
+                this.x - destW / 2,
+                this.y - destH / 2,
+                destW,
+                destH
             );
         } else {
             ctx.fillStyle = 'red';

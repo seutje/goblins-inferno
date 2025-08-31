@@ -9,9 +9,10 @@ class BaseBoss extends Enemy {
     this.isBoss = true;
     this.hpMax = this.hp;
     this.name = 'Boss';
+    // Visual sheet size will be computed dynamically; scale to desired hit radius
     this.frameWidth = 64;
     this.frameHeight = 64;
-    this.size = this.frameWidth / 2;
+    this.size = 36;
   }
 
   takeHit(projectile, gameState) {

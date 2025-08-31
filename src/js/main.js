@@ -93,8 +93,8 @@ function checkCollisions() {
         const p = gameState.projectiles[pi];
         for (let ei = gameState.enemies.length - 1; ei >= 0; ei--) {
             const e = gameState.enemies[ei];
-            const halfW = (e.frameWidth || 0) / 2;
-            const halfH = (e.frameHeight || 0) / 2;
+            const halfW = (e.size != null ? e.size : (e.frameWidth || 0) / 2);
+            const halfH = (e.size != null ? e.size : (e.frameHeight || 0) / 2);
             const left = e.x - halfW;
             const right = e.x + halfW;
             const top = e.y - halfH;
@@ -158,8 +158,8 @@ function checkPlayerDamage() {
     for (let i = 0; i < gameState.enemies.length; i++) {
         const e = gameState.enemies[i];
         if (e.isBoss) continue; // optional: bosses damage via their projectiles/attacks
-        const halfW = (e.frameWidth || 0) / 2;
-        const halfH = (e.frameHeight || 0) / 2;
+        const halfW = (e.size != null ? e.size : (e.frameWidth || 0) / 2);
+        const halfH = (e.size != null ? e.size : (e.frameHeight || 0) / 2);
         const left = e.x - halfW;
         const right = e.x + halfW;
         const top = e.y - halfH;
