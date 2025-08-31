@@ -56,6 +56,7 @@ export function initDebtUI(gameState) {
   const btnSimple = document.getElementById('loanSimple');
   const btnGear = document.getElementById('loanGear');
   const btnCursed = document.getElementById('loanCursed');
+  const hpEl = document.getElementById('hud-hp');
 
   function refreshHUD() {
     if (debtEl) debtEl.textContent = Math.max(0, Math.floor(gameState.debt.debt)).toString();
@@ -63,6 +64,7 @@ export function initDebtUI(gameState) {
     if (lvlEl) lvlEl.textContent = (gameState.level || 1).toString();
     if (xpEl) xpEl.textContent = (gameState.xp || 0).toString();
     if (nextEl) nextEl.textContent = (gameState.nextLevelXp || 5).toString();
+    if (hpEl && gameState.player) hpEl.textContent = String(Math.max(0, Math.ceil(gameState.player.hp)));
   }
 
   gameState._refreshDebtHUD = refreshHUD;

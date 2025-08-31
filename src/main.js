@@ -68,6 +68,24 @@ function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function damagePlayer(amount) {
+    if (!gameState.player) return;
+    const p = gameState.player;
+    if (p.invuln && p.invuln > 0) return;
+    p.hp = Math.max(0, p.hp - amount);
+    p.invuln = 30;
+    if (p.hp <= 0) onPlayerDeath();
+}
+
+function onPlayerDeath() {
+    gameState.paused = true;
+    gameState.gameOver = true;
+    const modal = document.getElementById('gameOverModal');
+    const statsEl = document.getElementById('gameOverStats');
+    if (statsEl) statsEl.textContent = `Level ${gameState.level} | Gems ${gameState.totalGems}`;
+    if (modal) modal.style.display = 'flex';
+}
+
 function checkCollisions() {
     // Circle (projectile) vs axis-aligned rectangle (enemy sprite bounds)
     for (let pi = gameState.projectiles.length - 1; pi >= 0; pi--) {
@@ -120,6 +138,41 @@ function checkCollisions() {
     }
 }
 
+function checkPlayerDamage() {
+    const p = gameState.player;
+    if (!p) return;
+    // Enemy projectile vs player circle
+    for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
+        const proj = gameState.projectiles[i];
+        if (proj.faction !== 'enemy') continue;
+        const dx = proj.x - p.x;
+        const dy = proj.y - p.y;
+        const rr = (proj.size || 0) + (p.size || 0);
+        if (dx * dx + dy * dy <= rr * rr) {
+            damagePlayer(proj.damage || 1);
+            gameState.projectiles.splice(i, 1);
+        }
+    }
+    // Enemy rect vs player circle (contact)
+    for (let i = 0; i < gameState.enemies.length; i++) {
+        const e = gameState.enemies[i];
+        if (e.isBoss) continue; // optional: bosses damage via their projectiles/attacks
+        const halfW = (e.frameWidth || 0) / 2;
+        const halfH = (e.frameHeight || 0) / 2;
+        const left = e.x - halfW;
+        const right = e.x + halfW;
+        const top = e.y - halfH;
+        const bottom = e.y + halfH;
+        const nearestX = Math.max(left, Math.min(p.x, right));
+        const nearestY = Math.max(top, Math.min(p.y, bottom));
+        const dx = p.x - nearestX;
+        const dy = p.y - nearestY;
+        if (dx * dx + dy * dy <= (p.size * p.size)) {
+            damagePlayer(e.contactDamage || 5);
+        }
+    }
+}
+
 function gameLoop() {
     clearCanvas();
 
@@ -148,6 +201,7 @@ function gameLoop() {
         updateProjectiles(gameState, canvas);
         updateHazards(gameState);
         checkCollisions();
+        checkPlayerDamage();
         if (gameState.player) updateLevelSystem(gameState, canvas);
         if (gameState.debt) updateDebt(gameState.debt);
     }
@@ -205,6 +259,8 @@ function init() {
         setMuted(muted);
         btnMute.textContent = muted ? 'Unmute' : 'Mute';
     });
+    const btnRestart = document.getElementById('btnRestart');
+    if (btnRestart) btnRestart.addEventListener('click', () => window.location.reload());
     window.addEventListener('keydown', e => {
         gameState.keys[e.code] = true;
         if (!gameState.player) return;

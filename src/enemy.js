@@ -1,5 +1,5 @@
 export class Enemy {
-    constructor(canvas, gameState) {
+  constructor(canvas, gameState) {
         this.canvas = canvas;
         this.gameState = gameState;
         this.x = Math.random() * canvas.width;
@@ -10,7 +10,8 @@ export class Enemy {
         this.frameWidth = 32;
         this.frameHeight = 32;
         this.size = this.frameWidth / 2;
-        this.sprite = new Image();
+    this.sprite = new Image();
+    this.contactDamage = 10;
         this.animations = {
             idle: { row: 0, frames: 2 },
             walk: { row: 1, frames: 4 },
@@ -73,12 +74,13 @@ export class Enemy {
 }
 
 export class DebtSkeleton extends Enemy {
-    constructor(canvas, gameState) {
-        super(canvas, gameState);
-        this.speed = 1;
-        this.hp = 10;
-        this.sprite.src = 'img/sprite-skeleton.png';
-    }
+  constructor(canvas, gameState) {
+    super(canvas, gameState);
+    this.speed = 1;
+    this.hp = 10;
+    this.sprite.src = 'img/sprite-skeleton.png';
+    this.contactDamage = 10;
+  }
 }
 
 export class LoanerImp extends Enemy {
@@ -88,6 +90,7 @@ export class LoanerImp extends Enemy {
     this.hp = 20;
     this.sprite.src = 'img/sprite-imp.png';
     this.angle = Math.random() * Math.PI * 2;
+    this.contactDamage = 12;
   }
 
   update() {
@@ -120,13 +123,14 @@ export class LoanerImp extends Enemy {
 }
 
 export class BailiffOgre extends Enemy {
-    constructor(canvas, gameState) {
-        super(canvas, gameState);
-        this.speed = 0.75;
-        this.hp = 150;
-        this.sprite.src = 'img/sprite-ogre.png';
-        this.chargeCooldown = 0;
-    }
+  constructor(canvas, gameState) {
+    super(canvas, gameState);
+    this.speed = 0.75;
+    this.hp = 150;
+    this.sprite.src = 'img/sprite-ogre.png';
+    this.chargeCooldown = 0;
+    this.contactDamage = 18;
+  }
 
     update() {
         const player = this.gameState.player;

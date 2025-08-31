@@ -13,6 +13,10 @@ export default class Player {
         this.frameHeight = 200;
         // Use a gameplay hit radius decoupled from visual frame size
         this.size = 24;
+        // Health & i-frames
+        this.maxHp = 100;
+        this.hp = this.maxHp;
+        this.invuln = 0; // frames of invulnerability after taking damage
         this.fireCooldown = 0;
         this.weapon = 'inferno';
 
@@ -64,6 +68,8 @@ export default class Player {
             const d = Math.hypot(dx, dy) || 1;
             aim = { dx: dx / d, dy: dy / d };
         }
+
+        if (this.invuln > 0) this.invuln--;
 
         if (this.fireCooldown <= 0) {
             if (this.weapon === 'inferno') {
