@@ -113,23 +113,29 @@ export default class Player {
         const animation = this.animations[this.state];
         const destW = this.size * 2;
         const destH = this.size * 2;
-        if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
-            ctx.drawImage(
-                this.sprite,
-                this.frame * this.frameWidth,
-                animation.row * this.frameHeight,
-                this.frameWidth,
-                this.frameHeight,
-                this.x - destW / 2,
-                this.y - destH / 2,
-                destW,
-                destH
-            );
-        } else {
-            ctx.fillStyle = 'lime';
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-            ctx.fill();
+        // Blink visibility during invulnerability frames
+        const isBlinking = (this.invuln && this.invuln > 0);
+        const visible = !isBlinking || (Math.floor(this.invuln / 3) % 2 === 1);
+
+        if (visible) {
+            if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
+                ctx.drawImage(
+                    this.sprite,
+                    this.frame * this.frameWidth,
+                    animation.row * this.frameHeight,
+                    this.frameWidth,
+                    this.frameHeight,
+                    this.x - destW / 2,
+                    this.y - destH / 2,
+                    destW,
+                    destH
+                );
+            } else {
+                ctx.fillStyle = 'lime';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
         }
 
         // Damage flash overlay

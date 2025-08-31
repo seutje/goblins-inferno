@@ -73,7 +73,7 @@ function damagePlayer(amount) {
     const p = gameState.player;
     if (p.invuln && p.invuln > 0) return;
     p.hp = Math.max(0, p.hp - amount);
-    p.invuln = 30;
+    p.invuln = 60;
     p._flash = 10;
     if (p.hp <= 0) onPlayerDeath();
 }
