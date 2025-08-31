@@ -225,7 +225,10 @@ export function updateBoss(gameState, canvas) {
         frame: 0,
         frameTimer: 0,
         frameInterval: 8,
-        row: 1
+        row: 1,
+        // ensure frame dims consistent with heart/gem/coin sheets
+        frameWidth: 170,
+        frameHeight: 205
       };
       gameState.gems.push(gem);
     }
