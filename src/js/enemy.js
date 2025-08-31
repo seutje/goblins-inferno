@@ -1,5 +1,8 @@
 import { versioned } from './assets.js';
 
+const SHEET_COLS = 6;
+const SHEET_ROWS = 6;
+
 export class Enemy {
   constructor(canvas, gameState) {
         this.canvas = canvas;
@@ -9,8 +12,9 @@ export class Enemy {
         this.speed = 1;
         // Basic combat properties
         this.hp = 10;
-        this.frameWidth = 32;
-        this.frameHeight = 32;
+        // Enemy sprite sheets are 6x6 with 170x170px frames
+        this.frameWidth = 170;
+        this.frameHeight = 170;
         // decouple visual frame size from gameplay hit radius
         this.size = 16;
     this.sprite = new Image();
@@ -33,13 +37,9 @@ export class Enemy {
         const sw = this.sprite.naturalWidth || 0;
         const sh = this.sprite.naturalHeight || 0;
         if (sw <= 0 || sh <= 0) return;
-        const rows = 1 + Math.max(...Object.values(this.animations).map(a => a.row || 0));
-        const cols = Math.max(...Object.values(this.animations).map(a => a.frames || 1));
-        if (rows > 0 && cols > 0) {
-            this.frameWidth = Math.floor(sw / cols);
-            this.frameHeight = Math.floor(sh / rows);
-            this._framesComputed = true;
-        }
+        this.frameWidth = Math.floor(sw / SHEET_COLS);
+        this.frameHeight = Math.floor(sh / SHEET_ROWS);
+        this._framesComputed = true;
     }
 
     advanceFrame() {
