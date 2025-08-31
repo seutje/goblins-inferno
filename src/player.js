@@ -8,8 +8,9 @@ export default class Player {
         this.x = canvas.width / 2;
         this.y = canvas.height / 2;
         this.baseSpeed = 3;
-        this.frameWidth = 32;
-        this.frameHeight = 32;
+        // Updated for larger character sprites
+        this.frameWidth = 64;
+        this.frameHeight = 64;
         this.size = this.frameWidth / 2;
         this.fireCooldown = 0;
         this.weapon = 'inferno';
