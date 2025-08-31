@@ -1,5 +1,6 @@
 import { Enemy } from './enemy.js';
 import { versioned } from './assets.js';
+import { saveMeta } from './meta.js';
 import { spawnFirePatch } from './hazard.js';
 import { Projectile } from './projectile.js';
 import { playSound } from './audio.js';
@@ -205,6 +206,11 @@ export function updateBoss(gameState, canvas) {
     if (idx >= 0) gameState.enemies.splice(idx, 1);
     // Rewards
     if (gameState.debt) gameState.debt.gold += 250;
+    // Grant meta gem currency
+    if (gameState.meta) {
+      gameState.meta.gems = (gameState.meta.gems || 0) + 1;
+      saveMeta(gameState.meta);
+    }
     for (let i = 0; i < 10; i++) {
       const sprite = new Image();
       sprite.src = versioned('src/img/sprite-gem.png');

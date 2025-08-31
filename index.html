@@ -26,6 +26,7 @@
         <div>HP: <span id="hud-hp">100</span></div>
         <div>FPS: <span id="hud-fps">0</span></div>
         <button id="btnMute" class="hud-btn">Mute</button>
+        <button id="btnMeta" class="hud-btn">Meta</button>
         <button id="btnLoan" class="hud-btn">Loan Shark</button>
     </div>
     <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -101,7 +102,7 @@
         s.src = 'src/js/main.js?v=' + encodeURIComponent(v);
         document.body.appendChild(s);
       })();
-    </script>
+</script>
 
     <!-- Game Over Modal -->
     <div id="gameOverModal" class="modal" style="display:none;">
@@ -112,6 +113,34 @@
                 <button id="btnRestart" class="hud-btn">Restart</button>
             </div>
         </div>
+    </div>
+
+    <!-- Meta Progression Modal -->
+    <div id="metaModal" class="modal" style="display:none;">
+      <div class="modal-content">
+        <h2>Meta Progression</h2>
+        <p>Inferno Gems: <b id="metaGems">0</b></p>
+        <div class="choices">
+          <div class="choice">
+            <div class="choice-title">Multishot</div>
+            <div class="choice-desc">Adds +2 shots per level. Level: <span id="meta-multishot-level">0</span>. Cost: <span id="meta-multishot-cost">1</span></div>
+            <button id="meta-multishot-buy" class="hud-btn">Buy</button>
+          </div>
+          <div class="choice">
+            <div class="choice-title">Bouncing Shots</div>
+            <div class="choice-desc">Adds +1 wall bounce per level. Level: <span id="meta-bounce-level">0</span>. Cost: <span id="meta-bounce-cost">1</span></div>
+            <button id="meta-bounce-buy" class="hud-btn">Buy</button>
+          </div>
+          <div class="choice">
+            <div class="choice-title">Magnetic Range</div>
+            <div class="choice-desc">Increases pickup radius by 20px per level. Level: <span id="meta-magnet-level">0</span>. Cost: <span id="meta-magnet-cost">1</span></div>
+            <button id="meta-magnet-buy" class="hud-btn">Buy</button>
+          </div>
+        </div>
+        <div style="margin-top:12px; text-align:right;">
+          <button id="metaClose" class="hud-btn">Close</button>
+        </div>
+      </div>
     </div>
 </body>
 </html>

@@ -75,13 +75,13 @@ export default class Player {
 
         if (this.fireCooldown <= 0) {
             if (this.weapon === 'inferno') {
-                fireInfernoBlast(this.gameState, this.x, this.y, aim);
+                this._fireWithMeta((dir)=>fireInfernoBlast(this.gameState, this.x, this.y, dir), aim, 6);
                 this.fireCooldown = Math.max(1, Math.floor(15 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'flame') {
-                fireFlameStream(this.gameState, this.x, this.y, aim);
+                this._fireWithMeta((dir)=>fireFlameStream(this.gameState, this.x, this.y, dir), aim, 4);
                 this.fireCooldown = Math.max(1, Math.floor(3 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'orb') {
-                fireVolatileOrb(this.gameState, this.x, this.y, aim);
+                this._fireWithMeta((dir)=>fireVolatileOrb(this.gameState, this.x, this.y, dir), aim, 10);
                 this.fireCooldown = Math.max(1, Math.floor(45 / this.stats.fireRateMultiplier));
             }
         } else {
@@ -163,4 +163,28 @@ export default class Player {
         ctx.strokeStyle = 'rgba(255,255,255,0.2)';
         ctx.strokeRect(bx, by, barW, barH);
     }
+
+    _fireWithMeta(shootFn, aim, baseSpreadDeg=6) {
+        const msLevel = this.gameState._metaMods?.multishot || 0;
+        const bounces = this.gameState._metaMods?.bounce || 0;
+        const shotsPerSide = msLevel; // total shots = 1 + 2*level
+        const rad = (deg)=>deg*Math.PI/180;
+        const dirs = [];
+        dirs.push(aim);
+        for (let i = 1; i <= shotsPerSide; i++) {
+            const a = baseSpreadDeg * i;
+            dirs.push(rotate(aim, rad(a)));
+            dirs.push(rotate(aim, rad(-a)));
+        }
+        // temporarily set a global bouncesLeft on gameState for projectile factory to pick up
+        const prev = this.gameState._injectBounces;
+        this.gameState._injectBounces = bounces;
+        dirs.forEach(d => shootFn(d));
+        this.gameState._injectBounces = prev;
+    }
+}
+
+function rotate(v, angleRad) {
+    const ca = Math.cos(angleRad), sa = Math.sin(angleRad);
+    return { dx: v.dx*ca - v.dy*sa, dy: v.dx*sa + v.dy*ca };
 }

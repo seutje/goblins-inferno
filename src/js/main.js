@@ -7,6 +7,7 @@ import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { updateBoss, drawBossHUD } from './boss.js';
 import { initAudio, playSound, setMuted } from './audio.js';
+import { initMeta, applyMetaAtRunStart } from './meta.js';
 import { updatePickups, drawPickups, spawnHealthPickup } from './pickups.js';
 
 const canvas = document.getElementById('gameCanvas');
@@ -228,6 +229,7 @@ function gameLoop() {
 
 function init() {
     initAudio();
+    initMeta(gameState);
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
     initDebtUI(gameState);
@@ -241,6 +243,7 @@ function init() {
         gameState.player = new Player(canvas, gameState);
         initLevelSystem(gameState, canvas);
         applyCharacterToPlayer(gameState.player, gameState, characterKey);
+        applyMetaAtRunStart(gameState);
         if (charModal) charModal.style.display = 'none';
         if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
     }
