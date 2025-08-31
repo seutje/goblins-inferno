@@ -253,12 +253,14 @@ function gameLoop() {
         if (gameState.debt) updateDebt(gameState.debt);
     }
 
+    // Ground effects first so trails render behind characters
+    drawHazards(gameState, ctx);
+    drawGems(gameState, ctx);
+    drawPickups(gameState, ctx);
+    // Entities and projectiles above ground
     drawPlayer();
     drawEnemies();
     drawProjectiles(gameState, ctx);
-    drawHazards(gameState, ctx);
-    drawPickups(gameState, ctx);
-    drawGems(gameState, ctx);
     drawBossHUD(gameState, ctx, canvas);
     // HUD dynamic info
     const fpsEl = document.getElementById('hud-fps');
