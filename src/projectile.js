@@ -1,5 +1,5 @@
 export class Projectile {
-    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = 16, frameHeight = 16 } = {}) {
+    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = 16, frameHeight = 16, faction = 'player' } = {}) {
         this.x = x;
         this.y = y;
         this.damage = damage;
@@ -8,6 +8,7 @@ export class Projectile {
         this.color = color;
         this.dx = dx;
         this.dy = dy;
+        this.faction = faction; // 'player' or 'enemy'
         this.sprite = null;
         this.frameWidth = frameWidth;
         this.frameHeight = frameHeight;

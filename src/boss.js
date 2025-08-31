@@ -81,7 +81,7 @@ export class InterestDragon extends BaseBoss {
       for (let i = 0; i < 8; i++) {
         const x = Math.random() * this.canvas.width;
         const y = -10;
-        const proj = new Projectile(x, y, { damage: 2, speed: 3, size: 4, color: 'orange', dx: 0, dy: 1 });
+        const proj = new Projectile(x, y, { damage: 2, speed: 3, size: 4, color: 'orange', dx: 0, dy: 1, faction: 'enemy' });
         this.gameState.projectiles.push(proj);
       }
       // Aim a few toward player
@@ -90,7 +90,7 @@ export class InterestDragon extends BaseBoss {
           const dx = p.x - this.x;
           const dy = p.y - this.y;
           const d = Math.hypot(dx, dy) || 1;
-          const proj = new Projectile(this.x, this.y, { damage: 3, speed: 4, size: 5, color: 'red', dx: dx / d, dy: dy / d });
+          const proj = new Projectile(this.x, this.y, { damage: 3, speed: 4, size: 5, color: 'red', dx: dx / d, dy: dy / d, faction: 'enemy' });
           this.gameState.projectiles.push(proj);
         }
       }
@@ -160,7 +160,7 @@ export class DebtCollector extends BaseBoss {
       const dx = p.x - this.x;
       const dy = p.y - this.y;
       const d = Math.hypot(dx, dy) || 1;
-      const proj = new Projectile(this.x, this.y, { damage: 3, speed: 5, size: 5, color: '#4cf', dx: dx / d, dy: dy / d });
+      const proj = new Projectile(this.x, this.y, { damage: 3, speed: 5, size: 5, color: '#4cf', dx: dx / d, dy: dy / d, faction: 'enemy' });
       this.gameState.projectiles.push(proj);
     }
   }

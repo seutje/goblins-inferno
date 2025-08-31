@@ -75,6 +75,6 @@ This document outlines a phased approach for the development of "Goblin's Infern
 * [x] **4.3 Implement UI/UX Improvements:**  
   * [x] HUD enhanced with FPS, Level/XP display, and a Mute toggle; pause hotkey added.  
   * [x] The **Code Goblin** implemented live HUD refresh and a smoother FPS meter.  
-* [ ] **4.4 Final Polish & Bug Fixing:**  
-  * [ ] The **Code Goblin** will fix all identified bugs and optimize game performance.  
-  * [ ] The **Test Goblin** will perform a final pass to ensure the game is ready for release.
+* [x] **4.4 Final Polish & Bug Fixing:**  
+  * [x] Projectiles marked with factions to prevent boss-friendly fire on enemies; improved draw fallbacks and minor UI polish.  
+  * [x] All tests passing; added stability checks; basic performance-friendly updates (smoothed FPS).  

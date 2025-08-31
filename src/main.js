@@ -86,7 +86,7 @@ function checkCollisions() {
             const dy = p.y - nearestY;
             const r = (p.size || 0);
 
-            if (dx * dx + dy * dy <= r * r) {
+            if (dx * dx + dy * dy <= r * r && p.faction === 'player') {
                 // Hit registered
                 let dmg = (p.damage || 0);
                 // Gnorp trait: extra damage when enemy is close to player
