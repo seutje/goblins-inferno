@@ -168,8 +168,12 @@ function checkCollisions() {
                 } else if (typeof e.hp === 'number') {
                     e.hp -= dmg;
                 }
-                // Remove projectile on hit
-                gameState.projectiles.splice(pi, 1);
+                // Remove projectile on hit unless it has penetration left
+                if (p.pierceLeft && p.pierceLeft > 0) {
+                    p.pierceLeft--;
+                } else {
+                    gameState.projectiles.splice(pi, 1);
+                }
                 // Remove enemy if dead (non-boss auto removal; boss cleanup is in updateBoss)
                 if (!e.isBoss && e.hp !== undefined && e.hp <= 0) {
                     playSound('enemy_die');

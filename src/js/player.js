@@ -186,9 +186,12 @@ export default class Player {
         }
         // temporarily set a global bouncesLeft on gameState for projectile factory to pick up
         const prev = this.gameState._injectBounces;
+        const prevP = this.gameState._injectPierce;
         this.gameState._injectBounces = bounces;
+        this.gameState._injectPierce = (this.gameState._metaMods?.pierce || 0);
         dirs.forEach(d => shootFn(d));
         this.gameState._injectBounces = prev;
+        this.gameState._injectPierce = prevP;
     }
 }
 

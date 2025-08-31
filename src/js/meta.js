@@ -6,7 +6,8 @@ function defaultMeta() {
     upgrades: {
       multishot: 0,
       bounce: 0,
-      magnet: 0
+      magnet: 0,
+      pierce: 0
     }
   };
 }
@@ -41,7 +42,8 @@ export function applyMetaAtRunStart(gameState) {
   const up = (gameState.meta?.upgrades) || {};
   gameState._metaMods = {
     multishot: up.multishot || 0,
-    bounce: up.bounce || 0
+    bounce: up.bounce || 0,
+    pierce: up.pierce || 0
   };
 }
 
@@ -53,7 +55,8 @@ function wireMetaUI(gameState) {
   const list = [
     { key: 'multishot', label: 'Multishot', desc: '+2 shots spread per level', costBase: 1 },
     { key: 'bounce', label: 'Bouncing Shots', desc: '+1 wall bounce per level', costBase: 1 },
-    { key: 'magnet', label: 'Magnetic Range', desc: '+20px pickup radius per level', costBase: 1 }
+    { key: 'magnet', label: 'Magnetic Range', desc: '+20px pickup radius per level', costBase: 1 },
+    { key: 'pierce', label: 'Penetration', desc: '+1 enemy penetration per level', costBase: 1 }
   ];
   const rows = {};
   list.forEach(item => {
@@ -97,6 +100,9 @@ function wireMetaUI(gameState) {
         }
         if (item.key === 'bounce') {
           gameState._metaMods.bounce = gameState.meta.upgrades.bounce || 0;
+        }
+        if (item.key === 'pierce') {
+          gameState._metaMods.pierce = gameState.meta.upgrades.pierce || 0;
         }
         saveMeta(gameState.meta);
         refresh();
