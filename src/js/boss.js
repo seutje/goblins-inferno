@@ -113,7 +113,7 @@ export class DebtCollector extends BaseBoss {
     this.speed = 1.0;
     this.absorbTimer = 0; // when >0, absorbing projectiles
     this.reflectBurst = 0; // counts reflected shots queued
-    this.sprite.src = versioned('src/img/boss-collector.png');
+    this.sprite.src = versioned('src/img/sprite-collector.png');
   }
 
   update() {
