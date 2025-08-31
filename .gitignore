@@ -22,5 +22,5 @@ yarn-error.log*
 .env*.local
 .env
 
-# Art
-art/
+# WSL
+*:Zone.Identifier
