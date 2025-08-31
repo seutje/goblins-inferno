@@ -45,6 +45,22 @@ export function updatePickups(gameState) {
       }
     }
   }
+  // Attraction (magnet effect) toward player, similar to gems
+  const attractRadius = gameState.magnetRadius ?? 110;
+  const maxPull = gameState.magnetMaxPull ?? 6;
+  for (let i = 0; i < gameState.pickups.length; i++) {
+    const it = gameState.pickups[i];
+    const dx = it.x - p.x;
+    const dy = it.y - p.y;
+    const dist = Math.hypot(dx, dy) || 1;
+    if (dist < attractRadius) {
+      const nx = -dx / dist;
+      const ny = -dy / dist;
+      const pull = Math.min(maxPull, 1 + (attractRadius - dist) / 20);
+      it.x += nx * pull;
+      it.y += ny * pull;
+    }
+  }
   for (let i = gameState.pickups.length - 1; i >= 0; i--) {
     const it = gameState.pickups[i];
     const dx = it.x - p.x;
