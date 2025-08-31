@@ -4,7 +4,7 @@ This document provides specific instructions for AI agents regarding the technic
 
 ## **Code Structure**
 
-Game logic is split into modular ES6 files (`src/main.js`, `src/player.js`, `src/projectile.js`), and styling resides in `src/style.css`. Keep JavaScript modular using ES6 classes.
+Game logic is split into modular ES6 files under `src/js` (e.g., `src/js/main.js`, `src/js/player.js`, `src/js/projectile.js`), and styling resides in `src/css/style.css`. Keep JavaScript modular using ES6 classes.
 
 * **Classes & Objects:** Use JavaScript ES6 classes to represent game entities such as Player, Enemy, and Projectile.
 * **Game Loop:** Manage game logic with a single continuous game loop triggered by `window.requestAnimationFrame()`.
@@ -13,12 +13,12 @@ Game logic is split into modular ES6 files (`src/main.js`, `src/player.js`, `src
 
 ## **File Structure**
 
-The project consists of modular files in the `src` directory plus a simple script for serving them.
+The project consists of `index.html` at the project root and modular assets under `src/`.
 
-* `index.html`: Contains the basic HTML structure and the `<canvas>` element where the game will be rendered. It links to the external CSS and JavaScript files.
-* `style.css`: Holds all CSS styles for the game.
-* `main.js`: Entry point for the game's JavaScript; imports other modules.
-* `player.js` and `projectile.js`: Provide modular game logic for the player and projectiles.
+* `index.html`: Root HTML with the `<canvas>` and links to `src/css/style.css` and `src/js/main.js`.
+* `src/css/style.css`: Holds all CSS styles for the game.
+* `src/js/main.js`: Entry point for the game's JavaScript; imports other modules under `src/js`.
+* `src/js/player.js`, `src/js/projectile.js`, etc.: Modular game logic for entities and systems.
 * **Server:** A simple npm-based HTTP server will be used to serve the `index.html` file.
 
 ## **Automated Testing Methodology**
@@ -38,5 +38,4 @@ To run the game, use a simple HTTP server from the npm ecosystem. The **Code Gob
 * **Installation:** First, install the project's dependencies:
   npm install
 
-* **Execution:** After installation, run the following command to serve the index.html file at http://localhost:8000:
-  npm start
+* **Execution:** After installation, run `npm start` to serve the project root at http://localhost:8000.

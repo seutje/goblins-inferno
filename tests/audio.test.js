@@ -1,4 +1,4 @@
-import { playSound, initAudio, setMuted } from '../src/audio.js';
+import { playSound, initAudio, setMuted } from '../src/js/audio.js';
 
 test('audio functions exist and are callable in Node', () => {
   // In Node/Jest, initAudio should no-op and playSound should not throw
@@ -6,4 +6,3 @@ test('audio functions exist and are callable in Node', () => {
   expect(() => setMuted(true)).not.toThrow();
   expect(() => playSound('fire')).not.toThrow();
 });
-

@@ -1,7 +1,7 @@
-import { updateSpawner } from '../src/spawner.js';
-import { updateProjectiles } from '../src/projectile.js';
-import { spawnFirePatch, updateHazards } from '../src/hazard.js';
-import { updateBoss } from '../src/boss.js';
+import { updateSpawner } from '../src/js/spawner.js';
+import { updateProjectiles } from '../src/js/projectile.js';
+import { spawnFirePatch, updateHazards } from '../src/js/hazard.js';
+import { updateBoss } from '../src/js/boss.js';
 
 beforeAll(() => {
   globalThis.Image = class { constructor(){ this.complete = true; this.naturalWidth = 16; } };
@@ -35,4 +35,3 @@ test('core update functions run for many frames without growth', () => {
   // Hazards should expire
   expect(gameState.hazards.length).toBe(0);
 });
-

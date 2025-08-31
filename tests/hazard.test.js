@@ -1,4 +1,4 @@
-import { FirePatch, updateHazards, spawnFirePatch } from '../src/hazard.js';
+import { FirePatch, updateHazards, spawnFirePatch } from '../src/js/hazard.js';
 
 beforeAll(() => {
   globalThis.Image = class { constructor(){ this.complete = true; } };
@@ -20,4 +20,3 @@ describe('Hazards', () => {
     expect(enemy.hp).toBeLessThan(5);
   });
 });
-

@@ -7,6 +7,7 @@ body {
     margin: 0;
     background: #000;
 }
+/* relocated under src/css per new structure */
 
 canvas {
     background: #222;

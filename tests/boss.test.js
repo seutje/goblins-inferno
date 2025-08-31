@@ -1,4 +1,4 @@
-import { CreditorChampion, InterestDragon, DebtCollector, updateBoss } from '../src/boss.js';
+import { CreditorChampion, InterestDragon, DebtCollector, updateBoss } from '../src/js/boss.js';
 
 beforeAll(() => {
   globalThis.Image = class { constructor(){ this.complete = true; } };
@@ -38,4 +38,3 @@ test('debt collector absorbs and reflects without taking damage', () => {
   // queued reflection should increase reflectBurst
   expect(boss.reflectBurst).toBeGreaterThan(0);
 });
-

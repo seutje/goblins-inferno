@@ -1,4 +1,4 @@
-import { DebtSkeleton, LoanerImp, BailiffOgre } from '../src/enemy.js';
+import { DebtSkeleton, LoanerImp, BailiffOgre } from '../src/js/enemy.js';
 
 beforeAll(() => {
   globalThis.Image = class {

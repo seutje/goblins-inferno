@@ -1,5 +1,5 @@
-import Player from '../src/player.js';
-import { applyCharacterToPlayer } from '../src/characters.js';
+import Player from '../src/js/player.js';
+import { applyCharacterToPlayer } from '../src/js/characters.js';
 
 beforeAll(() => {
   globalThis.Image = class { constructor(){ this.complete = true; } };
@@ -35,4 +35,3 @@ describe('Character Selection', () => {
     expect(player.weapon).toBe('orb');
   });
 });
-

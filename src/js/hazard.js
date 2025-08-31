@@ -61,4 +61,3 @@ export function drawHazards(gameState, ctx) {
   if (!gameState.hazards) return;
   gameState.hazards.forEach(h => h.draw(ctx));
 }
-

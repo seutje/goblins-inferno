@@ -28,7 +28,7 @@ export class CreditorChampion extends BaseBoss {
     this.hpMax = this.hp;
     this.speed = 1.1;
     this.slamCooldown = 120; // frames
-    this.sprite.src = 'img/boss-champion.png';
+    this.sprite.src = 'src/img/boss-champion.png';
   }
 
   update() {
@@ -64,7 +64,7 @@ export class InterestDragon extends BaseBoss {
     this.hpMax = this.hp;
     this.speed = 0.8;
     this.volleyCooldown = 90;
-    this.sprite.src = 'img/boss-dragon.png';
+    this.sprite.src = 'src/img/boss-dragon.png';
   }
 
   update() {
@@ -110,7 +110,7 @@ export class DebtCollector extends BaseBoss {
     this.speed = 1.0;
     this.absorbTimer = 0; // when >0, absorbing projectiles
     this.reflectBurst = 0; // counts reflected shots queued
-    this.sprite.src = 'img/boss-collector.png';
+    this.sprite.src = 'src/img/boss-collector.png';
   }
 
   update() {

@@ -1,4 +1,4 @@
-import { updateSpawner } from '../src/spawner.js';
+import { updateSpawner } from '../src/js/spawner.js';
 
 beforeAll(() => {
   globalThis.Image = class {

@@ -28,7 +28,7 @@ export default class Player {
         };
 
         this.sprite = new Image();
-        this.sprite.src = 'img/sprite-goblin.png';
+        this.sprite.src = 'src/img/sprite-goblin.png';
         this.animations = {
             idle: { row: 0, frames: 3 },
             walk: { row: 1, frames: 6 },

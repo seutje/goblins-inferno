@@ -1,4 +1,4 @@
-import { Projectile } from '../src/projectile.js';
+import { Projectile } from '../src/js/projectile.js';
 
 beforeAll(() => {
   globalThis.Image = class { constructor(){ this.complete = true; } };
@@ -41,4 +41,3 @@ describe('Projectile-Enemy Collision', () => {
     expect(projectiles.length).toBe(0);
   });
 });
-

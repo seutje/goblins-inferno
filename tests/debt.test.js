@@ -1,4 +1,4 @@
-import { createDebtState, takeLoan, collectGold, repay, updateDebt } from '../src/debt.js';
+import { createDebtState, takeLoan, collectGold, repay, updateDebt } from '../src/js/debt.js';
 
 describe('Debt System', () => {
   test('taking a loan increases debt and gold', () => {
@@ -24,4 +24,3 @@ describe('Debt System', () => {
     expect(debt.gold).toBe(0);
   });
 });
-

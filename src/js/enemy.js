@@ -78,7 +78,7 @@ export class DebtSkeleton extends Enemy {
     super(canvas, gameState);
     this.speed = 1;
     this.hp = 10;
-    this.sprite.src = 'img/sprite-skeleton.png';
+        this.sprite.src = 'src/img/sprite-skeleton.png';
     this.contactDamage = 10;
   }
 }
@@ -88,7 +88,7 @@ export class LoanerImp extends Enemy {
     super(canvas, gameState);
     this.speed = 2;
     this.hp = 20;
-    this.sprite.src = 'img/sprite-imp.png';
+        this.sprite.src = 'src/img/sprite-imp.png';
     this.angle = Math.random() * Math.PI * 2;
     this.contactDamage = 12;
   }
@@ -127,7 +127,7 @@ export class BailiffOgre extends Enemy {
     super(canvas, gameState);
     this.speed = 0.75;
     this.hp = 150;
-    this.sprite.src = 'img/sprite-ogre.png';
+        this.sprite.src = 'src/img/sprite-ogre.png';
     this.chargeCooldown = 0;
     this.contactDamage = 18;
   }
