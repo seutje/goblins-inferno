@@ -41,12 +41,15 @@ export class Projectile {
     }
 }
 
+import { playSound } from './audio.js';
+
 export function fireInfernoBlast(gameState, x, y) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     gameState.projectiles.push(new Projectile(
         x, y - 10,
         { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: 'img/sprite-blast.png', frameWidth: 16, frameHeight: 16 }
     ));
+    playSound('fire');
 }
 
 export function fireFlameStream(gameState, x, y) {
@@ -55,6 +58,7 @@ export function fireFlameStream(gameState, x, y) {
         x, y - 10,
         { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: 'img/sprite-flame.png', frameWidth: 12, frameHeight: 12 }
     ));
+    playSound('fire');
 }
 
 export function fireVolatileOrb(gameState, x, y) {
@@ -63,6 +67,7 @@ export function fireVolatileOrb(gameState, x, y) {
         x, y - 10,
         { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: 'img/sprite-orb.png', frameWidth: 20, frameHeight: 20 }
     ));
+    playSound('fire');
 }
 
 export function updateProjectiles(gameState, canvas) {

@@ -6,6 +6,7 @@ import { createDebtState, updateDebt, initDebtUI } from './debt.js';
 import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { updateBoss, drawBossHUD } from './boss.js';
+import { initAudio, playSound } from './audio.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -102,6 +103,7 @@ function checkCollisions() {
                 gameState.projectiles.splice(pi, 1);
                 // Remove enemy if dead (non-boss auto removal; boss cleanup is in updateBoss)
                 if (!e.isBoss && e.hp !== undefined && e.hp <= 0) {
+                    playSound('enemy_die');
                     gameState.enemies.splice(ei, 1);
                 }
                 break; // Proceed to next projectile
@@ -145,6 +147,7 @@ function gameLoop() {
 }
 
 function init() {
+    initAudio();
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
     initDebtUI(gameState);

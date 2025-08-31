@@ -1,4 +1,5 @@
 // Leveling, gems, and upgrades
+import { playSound } from './audio.js';
 
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -78,6 +79,7 @@ export function initLevelSystem(gameState, canvas) {
     if (u && typeof u.apply === 'function') {
       u.apply(gameState);
     }
+    playSound('upgrade');
     closeUpgrade();
   };
 

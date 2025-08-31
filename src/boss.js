@@ -1,6 +1,7 @@
 import { Enemy } from './enemy.js';
 import { spawnFirePatch } from './hazard.js';
 import { Projectile } from './projectile.js';
+import { playSound } from './audio.js';
 
 class BaseBoss extends Enemy {
   constructor(canvas, gameState) {
@@ -192,6 +193,7 @@ export function updateBoss(gameState, canvas) {
     boss.y = 80;
     gameState.boss = boss;
     gameState.enemies.push(boss);
+    playSound('boss_spawn');
   }
 
   // Cleanup when boss dies
@@ -214,6 +216,7 @@ export function updateBoss(gameState, canvas) {
     gameState.boss = null;
     gameState._bossIndex = Math.min(gameState._bossIndex + 1, 3);
     if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
+    playSound('boss_down');
   }
 }
 
@@ -237,4 +240,3 @@ export function drawBossHUD(gameState, ctx, canvas) {
   ctx.textAlign = 'left';
   ctx.fillText(`${b.name}  ${Math.ceil((b.hp||0))}/${Math.ceil((b.hpMax||0))}`, x + 4, y + h - 3);
 }
-

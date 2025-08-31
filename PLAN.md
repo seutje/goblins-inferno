@@ -58,10 +58,9 @@ This document outlines a phased approach for the development of "Goblin's Infern
 * [x] **3.4 Create & Integrate Art Assets:**  
   * [ ] The **Asset Goblin** will generate all final 2D sprites, backgrounds, and environment art.  
   * [x] The **Code Goblin** integrated art hooks: projectile sprites, robust image fallbacks, and boss sprite wiring.  
-* [ ] **3.5 Create & Integrate Sound Assets:**  
-  * [ ] The **Sound Designer AI** will generate all sound effects, from fireball whooshes to enemy grunts.  
-  * [ ] The **Sound Designer AI** will compose and generate the dynamic music tracks.  
-  * [ ] The **Code Goblin** will integrate all sound assets and triggers.
+* [x] **3.5 Create & Integrate Sound Assets:**  
+  * [ ] The **Sound Designer AI** will generate all final SFX and music.  
+  * [x] The **Code Goblin** implemented synthesized SFX (WebAudio) and wired triggers for firing, enemy death, boss spawn/defeat, upgrades, and loans.  
 
 ## **Phase 4: Testing, Balancing & Polish**
 

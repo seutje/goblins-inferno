@@ -1,4 +1,5 @@
 // Debt system: pure logic helpers + integration hooks
+import { playSound } from './audio.js';
 
 export function createDebtState({
   initialDebt = 10000,
@@ -69,20 +70,22 @@ export function initDebtUI(gameState) {
   if (btnSimple) btnSimple.addEventListener('click', () => {
     // Simple Loan: +500 at 10% interest (simplified: principal only)
     takeLoan(gameState.debt, 500);
+    playSound('loan');
     refreshHUD();
   });
   if (btnGear) btnGear.addEventListener('click', () => {
     // Gear Loan: +1000 at 25% interest (simplified)
     takeLoan(gameState.debt, 1000);
+    playSound('loan');
     refreshHUD();
   });
   if (btnCursed) btnCursed.addEventListener('click', () => {
     // Cursed Loan: +2000 at 50% interest (simplified)
     takeLoan(gameState.debt, 2000);
+    playSound('loan');
     refreshHUD();
   });
 
   // initial paint
   refreshHUD();
 }
-
