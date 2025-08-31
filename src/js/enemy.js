@@ -147,7 +147,7 @@ export class BailiffOgre extends Enemy {
   constructor(canvas, gameState) {
     super(canvas, gameState);
     this.speed = 0.75;
-    this.hp = 150;
+    this.hp = 50;
         this.sprite.src = versioned('src/img/sprite-ogre.png');
     this.chargeCooldown = 0;
     this.contactDamage = 18;
