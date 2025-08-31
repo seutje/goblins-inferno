@@ -81,3 +81,7 @@ canvas {
 .choice:hover { background: #333; }
 .choice-title { font-weight: bold; margin-bottom: 6px; }
 .choice-desc { font-size: 0.9rem; color: #bbb; }
+.rarity-normal { color: #ddd; }
+.rarity-rare { color: #33aaff; }
+.rarity-epic { color: #a64cff; }
+.rarity-legendary { color: #ffa500; }

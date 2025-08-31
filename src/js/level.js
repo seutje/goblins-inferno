@@ -5,6 +5,23 @@ function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+const RARITIES = [
+  { key: 'normal', name: 'Normal', color: '#dddddd', boost: 0.25, weight: 60 },
+  { key: 'rare', name: 'Rare', color: '#33aaff', boost: 0.50, weight: 25 },
+  { key: 'epic', name: 'Epic', color: '#a64cff', boost: 1.00, weight: 10 },
+  { key: 'legendary', name: 'Legendary', color: '#ffa500', boost: 2.00, weight: 5 }
+];
+
+function rollRarity() {
+  const total = RARITIES.reduce((s, r) => s + r.weight, 0);
+  let pick = Math.random() * total;
+  for (const r of RARITIES) {
+    pick -= r.weight;
+    if (pick <= 0) return r;
+  }
+  return RARITIES[0];
+}
+
 export function initLevelSystem(gameState, canvas) {
   // Internal timers
   gameState._gemTimer = 120;
@@ -19,33 +36,16 @@ export function initLevelSystem(gameState, canvas) {
     };
   }
 
-  // Define upgrade pool
-  gameState.upgradePool = [
-    {
-      id: 'spd_1', name: 'Fleet Feet', desc: '+15% move speed',
-      apply: (gs) => { gs.player.stats.speedMultiplier *= 1.15; }
-    },
-    {
-      id: 'firerate_1', name: 'Rapid Fire', desc: '+20% fire rate',
-      apply: (gs) => { gs.player.stats.fireRateMultiplier *= 1.20; }
-    },
-    {
-      id: 'dmg_1', name: 'Hotter Flames', desc: '+20% projectile damage',
-      apply: (gs) => { gs.player.stats.damageMultiplier *= 1.20; }
-    },
-    {
-      id: 'size_1', name: 'Bigger Blasts', desc: '+15% projectile size',
-      apply: (gs) => { gs.player.stats.projSizeMultiplier *= 1.15; }
-    },
-    {
-      id: 'firerate_2', name: 'Blazing Hands', desc: '+20% fire rate',
-      apply: (gs) => { gs.player.stats.fireRateMultiplier *= 1.20; }
-    },
-    {
-      id: 'dmg_2', name: 'White Heat', desc: '+20% projectile damage',
-      apply: (gs) => { gs.player.stats.damageMultiplier *= 1.20; }
-    }
+  // Define base upgrade pool (rarity applied at roll time)
+  const basePool = [
+    { id: 'spd', name: 'Fleet Feet', stat: 'speedMultiplier', desc: '+Move speed' },
+    { id: 'firerate', name: 'Rapid Fire', stat: 'fireRateMultiplier', desc: '+Fire rate' },
+    { id: 'dmg', name: 'Hotter Flames', stat: 'damageMultiplier', desc: '+Projectile damage' },
+    { id: 'size', name: 'Bigger Blasts', stat: 'projSizeMultiplier', desc: '+Projectile size' },
+    { id: 'firerate2', name: 'Blazing Hands', stat: 'fireRateMultiplier', desc: '+Fire rate' },
+    { id: 'dmg2', name: 'White Heat', stat: 'damageMultiplier', desc: '+Projectile damage' }
   ];
+  gameState.upgradePool = basePool;
 
   // Wire modal UI
   const modal = document.getElementById('upgradeModal');
@@ -61,8 +61,10 @@ export function initLevelSystem(gameState, canvas) {
     choices.forEach((u, i) => {
       const slot = slots[i];
       if (slot) {
-        slot.title.textContent = u.name;
-        slot.desc.textContent = u.desc;
+        slot.title.textContent = `${u.rarity.name} ${u.name}`;
+        slot.title.style.color = u.rarity.color;
+        const pct = Math.round(u.rarity.boost * 100);
+        slot.desc.textContent = `${u.desc} (+${pct}%)`;
       }
     });
     modal.style.display = 'flex';
@@ -166,7 +168,8 @@ export function updateLevelSystem(gameState, canvas) {
         gameState.level += 1;
         gameState.nextLevelXp = Math.ceil(gameState.nextLevelXp * 1.5);
         // Offer upgrades
-        const choices = sampleUpgrades(gameState.upgradePool, 3);
+        const rolled = sampleUpgrades(gameState.upgradePool, 3).map(base => makeRarityUpgrade(base));
+        const choices = rolled;
         if (choices.length > 0 && gameState._openUpgradeModal) {
           gameState._openUpgradeModal(choices);
         }
@@ -197,4 +200,20 @@ function sampleUpgrades(pool, n) {
     result.push(pick);
   }
   return result;
+}
+
+function makeRarityUpgrade(base) {
+  const rarity = rollRarity();
+  const pct = rarity.boost;
+  const id = `${base.id}_${rarity.key}`;
+  const name = base.name;
+  const desc = base.desc;
+  const stat = base.stat;
+  const apply = (gs) => {
+    if (!gs?.player?.stats) return;
+    if (stat in gs.player.stats) {
+      gs.player.stats[stat] *= (1 + pct);
+    }
+  };
+  return { id, name, desc, stat, rarity, apply };
 }
