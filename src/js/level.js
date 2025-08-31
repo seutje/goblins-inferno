@@ -108,8 +108,27 @@ export function updateLevelSystem(gameState, canvas) {
     gameState._gemTimer = Math.max(min, base - Math.floor(gameState.difficulty));
   }
 
-  // Check gem pickup
+  // Attract nearby gems toward the player
   const p = gameState.player;
+  if (p) {
+    const attractRadius = gameState.magnetRadius ?? 110;
+    const maxPull = gameState.magnetMaxPull ?? 6; // px/frame near the player
+    for (let i = 0; i < gameState.gems.length; i++) {
+      const g = gameState.gems[i];
+      const dx = g.x - p.x;
+      const dy = g.y - p.y;
+      const dist = Math.hypot(dx, dy) || 1;
+      if (dist < attractRadius) {
+        const nx = -dx / dist; // direction gem -> player
+        const pull = Math.min(maxPull, 1 + (attractRadius - dist) / 20);
+        g.x += nx * pull;
+        g.y += (-dy / dist) * pull;
+      }
+    }
+  }
+
+  // Check gem pickup
+  // reuse p
   for (let i = gameState.gems.length - 1; i >= 0; i--) {
     const g = gameState.gems[i];
     const dx = g.x - p.x;
