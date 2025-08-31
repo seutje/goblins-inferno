@@ -1,5 +1,5 @@
 export class Projectile {
-    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1 } = {}) {
+    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = 16, frameHeight = 16 } = {}) {
         this.x = x;
         this.y = y;
         this.damage = damage;
@@ -8,6 +8,13 @@ export class Projectile {
         this.color = color;
         this.dx = dx;
         this.dy = dy;
+        this.sprite = null;
+        this.frameWidth = frameWidth;
+        this.frameHeight = frameHeight;
+        if (sprite) {
+            this.sprite = new Image();
+            this.sprite.src = sprite;
+        }
     }
 
     update() {
@@ -16,10 +23,21 @@ export class Projectile {
     }
 
     draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
+        if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
+            ctx.drawImage(
+                this.sprite,
+                0, 0, this.frameWidth, this.frameHeight,
+                this.x - this.frameWidth / 2,
+                this.y - this.frameHeight / 2,
+                this.frameWidth,
+                this.frameHeight
+            );
+        } else {
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+        }
     }
 }
 
@@ -27,7 +45,7 @@ export function fireInfernoBlast(gameState, x, y) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     gameState.projectiles.push(new Projectile(
         x, y - 10,
-        { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red' }
+        { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: 'img/sprite-blast.png', frameWidth: 16, frameHeight: 16 }
     ));
 }
 
@@ -35,7 +53,7 @@ export function fireFlameStream(gameState, x, y) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     gameState.projectiles.push(new Projectile(
         x, y - 10,
-        { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange' }
+        { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: 'img/sprite-flame.png', frameWidth: 12, frameHeight: 12 }
     ));
 }
 
@@ -43,7 +61,7 @@ export function fireVolatileOrb(gameState, x, y) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     gameState.projectiles.push(new Projectile(
         x, y - 10,
-        { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple' }
+        { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: 'img/sprite-orb.png', frameWidth: 20, frameHeight: 20 }
     ));
 }
 

@@ -49,9 +49,9 @@ export class Enemy {
         this.advanceFrame();
     }
 
-    draw(ctx) {
+  draw(ctx) {
         const animation = this.animations[this.state];
-        if (this.sprite.complete) {
+        if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
             ctx.drawImage(
                 this.sprite,
                 this.frame * this.frameWidth,

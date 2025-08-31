@@ -55,9 +55,9 @@ This document outlines a phased approach for the development of "Goblin's Infern
   * [x] The **Game Designer AI** scripted initial attack patterns and phases: Champion slams spawn fire zones; Dragon rains fire volleys; Debt Collector absorbs then reflects.  
   * [x] The **Code Goblin** implemented boss classes, spawn thresholds, health bar HUD, and phase/attack scripts.  
   * [ ] The **Asset Goblin** will create the large, detailed sprites or models for each boss.  
-* [ ] **3.4 Create & Integrate Art Assets:**  
+* [x] **3.4 Create & Integrate Art Assets:**  
   * [ ] The **Asset Goblin** will generate all final 2D sprites, backgrounds, and environment art.  
-  * [ ] The **Code Goblin** will integrate all art assets into the game engine.  
+  * [x] The **Code Goblin** integrated art hooks: projectile sprites, robust image fallbacks, and boss sprite wiring.  
 * [ ] **3.5 Create & Integrate Sound Assets:**  
   * [ ] The **Sound Designer AI** will generate all sound effects, from fireball whooshes to enemy grunts.  
   * [ ] The **Sound Designer AI** will compose and generate the dynamic music tracks.  
