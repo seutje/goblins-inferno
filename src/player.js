@@ -43,6 +43,7 @@ export default class Player {
 
         // Internal timers
         this._trailTimer = 0;
+        this._flash = 0;
     }
 
     update() {
@@ -99,6 +100,7 @@ export default class Player {
             }
         }
 
+        if (this._flash > 0) this._flash--;
         this.frameTimer++;
         if (this.frameTimer >= this.frameInterval) {
             this.frameTimer = 0;
@@ -129,5 +131,29 @@ export default class Player {
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
         }
+
+        // Damage flash overlay
+        if ((this.invuln && this.invuln > 0) || (this._flash && this._flash > 0)) {
+            ctx.save();
+            ctx.globalAlpha = 0.28;
+            ctx.fillStyle = '#f33';
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size + 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // HP bar above the player
+        const barW = Math.max(24, destW);
+        const barH = 6;
+        const bx = this.x - barW / 2;
+        const by = this.y - destH / 2 - 10;
+        const frac = Math.max(0, Math.min(1, (this.hp || 0) / (this.maxHp || 1)));
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(bx, by, barW, barH);
+        ctx.fillStyle = '#2ecc71';
+        ctx.fillRect(bx, by, barW * frac, barH);
+        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+        ctx.strokeRect(bx, by, barW, barH);
     }
 }
