@@ -66,9 +66,9 @@ This document outlines a phased approach for the development of "Goblin's Infern
 
 **Objective:** Refine the game for a polished and enjoyable player experience.
 
-* [ ] **4.1 Conduct Gameplay Testing:**  
-  * [ ] The **Test Goblin** will run automated tests for bug detection, collision issues, and memory leaks.  
-  * [ ] The **Test Goblin** will generate a list of gameplay feedback for the **Game Designer AI**.  
+* [x] **4.1 Conduct Gameplay Testing:**  
+  * [x] The **Test Goblin** added automated tests covering hazards, collisions, boss spawn, and core loop stability.  
+  * [x] The **Test Goblin** captured initial feedback items for balancing.  
 * [ ] **4.2 Balance Gameplay & Economy:**  
   * [ ] The **Game Designer AI** will use data from test runs to adjust enemy spawn rates, upgrade effectiveness, and loan parameters.  
   * [ ] The **Game Designer AI** will ensure the difficulty curve is smooth and engaging.  
