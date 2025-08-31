@@ -38,6 +38,7 @@ export default class Player {
             death: { row: 4, frames: 2 }
         };
         this.state = 'idle';
+        this.faceDir = -1; // -1 = left (sprite default), 1 = right
         this.frame = 0;
         this.frameTimer = 0;
         this.frameInterval = 10;
@@ -51,10 +52,13 @@ export default class Player {
         const keys = this.gameState.keys;
         let moving = false;
         const speed = this.baseSpeed * this.stats.speedMultiplier;
+        let moveX = 0;
         if (keys['KeyW']) { this.y -= speed; moving = true; }
         if (keys['KeyS']) { this.y += speed; moving = true; }
-        if (keys['KeyA']) { this.x -= speed; moving = true; }
-        if (keys['KeyD']) { this.x += speed; moving = true; }
+        if (keys['KeyA']) { this.x -= speed; moving = true; moveX -= 1; }
+        if (keys['KeyD']) { this.x += speed; moving = true; moveX += 1; }
+
+        if (moveX !== 0) this.faceDir = moveX > 0 ? 1 : -1;
 
         this.state = moving ? 'walk' : 'idle';
 
@@ -119,19 +123,23 @@ export default class Player {
         const visible = !isBlinking || (Math.floor(this.invuln / 3) % 2 === 1);
 
         if (visible) {
-            if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
-                ctx.drawImage(
-                    this.sprite,
-                    this.frame * this.frameWidth,
-                    animation.row * this.frameHeight,
-                    this.frameWidth,
-                    this.frameHeight,
-                    this.x - destW / 2,
-                    this.y - destH / 2,
-                    destW,
-                    destH
-                );
-            } else {
+        if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            if (this.faceDir === 1) ctx.scale(-1, 1); // flip for right-facing
+            ctx.drawImage(
+                this.sprite,
+                this.frame * this.frameWidth,
+                animation.row * this.frameHeight,
+                this.frameWidth,
+                this.frameHeight,
+                -destW / 2,
+                -destH / 2,
+                destW,
+                destH
+            );
+            ctx.restore();
+        } else {
                 ctx.fillStyle = 'lime';
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);

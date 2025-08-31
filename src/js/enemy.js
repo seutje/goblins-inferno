@@ -61,6 +61,7 @@ export class Enemy {
                 this.x += (dx / dist) * this.speed;
                 this.y += (dy / dist) * this.speed;
                 this.state = 'walk';
+                if (Math.abs(dx) > 0.1) this.faceDir = dx > 0 ? 1 : -1;
             } else {
                 this.state = 'idle';
             }
@@ -74,17 +75,21 @@ export class Enemy {
         const destW = this.size * 2;
         const destH = this.size * 2;
         if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            if (this.faceDir === 1) ctx.scale(-1, 1);
             ctx.drawImage(
                 this.sprite,
                 this.frame * this.frameWidth,
                 animation.row * this.frameHeight,
                 this.frameWidth,
                 this.frameHeight,
-                this.x - destW / 2,
-                this.y - destH / 2,
+                -destW / 2,
+                -destH / 2,
                 destW,
                 destH
             );
+            ctx.restore();
         } else {
             ctx.fillStyle = 'red';
             ctx.beginPath();
@@ -101,6 +106,7 @@ export class DebtSkeleton extends Enemy {
     this.hp = 10;
         this.sprite.src = versioned('src/img/sprite-skeleton.png');
     this.contactDamage = 10;
+    this.faceDir = -1;
   }
 }
 
@@ -112,6 +118,7 @@ export class LoanerImp extends Enemy {
         this.sprite.src = versioned('src/img/sprite-imp.png');
     this.angle = Math.random() * Math.PI * 2;
     this.contactDamage = 12;
+    this.faceDir = -1;
   }
 
   update() {
@@ -134,6 +141,7 @@ export class LoanerImp extends Enemy {
         const wobble = Math.sin(this.angle) * 1.0; // amplitude
         this.x += px * wobble;
         this.y += py * wobble;
+        if (Math.abs(dx) > 0.1) this.faceDir = dx > 0 ? 1 : -1;
       } else {
         this.state = 'idle';
       }
@@ -151,6 +159,7 @@ export class BailiffOgre extends Enemy {
         this.sprite.src = versioned('src/img/sprite-ogre.png');
     this.chargeCooldown = 0;
     this.contactDamage = 18;
+    this.faceDir = -1;
   }
 
     update() {
@@ -171,6 +180,7 @@ export class BailiffOgre extends Enemy {
             } else {
                 this.state = 'idle';
             }
+            if (Math.abs(dx) > 0.1) this.faceDir = dx > 0 ? 1 : -1;
         }
         if (this.chargeCooldown > 0) this.chargeCooldown--;
         this.advanceFrame();
