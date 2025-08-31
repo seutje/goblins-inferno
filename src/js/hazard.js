@@ -1,5 +1,11 @@
 // Hazards: lingering area effects like Ignis's fire trail
 import { spawnHealthPickup } from './pickups.js';
+import { versioned } from './assets.js';
+
+const SHEET_COLS = 6;
+const SHEET_ROWS = 5;
+const FRAME_W = 170;
+const FRAME_H = 205;
 
 export class FirePatch {
   constructor(x, y, { radius = 18, duration = 120, dps = 0.5, color = 'rgba(255,80,0,0.35)' } = {}) {
@@ -10,9 +16,24 @@ export class FirePatch {
     this.dps = dps; // damage per frame (approx)
     this.color = color;
     this.type = 'fire';
+    // Animated sprite sheet (like heart pickup)
+    this.sprite = new Image();
+    this.sprite.src = versioned('src/img/sprite-fire.png');
+    this.frame = 0;
+    this.frameTimer = 0;
+    this.frameInterval = 6;
+    this.frameWidth = FRAME_W;
+    this.frameHeight = FRAME_H;
+    this.row = 0;
   }
 
   update(gameState) {
+    // Animate
+    this.frameTimer++;
+    if (this.frameTimer >= this.frameInterval) {
+      this.frameTimer = 0;
+      this.frame = (this.frame + 1) % SHEET_COLS;
+    }
     // Apply damage to enemies in radius
     const r = this.radius;
     const r2 = r * r;
@@ -36,10 +57,25 @@ export class FirePatch {
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fill();
+    const hasSprite = this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0;
+    if (hasSprite) {
+      const sx = (this.frame % SHEET_COLS) * (this.frameWidth || FRAME_W);
+      const sy = (this.row % SHEET_ROWS) * (this.frameHeight || FRAME_H);
+      const destH = this.radius * 2;
+      const destW = destH * (FRAME_W / FRAME_H);
+      ctx.drawImage(
+        this.sprite,
+        sx, sy, (this.frameWidth || FRAME_W), (this.frameHeight || FRAME_H),
+        this.x - destW / 2,
+        this.y - destH / 2,
+        destW, destH
+      );
+    } else {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
 }
 

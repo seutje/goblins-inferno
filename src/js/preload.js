@@ -16,7 +16,9 @@ const ASSETS = [
   // Projectiles and pickups
   'src/img/sprite-projectile.png',
   'src/img/sprite-heart.png',
-  'src/img/sprite-gem.png'
+  'src/img/sprite-gem.png',
+  // Hazard fire
+  'src/img/sprite-fire.png'
 ];
 
 export function preloadAll(onProgress) {
@@ -38,4 +40,3 @@ export function preloadAll(onProgress) {
 
   return Promise.all(promises).then(() => {});
 }
-
