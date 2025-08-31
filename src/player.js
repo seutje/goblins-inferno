@@ -53,15 +53,25 @@ export default class Player {
         this.x = Math.max(this.size, Math.min(this.canvas.width - this.size, this.x));
         this.y = Math.max(this.size, Math.min(this.canvas.height - this.size, this.y));
 
+        // Aim direction: towards mouse if available, otherwise up
+        let aim = { dx: 0, dy: -1 };
+        const m = this.gameState.mouse;
+        if (m && typeof m.x === 'number' && typeof m.y === 'number') {
+            const dx = m.x - this.x;
+            const dy = m.y - this.y;
+            const d = Math.hypot(dx, dy) || 1;
+            aim = { dx: dx / d, dy: dy / d };
+        }
+
         if (this.fireCooldown <= 0) {
             if (this.weapon === 'inferno') {
-                fireInfernoBlast(this.gameState, this.x, this.y - this.size);
+                fireInfernoBlast(this.gameState, this.x, this.y - this.size, aim);
                 this.fireCooldown = Math.max(1, Math.floor(15 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'flame') {
-                fireFlameStream(this.gameState, this.x, this.y - this.size);
+                fireFlameStream(this.gameState, this.x, this.y - this.size, aim);
                 this.fireCooldown = Math.max(1, Math.floor(3 / this.stats.fireRateMultiplier));
             } else if (this.weapon === 'orb') {
-                fireVolatileOrb(this.gameState, this.x, this.y - this.size);
+                fireVolatileOrb(this.gameState, this.x, this.y - this.size, aim);
                 this.fireCooldown = Math.max(1, Math.floor(45 / this.stats.fireRateMultiplier));
             }
         } else {

@@ -44,31 +44,44 @@ export class Projectile {
 
 import { playSound } from './audio.js';
 
-export function fireInfernoBlast(gameState, x, y) {
+export function fireInfernoBlast(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
+    const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
         x, y - 10,
-        { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: 'img/sprite-blast.png', frameWidth: 16, frameHeight: 16 }
+        { damage: 1 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: 'img/sprite-blast.png', frameWidth: 16, frameHeight: 16, dx: v.dx, dy: v.dy }
     ));
     playSound('fire');
 }
 
-export function fireFlameStream(gameState, x, y) {
+export function fireFlameStream(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
+    const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
         x, y - 10,
-        { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: 'img/sprite-flame.png', frameWidth: 12, frameHeight: 12 }
+        { damage: 0.5 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: 'img/sprite-flame.png', frameWidth: 12, frameHeight: 12, dx: v.dx, dy: v.dy }
     ));
     playSound('fire');
 }
 
-export function fireVolatileOrb(gameState, x, y) {
+export function fireVolatileOrb(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
+    const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
         x, y - 10,
-        { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: 'img/sprite-orb.png', frameWidth: 20, frameHeight: 20 }
+        { damage: 3 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: 'img/sprite-orb.png', frameWidth: 20, frameHeight: 20, dx: v.dx, dy: v.dy }
     ));
     playSound('fire');
+}
+
+function normDir(dir) {
+    // Ensure a valid normalized direction; default to upward
+    let dx = 0, dy = -1;
+    if (dir && typeof dir.dx === 'number' && typeof dir.dy === 'number') {
+        dx = dir.dx; dy = dir.dy;
+    }
+    const mag = Math.hypot(dx, dy) || 1;
+    return { dx: dx / mag, dy: dy / mag };
 }
 
 export function updateProjectiles(gameState, canvas) {

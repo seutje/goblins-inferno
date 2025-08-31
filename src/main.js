@@ -13,6 +13,7 @@ const ctx = canvas.getContext('2d');
 
 const gameState = window.gameState = {
     keys: {},
+    mouse: null,
     player: null,
     enemies: [],
     projectiles: [],
@@ -186,6 +187,17 @@ function init() {
     if (btnGnorp) btnGnorp.addEventListener('click', () => startAs('Gnorp'));
     if (btnIgnis) btnIgnis.addEventListener('click', () => startAs('Ignis'));
     if (btnFizzle) btnFizzle.addEventListener('click', () => startAs('Fizzle'));
+    // Mouse tracking for aim
+    function updateMouse(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const mx = (e.clientX - rect.left) * scaleX;
+        const my = (e.clientY - rect.top) * scaleY;
+        gameState.mouse = { x: mx, y: my };
+    }
+    window.addEventListener('mousemove', updateMouse);
+    window.addEventListener('mousedown', updateMouse);
     const btnMute = document.getElementById('btnMute');
     let muted = false;
     if (btnMute) btnMute.addEventListener('click', () => {
