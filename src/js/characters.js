@@ -1,4 +1,5 @@
 // Character selection and trait wiring
+import { versioned } from './assets.js';
 
 export const CHARACTERS = {
   Gnorp: {
@@ -36,7 +37,7 @@ export function applyCharacterToPlayer(player, gameState, characterKey) {
   player.stats.projSizeMultiplier *= cfg.stats.projSizeMultiplier;
   gameState.trait = cfg.trait;
   // set character-specific sprite
-  if (characterKey === 'Gnorp') player.sprite.src = 'src/img/sprite-gnorp.png';
-  else if (characterKey === 'Ignis') player.sprite.src = 'src/img/sprite-ignis.png';
-  else if (characterKey === 'Fizzle') player.sprite.src = 'src/img/sprite-fizzle.png';
+  if (characterKey === 'Gnorp') player.sprite.src = versioned('src/img/sprite-gnorp.png');
+  else if (characterKey === 'Ignis') player.sprite.src = versioned('src/img/sprite-ignis.png');
+  else if (characterKey === 'Fizzle') player.sprite.src = versioned('src/img/sprite-fizzle.png');
 }

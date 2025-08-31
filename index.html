@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Goblins Inferno</title>
-    <link rel="stylesheet" href="src/css/style.css">
+    <script>
+      (function(){
+        const urlV = new URLSearchParams(location.search).get('v');
+        const DEFAULT_V = 'dev-' + Date.now();
+        const v = window.APP_VERSION || urlV || DEFAULT_V;
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'src/css/style.css?v=' + encodeURIComponent(v);
+        document.head.appendChild(link);
+        window.APP_VERSION = v;
+      })();
+    </script>
 </head>
 <body>
     <div id="hud" class="hud">
@@ -82,7 +93,15 @@
             </div>
         </div>
     </div>
-    <script type="module" src="src/js/main.js"></script>
+    <script>
+      (function(){
+        const v = window.APP_VERSION || 'dev';
+        const s = document.createElement('script');
+        s.type = 'module';
+        s.src = 'src/js/main.js?v=' + encodeURIComponent(v);
+        document.body.appendChild(s);
+      })();
+    </script>
 
     <!-- Game Over Modal -->
     <div id="gameOverModal" class="modal" style="display:none;">

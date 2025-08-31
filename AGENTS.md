@@ -15,7 +15,7 @@ Game logic is split into modular ES6 files under `src/js` (e.g., `src/js/main.js
 
 The project consists of `index.html` at the project root and modular assets under `src/`.
 
-* `index.html`: Root HTML with the `<canvas>` and links to `src/css/style.css` and `src/js/main.js`.
+* `index.html`: Root HTML with the `<canvas>` and dynamic loaders for `src/css/style.css` and `src/js/main.js`. Both URLs are cache-busted via a `?v=` query param derived from `window.APP_VERSION` or the page URL (e.g., `index.html?v=commit123`).
 * `src/css/style.css`: Holds all CSS styles for the game.
 * `src/js/main.js`: Entry point for the game's JavaScript; imports other modules under `src/js`.
 * `src/js/player.js`, `src/js/projectile.js`, etc.: Modular game logic for entities and systems.
@@ -38,4 +38,4 @@ To run the game, use a simple HTTP server from the npm ecosystem. The **Code Gob
 * **Installation:** First, install the project's dependencies:
   npm install
 
-* **Execution:** After installation, run `npm start` to serve the project root at http://localhost:8000.
+* **Execution:** After installation, run `npm start` to serve the project root at http://localhost:8000. To bust caches for CSS/JS, append `?v=YOUR_VERSION` to the page URL (for example, `http://localhost:8000/index.html?v=dev1`).
