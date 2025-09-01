@@ -3,11 +3,34 @@
 const audioState = {
   ctx: null,
   enabled: true,
+  compressor: null,
+  output: null, // final node before destination (e.g., compressor or masterGain)
 };
 
 export function initAudio() {
   if (typeof window === 'undefined' || typeof window.AudioContext === 'undefined') return;
-  if (!audioState.ctx) audioState.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (!audioState.ctx) {
+    audioState.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  const ctx = audioState.ctx;
+
+  // Create a single shared dynamics compressor to tame peaks when many sounds overlap
+  if (!audioState.compressor) {
+    const comp = ctx.createDynamicsCompressor();
+    try {
+      // Gentle limiting profile
+      comp.threshold.setValueAtTime(-20, ctx.currentTime); // dB
+      comp.knee.setValueAtTime(18, ctx.currentTime);        // dB
+      comp.ratio.setValueAtTime(12, ctx.currentTime);       // ratio
+      comp.attack.setValueAtTime(0.003, ctx.currentTime);   // seconds
+      comp.release.setValueAtTime(0.25, ctx.currentTime);   // seconds
+    } catch (_) {
+      // Older browsers may not support AudioParam.setValueAtTime on all props; ignore
+    }
+    comp.connect(ctx.destination);
+    audioState.compressor = comp;
+    audioState.output = comp;
+  }
 }
 
 export function setMuted(muted) {
@@ -25,7 +48,9 @@ function beep({ freq = 440, duration = 0.08, type = 'sine', gain = 0.03 } = {}) 
   osc.frequency.setValueAtTime(freq, now);
   g.gain.setValueAtTime(gain, now);
   g.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-  osc.connect(g).connect(ctx.destination);
+  // Route through compressor if available to avoid excessive loudness
+  const out = audioState.output || ctx.destination;
+  osc.connect(g).connect(out);
   osc.start(now);
   osc.stop(now + duration);
 }
