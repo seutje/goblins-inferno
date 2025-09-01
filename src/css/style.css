@@ -118,3 +118,34 @@ canvas {
   height: 100%;
   width: 0%;
 }
+
+#charModal .modal-content {
+    background: url(../img/ui-frame.png) no-repeat center center;
+    background-size: 100% 100%;
+    border: none;
+    box-shadow: none;
+    color: #eee;
+    padding: 60px 80px;
+    width: 720px;
+    height: 540px;
+    box-sizing: border-box;
+}
+
+@keyframes play-x {
+    from { background-position-x: 0; }
+    to { background-position-x: -192px; }
+}
+
+@keyframes play-y {
+    from { background-position-y: 0; }
+    to { background-position-y: -192px; }
+}
+
+.choice-sprite {
+    width: 64px;
+    height: 64px;
+    background-image: url(../img/sprite-char-ignis.png);
+    background-size: 192px 192px;
+    animation: play-y 1.8s steps(3) infinite, play-x 0.6s steps(3) infinite;
+    margin: 0 auto 10px;
+}
