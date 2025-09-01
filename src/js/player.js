@@ -95,7 +95,7 @@ export default class Player {
         // Ignis trait: fire trail that leaves damaging patches periodically
         if (this.gameState.trait === 'fireTrail') {
             if (this._trailTimer <= 0) {
-                spawnFirePatch(this.gameState, this.x, this.y, { radius: 16, duration: 90, dps: 0.4 });
+                spawnFirePatch(this.gameState, this.x, this.y, { radius: 16, duration: 90, dps: 0.4, faction: 'player' });
                 // Spawn frequency scales with fire rate slightly
                 const base = 18;
                 const scale = Math.max(6, Math.floor(base / this.stats.fireRateMultiplier));

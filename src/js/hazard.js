@@ -8,7 +8,7 @@ const FRAME_W = 170;
 const FRAME_H = 205;
 
 export class FirePatch {
-  constructor(x, y, { radius = 18, duration = 120, dps = 0.5, color = 'rgba(255,80,0,0.35)' } = {}) {
+  constructor(x, y, { radius = 18, duration = 120, dps = 0.5, color = 'rgba(255,80,0,0.35)', faction = 'player' } = {}) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -16,6 +16,7 @@ export class FirePatch {
     this.dps = dps; // damage per frame (approx)
     this.color = color;
     this.type = 'fire';
+    this.faction = faction;
     // Animated sprite sheet (like heart pickup)
     this.sprite = new Image();
     this.sprite.src = versioned('src/img/sprite-fire.png');
@@ -34,25 +35,42 @@ export class FirePatch {
       this.frameTimer = 0;
       this.frame = (this.frame + 1) % SHEET_COLS;
     }
-    // Apply damage to enemies in radius
-    const r = this.radius;
-    const r2 = r * r;
-    for (let i = gameState.enemies.length - 1; i >= 0; i--) {
-      const e = gameState.enemies[i];
-      const dx = e.x - this.x;
-      const dy = e.y - this.y;
-      if ((dx * dx + dy * dy) <= r2) {
-        if (typeof e.hp === 'number') {
-          e.hp -= this.dps;
-          if (e.hp <= 0) {
-            if (!e.isBoss && Math.random() < 0.10) {
-              spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
+
+    if (this.faction === 'player') {
+        // Apply damage to enemies in radius
+        const r = this.radius;
+        const r2 = r * r;
+        for (let i = gameState.enemies.length - 1; i >= 0; i--) {
+            const e = gameState.enemies[i];
+            const dx = e.x - this.x;
+            const dy = e.y - this.y;
+            if ((dx * dx + dy * dy) <= r2) {
+                if (typeof e.hp === 'number') {
+                    e.hp -= this.dps;
+                    if (e.hp <= 0) {
+                        if (!e.isBoss && Math.random() < 0.10) {
+                            spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
+                        }
+                        gameState.enemies.splice(i, 1);
+                    }
+                }
             }
-            gameState.enemies.splice(i, 1);
-          }
         }
-      }
+    } else { // faction === 'enemy'
+        // Apply damage to player in radius
+        const player = gameState.player;
+        if (player && player.invuln <= 0) {
+            const r = this.radius;
+            const r2 = r * r;
+            const dx = player.x - this.x;
+            const dy = player.y - this.y;
+            if ((dx * dx + dy * dy) <= r2) {
+                player.hp -= this.dps;
+                player.invuln = 60; // 1 second of invulnerability
+            }
+        }
     }
+
     this.remaining--;
   }
 

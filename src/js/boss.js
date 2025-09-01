@@ -27,35 +27,118 @@ export class CreditorChampion extends BaseBoss {
   constructor(canvas, gameState) {
     super(canvas, gameState);
     this.name = "Creditor's Champion";
-    this.hp = 400;
+    this.hp = 800; // Colossal health
     this.hpMax = this.hp;
-    this.speed = 1.1;
-    this.slamCooldown = 120; // frames
+    this.speed = 0.8; // Slow
+    this.abilityCooldown = 180; // Time between abilities
+    this.shieldTimer = 0; // Countdown for shield duration
+    this.shieldActive = false;
     this.sprite.src = versioned('src/img/sprite-champion.png');
   }
 
   update() {
     const player = this.gameState.player;
-    if (player) {
+    if (!player) return;
+
+    // Behavior logic
+    if (this.shieldActive) {
+      // If shield is up, stand still
+      this.state = 'idle';
+    } else {
+      // Otherwise, move towards the player
       const dx = player.x - this.x;
       const dy = player.y - this.y;
       const d = Math.hypot(dx, dy);
-      if (d > 0) {
+      if (d > 50) { // Keep some distance
         this.x += (dx / d) * this.speed;
         this.y += (dy / d) * this.speed;
         this.state = 'walk';
-      }
-      if (this.slamCooldown-- <= 0) {
-        // Create a plus-shaped set of fire patches centered near player
-        const offsets = [
-          [0, 0], [24, 0], [-24, 0], [0, 24], [0, -24]
-        ];
-        offsets.forEach(([ox, oy]) => spawnFirePatch(this.gameState, player.x + ox, player.y + oy, { radius: 18, duration: 150, dps: 0.7 }));
-        this.state = 'attack';
-        this.slamCooldown = 180;
+      } else {
+        this.state = 'idle';
       }
     }
+
+    // Ability usage
+    this.abilityCooldown--;
+    if (this.abilityCooldown <= 0) {
+      this.useAbility();
+      this.abilityCooldown = 240; // Reset cooldown
+    }
+
+    if (this.shieldTimer > 0) {
+      this.shieldTimer--;
+      if (this.shieldTimer <= 0) {
+        this.shieldActive = false;
+      }
+    }
+
     this.advanceFrame();
+  }
+
+  useAbility() {
+    const choice = Math.random();
+    if (choice < 0.6) {
+      this.fieryClubSlam();
+    } else {
+      this.debtShield();
+    }
+  }
+
+  fieryClubSlam() {
+    this.state = 'attack';
+    playSound('boss_attack');
+    // Create a shockwave projectile
+    const shockwave = new Projectile(this.x, this.y, {
+      damage: 30, // Devastating damage
+      speed: 4,
+      size: 20,
+      color: 'orange',
+      faction: 'enemy',
+      knockback: 5,
+      isShockwave: true, // Custom flag for circular expansion
+    });
+    this.gameState.projectiles.push(shockwave);
+
+    // Inferno Zone: Create lingering fire patches
+    for (let i = 0; i < 5; i++) {
+      const angle = (i / 5) * 2 * Math.PI;
+      const radius = 60;
+      const x = this.x + Math.cos(angle) * radius;
+      const y = this.y + Math.sin(angle) * radius;
+      spawnFirePatch(this.gameState, x, y, { radius: 25, duration: 300, dps: 2, faction: 'enemy' });
+    }
+  }
+
+  debtShield() {
+    this.state = 'attack'; // Or a specific shield animation
+    playSound('shield_up');
+    this.shieldActive = true;
+    this.shieldTimer = 300; // Shield lasts for 5 seconds
+  }
+
+  takeHit(projectile, gameState) {
+    if (this.shieldActive) {
+      playSound('reflect');
+      // Reflect magic
+      const player = gameState.player;
+      if (player) {
+        const dx = player.x - this.x;
+        const dy = player.y - this.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const reflectedProj = new Projectile(this.x, this.y, {
+          damage: projectile.damage * 1.5, // Reflected projectile is stronger
+          speed: projectile.speed * 1.2,
+          size: projectile.size,
+          color: 'purple',
+          dx: dx / d,
+          dy: dy / d,
+          faction: 'enemy',
+        });
+        gameState.projectiles.push(reflectedProj);
+      }
+      return; // Absorb hit, no damage
+    }
+    super.takeHit(projectile, gameState);
   }
 }
 

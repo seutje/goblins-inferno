@@ -4,7 +4,7 @@ const FRAME_W = 170;
 const FRAME_H = 205;
 
 export class Projectile {
-    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = FRAME_W, frameHeight = FRAME_H, faction = 'player', row = 0, sheetCols = 1, sheetRows = 1, frameInterval = 6, bouncesLeft = 0 } = {}) {
+    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = FRAME_W, frameHeight = FRAME_H, faction = 'player', row = 0, sheetCols = 1, sheetRows = 1, frameInterval = 6, bouncesLeft = 0, isShockwave = false } = {}) {
         this.x = x;
         this.y = y;
         this.damage = damage;
@@ -24,6 +24,8 @@ export class Projectile {
         this.frameTimer = 0;
         this.frameInterval = frameInterval;
         this.bouncesLeft = bouncesLeft;
+        this.isShockwave = isShockwave;
+        this.shockwaveTimer = 0;
         if (sprite) {
             this.sprite = new Image();
             this.sprite.src = sprite;
@@ -31,6 +33,11 @@ export class Projectile {
     }
 
     update() {
+        if (this.isShockwave) {
+            this.shockwaveTimer++;
+            this.size = this.shockwaveTimer * this.speed;
+            return;
+        }
         this.x += this.dx * this.speed;
         this.y += this.dy * this.speed;
         if (this.sprite && this.sheetCols > 1) {
@@ -43,6 +50,19 @@ export class Projectile {
     }
 
     draw(ctx) {
+        if (this.isShockwave) {
+            const lifetime = 60; // Shockwave lasts 1 second
+            const fade = 1 - (this.shockwaveTimer / lifetime);
+            ctx.fillStyle = `rgba(255, 165, 0, ${fade * 0.8})`;
+            ctx.strokeStyle = `rgba(255, 100, 0, ${fade})`;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            return;
+        }
+
         if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
             const sx = (this.frame % this.sheetCols) * this.frameWidth;
             const sy = (this.row % this.sheetRows) * this.frameHeight;
@@ -112,6 +132,14 @@ export function updateProjectiles(gameState, canvas) {
     for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
         const p = gameState.projectiles[i];
         p.update();
+
+        if (p.isShockwave) {
+            if (p.shockwaveTimer > 60) { // Lifetime of 1 second
+                gameState.projectiles.splice(i, 1);
+            }
+            continue;
+        }
+
         // Wall bounces
         let bounced = false;
         if (p.x < p.size) { p.x = p.size; p.dx = Math.abs(p.dx); bounced = true; }
