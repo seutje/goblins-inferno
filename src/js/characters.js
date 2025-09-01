@@ -24,7 +24,7 @@ export const CHARACTERS = {
     stats: { baseSpeed: 3.6, damageMultiplier: 0.9, fireRateMultiplier: 1.2, projSizeMultiplier: 1.0 },
     trait: 'fireTrail',
     sprite: 'src/img/sprite-ignis.png',
-    frameWidth: 175,
+    frameWidth: 167,
     frameHeight: 200,
     animations: {
         idle: { row: 0, frames: 3 },
