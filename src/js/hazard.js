@@ -97,6 +97,49 @@ export class FirePatch {
   }
 }
 
+export class BlackHole {
+  constructor(x, y, { radius = 150, duration = 300, pullForce = 2.5 } = {}) {
+    this.x = x;
+    this.y = y;
+    this.radius = radius;
+    this.remaining = duration;
+    this.pullForce = pullForce;
+    this.type = 'black_hole';
+    this.angle = 0;
+  }
+
+  update(gameState) {
+    const player = gameState.player;
+    if (player) {
+      const dx = this.x - player.x;
+      const dy = this.y - player.y;
+      const d = Math.hypot(dx, dy);
+      if (d < this.radius) {
+        const force = (1 - (d / this.radius)) * this.pullForce;
+        player.x += (dx / d) * force;
+        player.y += (dy / d) * force;
+      }
+    }
+    this.remaining--;
+    this.angle += 0.05;
+  }
+
+  draw(ctx) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.angle);
+    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.radius);
+    gradient.addColorStop(0, 'rgba(0,0,0,0)');
+    gradient.addColorStop(0.5, 'rgba(50,0,100,0.5)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0.9)');
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
 export function ensureHazards(gameState) {
   if (!gameState.hazards) gameState.hazards = [];
 }
@@ -104,6 +147,11 @@ export function ensureHazards(gameState) {
 export function spawnFirePatch(gameState, x, y, opts = {}) {
   ensureHazards(gameState);
   gameState.hazards.push(new FirePatch(x, y, opts));
+}
+
+export function spawnBlackHole(gameState, x, y, opts = {}) {
+  ensureHazards(gameState);
+  gameState.hazards.push(new BlackHole(x, y, opts));
 }
 
 export function updateHazards(gameState) {

@@ -1,7 +1,7 @@
 import { Enemy } from './enemy.js';
 import { versioned } from './assets.js';
 import { saveMeta } from './meta.js';
-import { spawnFirePatch } from './hazard.js';
+import { spawnFirePatch, spawnBlackHole } from './hazard.js';
 import { Projectile } from './projectile.js';
 import { playSound } from './audio.js';
 
@@ -146,44 +146,125 @@ export class InterestDragon extends BaseBoss {
   constructor(canvas, gameState) {
     super(canvas, gameState);
     this.name = 'The Interest Dragon';
-    this.hp = 550;
+    this.hp = 1200; // Colossal health
     this.hpMax = this.hp;
-    this.speed = 0.8;
-    this.volleyCooldown = 90;
+    this.speed = 1.0; // Medium speed
+    this.abilityCooldown = 150; // Time between abilities
+    this.shieldTimer = 0; // Countdown for shield duration
+    this.shieldActive = false;
     this.sprite.src = versioned('src/img/sprite-dragon.png');
   }
 
   update() {
-    const p = this.gameState.player;
-    if (p) {
-      // Float horizontally to mirror player slowly
-      const dx = p.x - this.x;
-      this.x += Math.sign(dx) * this.speed;
-      // Stay near top quarter
-      if (this.y > this.canvas.height * 0.25) this.y -= this.speed;
+    const player = this.gameState.player;
+    if (!player) return;
+
+    // Behavior: Float near the top, mirroring player's horizontal position
+    const dx = player.x - this.x;
+    this.x += Math.sign(dx) * this.speed * 0.8;
+    if (this.y > this.canvas.height * 0.25) {
+      this.y -= this.speed;
+    } else {
+      this.y += Math.sin(this.frame * 0.1) * 0.5; // Gentle bobbing motion
     }
-    if (this.volleyCooldown-- <= 0) {
-      // Rain fireballs from above
-      for (let i = 0; i < 8; i++) {
-        const x = Math.random() * this.canvas.width;
-        const y = -10;
-        const proj = new Projectile(x, y, { damage: 2, speed: 3, size: 4, color: 'orange', dx: 0, dy: 1, faction: 'enemy' });
-        this.gameState.projectiles.push(proj);
-      }
-      // Aim a few toward player
-      if (p) {
-        for (let i = 0; i < 3; i++) {
-          const dx = p.x - this.x;
-          const dy = p.y - this.y;
-          const d = Math.hypot(dx, dy) || 1;
-          const proj = new Projectile(this.x, this.y, { damage: 3, speed: 4, size: 5, color: 'red', dx: dx / d, dy: dy / d, faction: 'enemy' });
-          this.gameState.projectiles.push(proj);
-        }
-      }
-      this.state = 'attack';
-      this.volleyCooldown = 120;
+
+    // Ability usage
+    this.abilityCooldown--;
+    if (this.abilityCooldown <= 0) {
+      this.useAbility();
+      this.abilityCooldown = 180; // Reset cooldown
     }
+
+    if (this.shieldTimer > 0) {
+      this.shieldTimer--;
+      if (this.shieldTimer <= 0) {
+        this.shieldActive = false;
+      }
+    }
+
     this.advanceFrame();
+  }
+
+  useAbility() {
+    const choice = Math.random();
+    if (choice < 0.45) {
+      this.fieryRain();
+    } else if (choice < 0.8) {
+      this.debtSpiral();
+    } else {
+      this.loanSreath();
+    }
+  }
+
+  fieryRain() {
+    this.state = 'attack';
+    playSound('boss_attack');
+    const p = this.gameState.player;
+
+    // Rain fireballs from above
+    for (let i = 0; i < 12; i++) {
+      const x = Math.random() * this.canvas.width;
+      const y = -10 - Math.random() * 50;
+      const proj = new Projectile(x, y, {
+        damage: 15, // Devastating damage
+        speed: 3 + Math.random() * 2,
+        size: 5,
+        color: 'orange',
+        dx: 0,
+        dy: 1,
+        faction: 'enemy'
+      });
+      this.gameState.projectiles.push(proj);
+    }
+
+    // Spawn a few "gold bombs"
+    for (let i = 0; i < 3; i++) {
+      const x = Math.random() * this.canvas.width;
+      const y = -20 - Math.random() * 50;
+      const proj = new Projectile(x, y, {
+        damage: 25,
+        speed: 2.5,
+        size: 8,
+        color: 'gold',
+        dx: 0,
+        dy: 1,
+        faction: 'enemy',
+        isGoldBomb: true, // Custom flag
+      });
+      this.gameState.projectiles.push(proj);
+    }
+  }
+
+  debtSpiral() {
+    this.state = 'attack';
+    playSound('black_hole'); // Assuming a sound effect exists
+    // Create a black hole hazard that pulls the player in
+    const targetX = this.gameState.player.x + (Math.random() - 0.5) * 100;
+    const targetY = this.gameState.player.y + (Math.random() - 0.5) * 100;
+
+    spawnBlackHole(this.gameState, targetX, targetY, {
+      duration: 300, // Lasts 5 seconds
+      pullForce: 2.5, // How strongly it pulls
+      radius: 150,
+    });
+  }
+
+  loanSreath() {
+    this.state = 'attack'; // Or a specific shield animation
+    playSound('shield_up');
+    this.shieldActive = true;
+    this.shieldTimer = 240; // Shield lasts for 4 seconds
+  }
+
+  takeHit(projectile, gameState) {
+    if (this.shieldActive) {
+      playSound('absorb'); // Assuming a sound effect exists
+      // Absorb projectile and gain health
+      this.hp = Math.min(this.hpMax, this.hp + projectile.damage);
+      // Maybe create a visual effect here
+      return; // Absorb hit, no damage
+    }
+    super.takeHit(projectile, gameState);
   }
 }
 
