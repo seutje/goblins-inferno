@@ -188,11 +188,10 @@ export class InterestDragon extends BaseBoss {
     // Behavior: Float near the top, mirroring player's horizontal position
     const dx = player.x - this.x;
     this.x += Math.sign(dx) * this.speed * 0.8;
-    if (this.y > this.canvas.height * 0.25) {
-      this.y -= this.speed;
-    } else {
-      this.y += Math.sin(this.frame * 0.1) * 0.5; // Gentle bobbing motion
-    }
+    const worldH = (this.gameState.world?.height) || this.canvas.height;
+    const targetBand = worldH * 0.25;
+    if (this.y > targetBand) { this.y -= this.speed; }
+    else { this.y += Math.sin(this.frame * 0.1) * 0.5; } // Gentle bobbing
 
     // Ability usage
     this.abilityCooldown--;
@@ -232,7 +231,7 @@ export class InterestDragon extends BaseBoss {
 
     // Rain fireballs from above
     for (let i = 0; i < 12; i++) {
-      const x = Math.random() * this.canvas.width;
+      const x = Math.random() * ((this.gameState.world?.width) || this.canvas.width);
       const y = -10 - Math.random() * 50;
       const proj = new Projectile(x, y, {
         damage: 15, // Devastating damage
@@ -248,7 +247,7 @@ export class InterestDragon extends BaseBoss {
 
     // Spawn a few "gold bombs"
     for (let i = 0; i < 3; i++) {
-      const x = Math.random() * this.canvas.width;
+      const x = Math.random() * ((this.gameState.world?.width) || this.canvas.width);
       const y = -20 - Math.random() * 50;
       const proj = new Projectile(x, y, {
         damage: 25,

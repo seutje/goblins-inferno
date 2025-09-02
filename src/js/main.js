@@ -18,22 +18,14 @@ const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
 function resizeCanvas() {
-    // Fill viewport
+    // Fill viewport independently of world size
     const w = window.innerWidth;
     const h = window.innerHeight;
     if (canvas.width !== w || canvas.height !== h) {
         canvas.width = w;
         canvas.height = h;
-        // Update world dimensions proportionally (4x area => 2x each dimension)
-        if (gameState.world) {
-            // Expand world to 4x width/height (16x area) relative to viewport
-            gameState.world.width = canvas.width * 4;
-            gameState.world.height = canvas.height * 4;
-            // Clamp camera to new bounds
-            updateCamera();
-            // Recreate decor for new world bounds
-            try { initDecor(gameState, canvas); } catch {}
-        }
+        // Re-clamp camera to fixed world bounds on viewport changes
+        updateCamera();
     }
     // Update render scale for current device
     gameState.renderScale = computeRenderScale();
@@ -72,8 +64,8 @@ const gameState = window.gameState = {
     trait: null,
     _buffs: [],
     hazards: [],
-    // World and camera
-    world: { width: canvas.width * 2, height: canvas.height * 2 }, // 4x area
+    // World and camera (fixed-size world, independent of viewport)
+    world: { width: 3200, height: 2000 },
     camera: { x: canvas.width / 2, y: canvas.height / 2 }
 };
 
@@ -369,8 +361,7 @@ function init() {
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
     initDebtUI(gameState);
-    // Ensure world size scales with current canvas (4x linear → 16x area)
-    gameState.world = { width: canvas.width * 4, height: canvas.height * 4 };
+    // Use fixed world; center camera at start
     gameState.camera = { x: gameState.world.width / 2, y: gameState.world.height / 2 };
     // Scatter decorative rocks around edges
     initDecor(gameState, canvas);
