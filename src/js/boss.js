@@ -153,6 +153,7 @@ export class InterestDragon extends BaseBoss {
     this.shieldTimer = 0; // Countdown for shield duration
     this.shieldActive = false;
     this.sprite.src = versioned('src/img/sprite-dragon.png');
+    this._absorbPhase = 0; // visual pulse for absorb state
   }
 
   update() {
@@ -181,6 +182,9 @@ export class InterestDragon extends BaseBoss {
         this.shieldActive = false;
       }
     }
+
+    // Drive absorb visual pulse
+    if (this.shieldActive) this._absorbPhase += 0.2; else this._absorbPhase *= 0.9;
 
     this.advanceFrame();
   }
@@ -265,6 +269,37 @@ export class InterestDragon extends BaseBoss {
       return; // Absorb hit, no damage
     }
     super.takeHit(projectile, gameState);
+  }
+
+  draw(ctx) {
+    // Draw base sprite
+    super.draw(ctx);
+    // Overlay absorb visuals when active
+    if (this.shieldActive) {
+      const r = this.size + 10 + Math.sin(this._absorbPhase) * 3;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      // Radial golden glow
+      const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, r);
+      g.addColorStop(0, 'rgba(248, 200, 90, 0.35)');
+      g.addColorStop(1, 'rgba(248, 120, 40, 0.0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+      ctx.fill();
+      // Orbiting sparks implying absorption
+      for (let i = 0; i < 5; i++) {
+        const a = this._absorbPhase * 1.6 + (i * (Math.PI * 2 / 5));
+        const rr = r - 6 - (i % 2) * 5;
+        const sx = this.x + Math.cos(a) * rr;
+        const sy = this.y + Math.sin(a) * rr;
+        ctx.fillStyle = 'rgba(255, 223, 112, 0.85)';
+        ctx.beginPath();
+        ctx.arc(sx, sy, 2.6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
   }
 }
 
