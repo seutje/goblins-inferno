@@ -85,7 +85,6 @@ export class Projectile {
     }
 }
 
-import { playSound } from './audio.js';
 import { versioned } from './assets.js';
 
 export function fireInfernoBlast(gameState, x, y, dir) {
@@ -95,7 +94,6 @@ export function fireInfernoBlast(gameState, x, y, dir) {
         x, y,
         { damage: 2 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: versioned('src/img/sprite-projectile.png'), frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 0, frameInterval: 6, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
     ));
-    playSound('fire');
 }
 
 export function fireFlameStream(gameState, x, y, dir) {
@@ -105,7 +103,6 @@ export function fireFlameStream(gameState, x, y, dir) {
         x, y,
         { damage: 1.0 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: versioned('src/img/sprite-projectile.png'), frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 1, frameInterval: 3, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
     ));
-    playSound('fire');
 }
 
 export function fireVolatileOrb(gameState, x, y, dir) {
@@ -115,7 +112,6 @@ export function fireVolatileOrb(gameState, x, y, dir) {
         x, y,
         { damage: 6 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: versioned('src/img/sprite-projectile.png'), frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 2, frameInterval: 8, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
     ));
-    playSound('fire');
 }
 
 function normDir(dir) {

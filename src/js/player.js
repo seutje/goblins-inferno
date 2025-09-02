@@ -1,6 +1,7 @@
 import { fireInfernoBlast, fireFlameStream, fireVolatileOrb } from './projectile.js';
 import { versioned } from './assets.js';
 import { spawnFirePatch } from './hazard.js';
+import { playSound } from './audio.js';
 
 export default class Player {
     constructor(canvas, gameState) {
@@ -203,6 +204,8 @@ export default class Player {
         const prevP = this.gameState._injectPierce;
         this.gameState._injectBounces = bounces;
         this.gameState._injectPierce = (this.gameState._metaMods?.pierce || 0);
+        // Play a single fire sound for the whole burst
+        try { playSound('fire'); } catch {}
         dirs.forEach(d => shootFn(d));
         this.gameState._injectBounces = prev;
         this.gameState._injectPierce = prevP;
