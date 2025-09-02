@@ -146,8 +146,18 @@ canvas {
       inset 0 2px 0 rgba(0,0,0,0.2),
       inset 0 -2px 0 rgba(0,0,0,0.4);
 }
-.choice-title { font-weight: bold; margin-bottom: 6px; color: var(--accent-strong); }
-.choice-desc { font-size: 0.9rem; color: var(--text-dim); }
+.choice-title { 
+    font-weight: bold; 
+    margin-bottom: 6px; 
+    color: var(--accent-strong);
+    /* Global readable shadow for button-like cards */
+    text-shadow: 0 2px 0 #3a1b12, 0 0 8px rgba(0,0,0,0.45);
+}
+.choice-desc { 
+    font-size: 0.9rem; 
+    color: var(--text-dim);
+    text-shadow: 0 2px 0 #2a140d, 0 0 6px rgba(0,0,0,0.4);
+}
 
 /* Enhance readability in the upgrade modal with text shadows */
 #upgradeModal .choice-title {
