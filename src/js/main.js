@@ -1,7 +1,7 @@
 import Player from './player.js';
 import { updateProjectiles, drawProjectiles } from './projectile.js';
 import { updateSpawner } from './spawner.js';
-import { initLevelSystem, updateLevelSystem, drawGems } from './level.js';
+import { initLevelSystem, updateLevelSystem, drawGems, spawnCoin } from './level.js';
 import { createDebtState, updateDebt, initDebtUI } from './debt.js';
 import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
@@ -268,6 +268,8 @@ function checkCollisions() {
                     if (Math.random() < 0.10) {
                         spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
                     }
+                    // Drop a coin at the enemy's death location
+                    spawnCoin(gameState, e.x, e.y, { value: 1 });
                     gameState.enemies.splice(ei, 1);
                 }
                 break; // Proceed to next projectile

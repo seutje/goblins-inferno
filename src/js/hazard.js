@@ -1,5 +1,6 @@
 // Hazards: lingering area effects like Ignis's fire trail
 import { spawnHealthPickup } from './pickups.js';
+import { spawnCoin } from './level.js';
 import { versioned } from './assets.js';
 
 const SHEET_COLS = 6;
@@ -48,10 +49,14 @@ export class FirePatch {
                 if (typeof e.hp === 'number') {
                     e.hp -= this.dps;
                     if (e.hp <= 0) {
-                        if (!e.isBoss && Math.random() < 0.10) {
-                            spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
+                        if (!e.isBoss) {
+                          if (Math.random() < 0.10) {
+                              spawnHealthPickup(gameState, e.x, e.y, { heal: 25 });
+                          }
+                          // Drop a coin when a non-boss dies in fire
+                          spawnCoin(gameState, e.x, e.y, { value: 1 });
+                          gameState.enemies.splice(i, 1);
                         }
-                        gameState.enemies.splice(i, 1);
                     }
                 }
             }

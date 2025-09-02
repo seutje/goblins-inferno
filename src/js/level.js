@@ -99,6 +99,33 @@ export function initLevelSystem(gameState, canvas) {
   gameState._openUpgradeModal = openUpgrade;
 }
 
+// Spawn a coin pickup at a specific world position
+export function spawnCoin(gameState, x, y, { value = 1 } = {}) {
+  const sprite = new Image();
+  sprite.src = versioned('src/img/sprite-coin.png');
+  const W = (gameState.world?.width) || (gameState.canvasWidth || Infinity);
+  const H = (gameState.world?.height) || (gameState.canvasHeight || Infinity);
+  const pad = 16;
+  const gx = Math.max(pad, Math.min(W - pad, x));
+  const gy = Math.max(pad, Math.min(H - pad, y));
+  const coin = {
+    x: gx,
+    y: gy,
+    size: 14,
+    value: value,
+    color: '#fc3',
+    sprite,
+    frame: 0,
+    frameTimer: 0,
+    frameInterval: 8,
+    frameWidth: GEM_FRAME_W,
+    frameHeight: GEM_FRAME_H,
+    row: 1 // use second row
+  };
+  if (!gameState.gems) gameState.gems = [];
+  gameState.gems.push(coin);
+}
+
 export function updateLevelSystem(gameState, canvas) {
   // Spawn gems periodically for now (until enemy loot is wired)
   if (gameState._gemTimer-- <= 0) {
