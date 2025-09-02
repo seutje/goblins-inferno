@@ -45,7 +45,8 @@ const gameState = window.gameState = {
         spawnIntervalMin: 30,
         gemTimerBase: 180,
         gemTimerMin: 90,
-        bossThresholds: [30, 80, 140]
+        bossThresholds: [30, 80, 140],
+        bossCooldownFrames: 60 * 30 // 30s cooldown after a boss dies
     },
     // Level & upgrade system
     xp: 0,

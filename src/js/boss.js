@@ -407,10 +407,15 @@ export function updateBoss(gameState, canvas) {
     gameState._bossInit = true;
     gameState._bossIndex = 0;
     gameState._bossThresholds = gameState.balance?.bossThresholds || [30, 80, 140]; // difficulty milestones
+    gameState._bossCooldownFrames = 0; // cooldown before next boss can spawn
+  }
+  // Tick down post-kill cooldown
+  if (gameState._bossCooldownFrames && gameState._bossCooldownFrames > 0) {
+    gameState._bossCooldownFrames--;
   }
 
   // Spawn next boss when threshold is reached and no active boss
-  if (!gameState.boss && gameState.difficulty >= (gameState._bossThresholds[gameState._bossIndex] || Infinity)) {
+  if (!gameState.boss && (gameState._bossCooldownFrames || 0) <= 0 && gameState.difficulty >= (gameState._bossThresholds[gameState._bossIndex] || Infinity)) {
     let BossClass = CreditorChampion;
     if (gameState._bossIndex === 1) BossClass = InterestDragon;
     else if (gameState._bossIndex === 2) BossClass = DebtCollector;
@@ -483,6 +488,9 @@ export function updateBoss(gameState, canvas) {
 
     gameState.boss = null;
     gameState._bossIndex = Math.min(gameState._bossIndex + 1, 3);
+    // Start cooldown before next boss can spawn
+    const cd = gameState.balance?.bossCooldownFrames;
+    gameState._bossCooldownFrames = (typeof cd === 'number' && cd >= 0) ? cd : (60 * 60);
     if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
     playSound('boss_down');
     // If we've defeated the last boss in the planned set, show victory modal
