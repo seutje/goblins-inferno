@@ -390,6 +390,26 @@ function init() {
         setMuted(muted);
         btnMute.textContent = muted ? 'Unmute' : 'Mute';
     });
+    // Fullscreen toggle (show only on touch devices)
+    const btnFS = document.getElementById('btnFullscreen');
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    function fsActive() { return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement; }
+    function reqFS(el) {
+        const fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (fn) fn.call(el);
+    }
+    function exitFS() {
+        const fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+        if (fn) fn.call(document);
+    }
+    function updateFSLabel() { if (btnFS) btnFS.textContent = fsActive() ? 'Exit Fullscreen' : 'Fullscreen'; }
+    if (btnFS) {
+        if (isTouch) btnFS.style.display = 'inline-block';
+        btnFS.addEventListener('click', () => { fsActive() ? exitFS() : reqFS(document.documentElement); });
+        document.addEventListener('fullscreenchange', updateFSLabel);
+        document.addEventListener('webkitfullscreenchange', updateFSLabel);
+        updateFSLabel();
+    }
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
 
