@@ -373,6 +373,7 @@ function init() {
     const winStats = document.getElementById('gameWinStats');
     const btnWinRestart = document.getElementById('btnWinRestart');
     const btnWinContinue = document.getElementById('btnWinContinue');
+    const btnWinMeta = document.getElementById('btnWinMeta');
     function openWinModal() {
         if (winStats) {
             const lvl = gameState.level;
@@ -390,6 +391,10 @@ function init() {
     if (btnWinContinue) btnWinContinue.addEventListener('click', () => {
         if (winModal) winModal.style.display = 'none';
         gameState.paused = false;
+    });
+    if (btnWinMeta) btnWinMeta.addEventListener('click', () => {
+        if (winModal) winModal.style.display = 'none';
+        try { if (typeof gameState._openMetaModal === 'function') gameState._openMetaModal(); } catch {}
     });
     // Expose so bosses can trigger
     gameState._openWinModal = openWinModal;

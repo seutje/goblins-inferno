@@ -121,4 +121,6 @@ function wireMetaUI(gameState) {
   }
   if (openBtn) openBtn.addEventListener('click', open);
   if (closeBtn) closeBtn.addEventListener('click', close);
+  // Expose to other UI (e.g., victory screen)
+  if (gameState) gameState._openMetaModal = open;
 }
