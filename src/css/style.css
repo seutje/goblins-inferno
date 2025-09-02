@@ -37,6 +37,7 @@ body {
     color: var(--text);
     overflow: hidden;
 }
+html, body, canvas { touch-action: none; }
 /* relocated under src/css per new structure */
 
 canvas {
@@ -275,3 +276,11 @@ canvas {
 #pickGnorp .choice-sprite { background-image: url(../img/sprite-char-gnorp.png); }
 #pickIgnis .choice-sprite { background-image: url(../img/sprite-char-ignis.png); }
 #pickFizzle .choice-sprite { background-image: url(../img/sprite-char-fizzle.png); }
+
+/* Touch controls */
+.touch-controls { position: fixed; inset: 0; pointer-events: none; }
+.stick { position: absolute; width: 120px; height: 120px; border-radius: 60px; pointer-events: auto; }
+#moveStick { left: 16px; bottom: 16px; }
+#aimStick { right: 16px; bottom: 16px; }
+.stick { background: rgba(58, 27, 18, 0.25); border: 2px solid var(--panel-border); box-shadow: inset 0 2px 0 var(--btn-bevel-top), inset 0 -3px 0 var(--btn-bevel-bottom); }
+.stick .knob { position: absolute; left: 50%; top: 50%; width: 56px; height: 56px; margin-left: -28px; margin-top: -28px; border-radius: 28px; background: linear-gradient(180deg, var(--btn-grad-top), var(--btn-grad-bottom)); box-shadow: 0 4px 0 #3a1b12, 0 6px 14px var(--btn-shadow); }

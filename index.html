@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Goblins Inferno</title>
     <script>
       (function(){
@@ -55,6 +55,11 @@
     <!-- Active Buffs HUD -->
     <div id="buffsHUD" class="buffs-hud"></div>
     <canvas id="gameCanvas"></canvas>
+    <!-- Touch Controls for mobile -->
+    <div id="touchControls" class="touch-controls">
+      <div id="moveStick" class="stick"><div class="knob"></div></div>
+      <div id="aimStick" class="stick"><div class="knob"></div></div>
+    </div>
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay" style="display:flex;">
       <div class="loading-box">

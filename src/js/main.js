@@ -426,6 +426,9 @@ function init() {
         if (e.code === 'KeyP') gameState.paused = !gameState.paused;
     });
     window.addEventListener('keyup', e => gameState.keys[e.code] = false);
+
+    // Touch controls for mobile (multitouch virtual joysticks)
+    setupTouchControls();
     gameLoop();
 }
 
@@ -442,3 +445,78 @@ function boot() {
 }
 
 boot();
+
+function setupTouchControls() {
+    const container = document.getElementById('touchControls');
+    const moveStick = document.getElementById('moveStick');
+    const aimStick = document.getElementById('aimStick');
+    if (!container || !moveStick || !aimStick) return;
+    const touchCapable = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (!touchCapable) { container.style.display = 'none'; return; }
+    container.style.display = 'block';
+    let moveId = null; let aimId = null;
+    const radius = 60; // px
+
+    function centerOf(el) {
+        const r = el.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    }
+
+    function assignTouch(t) {
+        const half = window.innerWidth / 2;
+        if (t.clientX < half && moveId === null) { moveId = t.identifier; return 'move'; }
+        if (t.clientX >= half && aimId === null) { aimId = t.identifier; return 'aim'; }
+        return null;
+    }
+    function getTouchById(list, id) { for (let i = 0; i < list.length; i++) if (list[i].identifier === id) return list[i]; return null; }
+
+    function updateStick(which, t) {
+        const el = which === 'move' ? moveStick : aimStick;
+        const knob = el.querySelector('.knob');
+        const c = centerOf(el);
+        const dx = t.clientX - c.x;
+        const dy = t.clientY - c.y;
+        const d = Math.hypot(dx, dy);
+        const cl = Math.min(radius, d);
+        const nx = d > 0 ? dx / d : 0;
+        const ny = d > 0 ? dy / d : 0;
+        knob.style.transform = `translate(${nx * cl}px, ${ny * cl}px)`;
+        if (which === 'move') {
+            gameState._touchMove = { dx: nx, dy: ny };
+        } else {
+            // Aim vector sets mouse in world space relative to player
+            if (gameState.player) {
+                const px = gameState.player.x, py = gameState.player.y;
+                gameState.mouse = { x: px + nx * 200, y: py + ny * 200 };
+            }
+        }
+    }
+    function resetStick(which) {
+        const el = which === 'move' ? moveStick : aimStick;
+        const knob = el.querySelector('.knob');
+        knob.style.transform = 'translate(0,0)';
+        if (which === 'move') gameState._touchMove = { dx: 0, dy: 0 };
+    }
+
+    function onStart(e) {
+        for (const t of Array.from(e.changedTouches)) assignTouch(t);
+    }
+    function onMove(e) {
+        e.preventDefault(); // disable scroll/zoom gestures
+        const mt = getTouchById(e.touches, moveId);
+        if (mt) updateStick('move', mt);
+        const at = getTouchById(e.touches, aimId);
+        if (at) updateStick('aim', at);
+    }
+    function onEnd(e) {
+        for (const t of Array.from(e.changedTouches)) {
+            if (t.identifier === moveId) { moveId = null; resetStick('move'); }
+            if (t.identifier === aimId) { aimId = null; resetStick('aim'); }
+        }
+    }
+
+    container.addEventListener('touchstart', onStart, { passive: false });
+    container.addEventListener('touchmove', onMove, { passive: false });
+    container.addEventListener('touchend', onEnd, { passive: false });
+    container.addEventListener('touchcancel', onEnd, { passive: false });
+}

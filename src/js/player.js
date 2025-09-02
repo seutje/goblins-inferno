@@ -62,6 +62,15 @@ export default class Player {
 
         if (moveX !== 0) this.faceDir = moveX > 0 ? 1 : -1;
 
+        // Touch joystick movement (analog)
+        const tv = this.gameState._touchMove;
+        if (tv && (Math.abs(tv.dx) > 0.01 || Math.abs(tv.dy) > 0.01)) {
+            this.x += tv.dx * speed;
+            this.y += tv.dy * speed;
+            moving = true;
+            if (Math.abs(tv.dx) > 0.05) this.faceDir = tv.dx > 0 ? 1 : -1;
+        }
+
         this.state = moving ? 'walk' : 'idle';
 
         const W = (this.gameState?.world?.width) || this.canvas.width;
