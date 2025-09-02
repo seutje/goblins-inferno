@@ -157,7 +157,10 @@ function onPlayerDeath() {
     try { repay(gameState.debt, gameState.debt.gold || 0); } catch {}
     const modal = document.getElementById('gameOverModal');
     const statsEl = document.getElementById('gameOverStats');
-    if (statsEl) statsEl.textContent = `Level ${gameState.level} | Gems ${gameState.totalGems}`;
+    if (statsEl) {
+        const inferno = gameState.meta?.gems || 0;
+        statsEl.textContent = `Level ${gameState.level} | Gems ${gameState.totalGems} | Inferno Gems ${inferno}`;
+    }
     if (modal) modal.style.display = 'flex';
 }
 
@@ -426,6 +429,12 @@ function init() {
     }
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
+    const btnGameOverMeta = document.getElementById('btnGameOverMeta');
+    if (btnGameOverMeta) btnGameOverMeta.addEventListener('click', () => {
+        const over = document.getElementById('gameOverModal');
+        if (over) over.style.display = 'none';
+        try { if (typeof gameState._openMetaModal === 'function') gameState._openMetaModal(); } catch {}
+    });
 
     // Victory modal wiring
     const winModal = document.getElementById('gameWinModal');
