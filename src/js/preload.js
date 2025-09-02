@@ -23,7 +23,15 @@ const ASSETS = [
   'src/img/sprite-gem.png',
   'src/img/sprite-coin.png',
   // Hazard fire
-  'src/img/sprite-fire.png'
+  'src/img/sprite-fire.png',
+  // Decor rocks (varying dimensions)
+  'src/img/rock1.png',
+  'src/img/rock2.png',
+  'src/img/rock3.png',
+  'src/img/rock4.png',
+  'src/img/rock5.png',
+  'src/img/rock6.png',
+  'src/img/rock7.png'
 ];
 
 export function preloadAll(onProgress) {

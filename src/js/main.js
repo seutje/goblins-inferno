@@ -5,6 +5,7 @@ import { initLevelSystem, updateLevelSystem, drawGems } from './level.js';
 import { createDebtState, updateDebt, initDebtUI } from './debt.js';
 import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
+import { initDecor, drawDecor } from './decor.js';
 import { updateBoss, drawBossHUD } from './boss.js';
 import { initAudio, playSound, setMuted } from './audio.js';
 import { preloadAll } from './preload.js';
@@ -28,6 +29,8 @@ function resizeCanvas() {
             gameState.world.height = canvas.height * 2;
             // Clamp camera to new bounds
             updateCamera();
+            // Recreate decor for new world bounds
+            try { initDecor(gameState, canvas); } catch {}
         }
     }
     // Update render scale for current device
@@ -302,6 +305,8 @@ function gameLoop() {
     const camX = Math.round(gameState.camera.x - canvas.width / (2 * s));
     const camY = Math.round(gameState.camera.y - canvas.height / (2 * s));
     ctx.translate(-camX, -camY);
+    // Background decor
+    drawDecor(gameState, ctx);
     // Ground effects first so trails render behind characters
     drawHazards(gameState, ctx);
     drawGems(gameState, ctx);
@@ -331,6 +336,8 @@ function init() {
     // Ensure world size scales with current canvas
     gameState.world = { width: canvas.width * 2, height: canvas.height * 2 };
     gameState.camera = { x: gameState.world.width / 2, y: gameState.world.height / 2 };
+    // Scatter decorative rocks around edges
+    initDecor(gameState, canvas);
     // Character selection
     const charModal = document.getElementById('charModal');
     const btnGnorp = document.getElementById('pickGnorp');
