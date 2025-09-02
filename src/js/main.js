@@ -27,8 +27,19 @@ function resizeCanvas() {
         // Re-clamp camera to fixed world bounds on viewport changes
         updateCamera();
     }
-    // Update render scale for current device
-    gameState.renderScale = computeRenderScale();
+    // Update base scale for device and apply current zoom
+    gameState.baseScale = computeRenderScale();
+    // Ensure we don't zoom out beyond world bounds given the viewport size
+    const W = gameState.world.width;
+    const H = gameState.world.height;
+    const neededS = Math.max(canvas.width / W, canvas.height / H);
+    const minZoomNeeded = neededS / (gameState.baseScale || 1);
+    const zMin = gameState.zoomMin || 0.6;
+    const zMax = gameState.zoomMax || 2.0;
+    if ((gameState.baseScale || 1) * (gameState.zoom || 1) < neededS) {
+        gameState.zoom = Math.min(zMax, Math.max(zMin, minZoomNeeded));
+    }
+    gameState.renderScale = (gameState.baseScale || 1) * (gameState.zoom || 1);
 }
 
 const gameState = window.gameState = {
@@ -67,7 +78,13 @@ const gameState = window.gameState = {
     hazards: [],
     // World and camera (fixed-size world, independent of viewport)
     world: { width: 3200, height: 2000 },
-    camera: { x: canvas.width / 2, y: canvas.height / 2 }
+    camera: { x: canvas.width / 2, y: canvas.height / 2 },
+    // Zoom controls
+    zoom: 1,
+    baseScale: 1,
+    renderScale: 1,
+    zoomMin: 0.6,
+    zoomMax: 2.0
 };
 
 function updatePlayer() {
@@ -362,7 +379,9 @@ function init() {
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
     initDebtUI(gameState);
-    // Use fixed world; center camera at start
+    // Use fixed world; center camera at start and compute initial scale
+    gameState.baseScale = computeRenderScale();
+    gameState.renderScale = (gameState.baseScale || 1) * (gameState.zoom || 1);
     gameState.camera = { x: gameState.world.width / 2, y: gameState.world.height / 2 };
     // Scatter decorative rocks around edges
     initDecor(gameState, canvas);
@@ -399,6 +418,16 @@ function init() {
     }
     window.addEventListener('mousemove', updateMouse);
     window.addEventListener('mousedown', updateMouse);
+    // Mouse wheel zoom with cursor anchoring
+    canvas.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const rect = canvas.getBoundingClientRect();
+        const sx = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const sy = (e.clientY - rect.top) * (canvas.height / rect.height);
+        const dir = e.deltaY < 0 ? 1 : -1; // up = zoom in
+        const factor = dir > 0 ? 1.1 : 1 / 1.1;
+        applyZoom(gameState.zoom * factor, sx, sy);
+    }, { passive: false });
     window.addEventListener('resize', resizeCanvas);
 
     // Buff HUD: DOM rendering for active temporary buffs
@@ -419,6 +448,8 @@ function init() {
     }
     gameState._refreshBuffsHUD = refreshBuffsHUD;
     const btnMute = document.getElementById('btnMute');
+    const btnZoomIn = document.getElementById('btnZoomIn');
+    const btnZoomOut = document.getElementById('btnZoomOut');
     let muted = false;
     if (btnMute) btnMute.addEventListener('click', () => {
         muted = !muted;
@@ -444,6 +475,13 @@ function init() {
         document.addEventListener('fullscreenchange', updateFSLabel);
         document.addEventListener('webkitfullscreenchange', updateFSLabel);
         updateFSLabel();
+    }
+    // Touch zoom buttons
+    if (btnZoomIn && btnZoomOut) {
+        if (isTouch) { btnZoomIn.style.display = 'inline-block'; btnZoomOut.style.display = 'inline-block'; }
+        const anchor = () => ({ x: canvas.width / 2, y: canvas.height / 2 });
+        btnZoomIn.addEventListener('click', () => { const a = anchor(); applyZoom(gameState.zoom * 1.1, a.x, a.y); });
+        btnZoomOut.addEventListener('click', () => { const a = anchor(); applyZoom(gameState.zoom / 1.1, a.x, a.y); });
     }
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
@@ -523,6 +561,43 @@ function computeRenderScale() {
     if (minDim <= 520) return 0.75;
     if (minDim <= 760) return 0.85;
     return 0.95;
+}
+
+// Apply zoom keeping a given screen-space anchor stable (sx, sy in canvas pixels)
+function applyZoom(newZoom, sx, sy) {
+    // Dynamic min zoom so viewport never exceeds world bounds
+    const W = gameState.world.width;
+    const H = gameState.world.height;
+    const base = gameState.baseScale || 1;
+    const neededS = Math.max(canvas.width / W, canvas.height / H);
+    const dynamicMinZ = neededS / base;
+    const minZ = Math.max(gameState.zoomMin || 0.6, dynamicMinZ);
+    const maxZ = gameState.zoomMax || 2.0;
+    const prevS = gameState.renderScale || 1;
+    const prevZ = gameState.zoom || 1;
+    const clamped = Math.max(minZ, Math.min(maxZ, newZoom));
+    if (Math.abs(clamped - prevZ) < 1e-4) return;
+    // Compute world point under the anchor before zoom
+    const prevCamX = (gameState.camera?.x || canvas.width / 2) - canvas.width / (2 * prevS);
+    const prevCamY = (gameState.camera?.y || canvas.height / 2) - canvas.height / (2 * prevS);
+    const worldX = prevCamX + (sx / prevS);
+    const worldY = prevCamY + (sy / prevS);
+    // Update zoom and effective render scale
+    gameState.zoom = clamped;
+    gameState.renderScale = (gameState.baseScale || 1) * (gameState.zoom || 1);
+    const s = gameState.renderScale || 1;
+    // Compute new camera such that anchor maps back to same screen pos
+    let newCamX = worldX - (sx / s);
+    let newCamY = worldY - (sy / s);
+    // Convert cam back to camera center and clamp to world
+    const halfW = canvas.width / (2 * s);
+    const halfH = canvas.height / (2 * s);
+    let cx = newCamX + halfW;
+    let cy = newCamY + halfH;
+    cx = Math.max(halfW, Math.min(W - halfW, cx));
+    cy = Math.max(halfH, Math.min(H - halfH, cy));
+    gameState.camera.x = cx;
+    gameState.camera.y = cy;
 }
 
 function setupTouchControls() {
