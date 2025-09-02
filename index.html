@@ -16,6 +16,29 @@
         window.APP_VERSION = v;
       })();
     </script>
+    <script>
+      // Simple client-side live reload: polls live-reload.json when present
+      (function(){
+        let lastSeen = null;
+        async function check() {
+          try {
+            const res = await fetch('live-reload.json?_=' + Date.now(), { cache: 'no-store' });
+            if (res.ok) {
+              const data = await res.json();
+              if (lastSeen && lastSeen !== data.version) {
+                const u = new URL(location.href);
+                u.searchParams.set('v', String(Date.now()));
+                location.href = u.toString();
+                return;
+              }
+              lastSeen = data.version;
+            }
+          } catch {}
+          setTimeout(check, 800);
+        }
+        check();
+      })();
+    </script>
 </head>
 <body>
     <div id="hud" class="hud">
