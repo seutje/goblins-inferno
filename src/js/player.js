@@ -6,8 +6,10 @@ export default class Player {
     constructor(canvas, gameState) {
         this.canvas = canvas;
         this.gameState = gameState;
-        this.x = canvas.width / 2;
-        this.y = canvas.height / 2;
+        const W = (gameState?.world?.width) || canvas.width;
+        const H = (gameState?.world?.height) || canvas.height;
+        this.x = W / 2;
+        this.y = H / 2;
         this.baseSpeed = 3;
         // Updated for much larger character sprites (170x170 frames)
         this.frameWidth = 175;
@@ -62,8 +64,10 @@ export default class Player {
 
         this.state = moving ? 'walk' : 'idle';
 
-        this.x = Math.max(this.size, Math.min(this.canvas.width - this.size, this.x));
-        this.y = Math.max(this.size, Math.min(this.canvas.height - this.size, this.y));
+        const W = (this.gameState?.world?.width) || this.canvas.width;
+        const H = (this.gameState?.world?.height) || this.canvas.height;
+        this.x = Math.max(this.size, Math.min(W - this.size, this.x));
+        this.y = Math.max(this.size, Math.min(H - this.size, this.y));
 
         // Aim direction: towards mouse if available, otherwise up
         let aim = { dx: 0, dy: -1 };

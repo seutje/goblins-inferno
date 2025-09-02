@@ -7,8 +7,10 @@ export class Enemy {
   constructor(canvas, gameState) {
         this.canvas = canvas;
         this.gameState = gameState;
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
+        const W = (gameState?.world?.width) || canvas.width;
+        const H = (gameState?.world?.height) || canvas.height;
+        this.x = Math.random() * W;
+        this.y = Math.random() * H;
         this.speed = 1;
         // Basic combat properties
         this.hp = 10;

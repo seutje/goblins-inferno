@@ -105,9 +105,11 @@ export function updateLevelSystem(gameState, canvas) {
     // Regular world pickups are coins (boss drops remain gems)
     const sprite = new Image();
     sprite.src = versioned('src/img/sprite-coin.png');
+    const W = (gameState.world?.width) || canvas.width;
+    const H = (gameState.world?.height) || canvas.height;
     const coin = {
-      x: randInt(16, canvas.width - 16),
-      y: randInt(16, canvas.height - 16),
+      x: randInt(16, W - 16),
+      y: randInt(16, H - 16),
       size: 14,
       value: 1,
       color: '#fc3',

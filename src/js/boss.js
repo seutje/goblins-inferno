@@ -391,7 +391,7 @@ export function updateBoss(gameState, canvas) {
     if (gameState._bossIndex === 1) BossClass = InterestDragon;
     else if (gameState._bossIndex === 2) BossClass = DebtCollector;
     const boss = new BossClass(canvas, gameState);
-    boss.x = canvas.width / 2;
+    boss.x = (gameState.world?.width || canvas.width) / 2;
     boss.y = 80;
     gameState.boss = boss;
     gameState.enemies.push(boss);

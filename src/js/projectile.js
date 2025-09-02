@@ -140,18 +140,20 @@ export function updateProjectiles(gameState, canvas) {
             continue;
         }
 
-        // Wall bounces
+        // Wall bounces against world bounds
+        const W = (gameState.world?.width) || canvas.width;
+        const H = (gameState.world?.height) || canvas.height;
         let bounced = false;
         if (p.x < p.size) { p.x = p.size; p.dx = Math.abs(p.dx); bounced = true; }
-        else if (p.x > canvas.width - p.size) { p.x = canvas.width - p.size; p.dx = -Math.abs(p.dx); bounced = true; }
+        else if (p.x > W - p.size) { p.x = W - p.size; p.dx = -Math.abs(p.dx); bounced = true; }
         if (p.y < p.size) { p.y = p.size; p.dy = Math.abs(p.dy); bounced = true; }
-        else if (p.y > canvas.height - p.size) { p.y = canvas.height - p.size; p.dy = -Math.abs(p.dy); bounced = true; }
+        else if (p.y > H - p.size) { p.y = H - p.size; p.dy = -Math.abs(p.dy); bounced = true; }
         if (bounced) {
             if (p.bouncesLeft > 0) p.bouncesLeft--; else gameState.projectiles.splice(i, 1);
             continue;
         }
         // Remove if far out (safety)
-        if (p.y < -p.size*2 || p.y > canvas.height + p.size*2 || p.x < -p.size*2 || p.x > canvas.width + p.size*2) {
+        if (p.y < -p.size*2 || p.y > H + p.size*2 || p.x < -p.size*2 || p.x > W + p.size*2) {
             gameState.projectiles.splice(i, 1);
         }
     }

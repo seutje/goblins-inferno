@@ -47,7 +47,10 @@ const gameState = window.gameState = {
     character: null,
     trait: null,
     _buffs: [],
-    hazards: []
+    hazards: [],
+    // World and camera
+    world: { width: canvas.width * 2, height: canvas.height * 2 }, // 4x area
+    camera: { x: canvas.width / 2, y: canvas.height / 2 }
 };
 
 function updatePlayer() {
@@ -70,6 +73,20 @@ function drawEnemies() {
 
 function clearCanvas() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function updateCamera() {
+    const p = gameState.player;
+    if (!p) return;
+    // Keep player centered, but clamp to world bounds so we don't show outside
+    const halfW = canvas.width / 2;
+    const halfH = canvas.height / 2;
+    const W = gameState.world.width;
+    const H = gameState.world.height;
+    const x = Math.max(halfW, Math.min(W - halfW, p.x));
+    const y = Math.max(halfH, Math.min(H - halfH, p.y));
+    gameState.camera.x = x;
+    gameState.camera.y = y;
 }
 
 function damagePlayer(amount) {
@@ -255,8 +272,14 @@ function gameLoop() {
         checkPlayerDamage();
         if (gameState.player) updateLevelSystem(gameState, canvas);
         if (gameState.debt) updateDebt(gameState.debt);
+        updateCamera();
     }
 
+    // Apply camera transform for world-space rendering
+    ctx.save();
+    const camX = Math.round(gameState.camera.x - canvas.width / 2);
+    const camY = Math.round(gameState.camera.y - canvas.height / 2);
+    ctx.translate(-camX, -camY);
     // Ground effects first so trails render behind characters
     drawHazards(gameState, ctx);
     drawGems(gameState, ctx);
@@ -265,6 +288,8 @@ function gameLoop() {
     drawPlayer();
     drawEnemies();
     drawProjectiles(gameState, ctx);
+    ctx.restore();
+    // Boss HUD and other UI draw in screen space
     drawBossHUD(gameState, ctx, canvas);
     // HUD dynamic info
     const fpsEl = document.getElementById('hud-fps');
@@ -279,6 +304,9 @@ function init() {
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
     initDebtUI(gameState);
+    // Ensure world size scales with current canvas
+    gameState.world = { width: canvas.width * 2, height: canvas.height * 2 };
+    gameState.camera = { x: gameState.world.width / 2, y: gameState.world.height / 2 };
     // Character selection
     const charModal = document.getElementById('charModal');
     const btnGnorp = document.getElementById('pickGnorp');
@@ -304,7 +332,10 @@ function init() {
         const scaleY = canvas.height / rect.height;
         const mx = (e.clientX - rect.left) * scaleX;
         const my = (e.clientY - rect.top) * scaleY;
-        gameState.mouse = { x: mx, y: my };
+        // Convert to world coordinates using current camera
+        const camX = (gameState.camera?.x || canvas.width / 2) - canvas.width / 2;
+        const camY = (gameState.camera?.y || canvas.height / 2) - canvas.height / 2;
+        gameState.mouse = { x: mx + camX, y: my + camY };
     }
     window.addEventListener('mousemove', updateMouse);
     window.addEventListener('mousedown', updateMouse);
