@@ -435,6 +435,11 @@ export function updateBoss(gameState, canvas) {
     gameState._bossIndex = Math.min(gameState._bossIndex + 1, 3);
     if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
     playSound('boss_down');
+    // If we've defeated the last boss in the planned set, show victory modal
+    const totalBosses = (gameState._bossThresholds?.length) || 3;
+    if (gameState._bossIndex >= totalBosses) {
+      try { if (typeof gameState._openWinModal === 'function') gameState._openWinModal(); } catch {}
+    }
   }
 }
 

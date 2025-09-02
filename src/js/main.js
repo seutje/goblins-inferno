@@ -367,6 +367,32 @@ function init() {
     });
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
+
+    // Victory modal wiring
+    const winModal = document.getElementById('gameWinModal');
+    const winStats = document.getElementById('gameWinStats');
+    const btnWinRestart = document.getElementById('btnWinRestart');
+    const btnWinContinue = document.getElementById('btnWinContinue');
+    function openWinModal() {
+        if (winStats) {
+            const lvl = gameState.level;
+            const gems = gameState.totalGems;
+            const inferno = gameState.meta?.gems || 0;
+            winStats.textContent = `Level ${lvl} | Gems ${gems} | Inferno Gems ${inferno}`;
+        }
+        if (winModal) winModal.style.display = 'flex';
+        gameState.paused = true;
+    }
+    if (btnWinRestart) btnWinRestart.addEventListener('click', () => {
+        if (winModal) winModal.style.display = 'none';
+        restartRun();
+    });
+    if (btnWinContinue) btnWinContinue.addEventListener('click', () => {
+        if (winModal) winModal.style.display = 'none';
+        gameState.paused = false;
+    });
+    // Expose so bosses can trigger
+    gameState._openWinModal = openWinModal;
     window.addEventListener('keydown', e => {
         gameState.keys[e.code] = true;
         if (!gameState.player) return;
