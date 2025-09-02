@@ -26,8 +26,9 @@ function resizeCanvas() {
         canvas.height = h;
         // Update world dimensions proportionally (4x area => 2x each dimension)
         if (gameState.world) {
-            gameState.world.width = canvas.width * 2;
-            gameState.world.height = canvas.height * 2;
+            // Expand world to 4x width/height (16x area) relative to viewport
+            gameState.world.width = canvas.width * 4;
+            gameState.world.height = canvas.height * 4;
             // Clamp camera to new bounds
             updateCamera();
             // Recreate decor for new world bounds
@@ -368,8 +369,8 @@ function init() {
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
     initDebtUI(gameState);
-    // Ensure world size scales with current canvas
-    gameState.world = { width: canvas.width * 2, height: canvas.height * 2 };
+    // Ensure world size scales with current canvas (4x linear → 16x area)
+    gameState.world = { width: canvas.width * 4, height: canvas.height * 4 };
     gameState.camera = { x: gameState.world.width / 2, y: gameState.world.height / 2 };
     // Scatter decorative rocks around edges
     initDecor(gameState, canvas);
