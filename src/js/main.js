@@ -15,6 +15,23 @@ import { updatePickups, drawPickups, spawnHealthPickup } from './pickups.js';
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
+function resizeCanvas() {
+    // Fill viewport
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+        // Update world dimensions proportionally (4x area => 2x each dimension)
+        if (gameState.world) {
+            gameState.world.width = canvas.width * 2;
+            gameState.world.height = canvas.height * 2;
+            // Clamp camera to new bounds
+            updateCamera();
+        }
+    }
+}
+
 const gameState = window.gameState = {
     keys: {},
     mouse: null,
@@ -299,6 +316,7 @@ function gameLoop() {
 }
 
 function init() {
+    resizeCanvas();
     initAudio();
     initMeta(gameState);
     // Initialize debt & HUD
@@ -339,6 +357,7 @@ function init() {
     }
     window.addEventListener('mousemove', updateMouse);
     window.addEventListener('mousedown', updateMouse);
+    window.addEventListener('resize', resizeCanvas);
     const btnMute = document.getElementById('btnMute');
     let muted = false;
     if (btnMute) btnMute.addEventListener('click', () => {

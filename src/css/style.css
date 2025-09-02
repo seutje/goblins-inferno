@@ -23,17 +23,21 @@
 
 body {
     font-family: sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: block; /* allow canvas to fill viewport */
     height: 100vh;
     margin: 0;
     background: var(--bg);
     color: var(--text);
+    overflow: hidden;
 }
 /* relocated under src/css per new structure */
 
-canvas { background: var(--canvas-bg); }
+canvas {
+    background: var(--canvas-bg);
+    width: 100vw;
+    height: 100vh;
+    display: block;
+}
 
 /* HUD */
 .hud {
