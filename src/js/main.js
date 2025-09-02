@@ -237,6 +237,8 @@ function checkCollisions() {
             const { rx, ry } = entityEllipseRadii(e);
             const r = (p.size || 0);
             if (p.faction === 'player' && circleVsEllipse(p.x, p.y, r, e.x, e.y, rx, ry)) {
+                // If this projectile already pierced this enemy, skip re-hitting
+                if (p.hitSet && p.hitSet.has(e)) continue;
                 // Hit registered
                 let dmg = (p.damage || 0);
                 // Gnorp trait: extra damage when enemy is close to player
@@ -256,9 +258,15 @@ function checkCollisions() {
                 } else if (typeof e.hp === 'number') {
                     e.hp -= dmg;
                 }
+                // Mark this enemy as hit by this projectile to prevent repeat hits
+                if (p.hitSet) p.hitSet.add(e);
                 // Remove projectile on hit unless it has penetration left
                 if (p.pierceLeft && p.pierceLeft > 0) {
                     p.pierceLeft--;
+                    // Nudge the projectile slightly forward to exit the enemy hitbox
+                    const mag = Math.hypot(p.dx || 0, p.dy || 0) || 1;
+                    p.x += (p.dx || 0) / mag * (r + 1);
+                    p.y += (p.dy || 0) / mag * (r + 1);
                 } else {
                     gameState.projectiles.splice(pi, 1);
                 }

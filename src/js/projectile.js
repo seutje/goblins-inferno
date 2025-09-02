@@ -4,7 +4,7 @@ const FRAME_W = 170;
 const FRAME_H = 205;
 
 export class Projectile {
-    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = FRAME_W, frameHeight = FRAME_H, faction = 'player', row = 0, sheetCols = 1, sheetRows = 1, frameInterval = 6, bouncesLeft = 0, isShockwave = false } = {}) {
+    constructor(x, y, { damage = 1, speed = 5, size = 5, color = 'red', dx = 0, dy = -1, sprite = null, frameWidth = FRAME_W, frameHeight = FRAME_H, faction = 'player', row = 0, sheetCols = 1, sheetRows = 1, frameInterval = 6, bouncesLeft = 0, pierceLeft = 0, isShockwave = false } = {}) {
         this.x = x;
         this.y = y;
         this.damage = damage;
@@ -24,8 +24,11 @@ export class Projectile {
         this.frameTimer = 0;
         this.frameInterval = frameInterval;
         this.bouncesLeft = bouncesLeft;
+        this.pierceLeft = pierceLeft;
         this.isShockwave = isShockwave;
         this.shockwaveTimer = 0;
+        // Track which enemies have been hit to avoid re-hitting the same one when piercing
+        this.hitSet = new WeakSet();
         if (sprite) {
             this.sprite = new Image();
             this.sprite.src = sprite;
