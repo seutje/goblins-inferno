@@ -145,7 +145,6 @@ canvas {
 .choices {
     display: flex;
     gap: 12px;
-    margin-top: 12px;
 }
 
 .choice {
@@ -312,7 +311,7 @@ canvas {
   .choice-title { font-size: 0.9rem; }
   .choice-desc { font-size: 0.75rem; }
   .choice-sprite { width: 48px; height: 48px; background-size: 144px 144px; animation: play-y-sm 1.8s steps(3) infinite, play-x-sm 0.6s steps(3) infinite; }
-  #charModal .modal-content { width: min(520px, 94vw); height: min(440px, 72vh); padding: 24px 28px; }
+  #charModal .modal-content { width: min(520px, 94vw); height: min(440px, 72vh); padding: 24px 48px; }
   #charModal h2 { font-size: 1.2rem; margin: 2px 0 6px; }
   #charModal .choice-title { font-size: 0.82rem; }
   #charModal .choice-desc { font-size: 0.72rem; }
