@@ -166,7 +166,8 @@ export default class Player {
         const frac = Math.max(0, Math.min(1, (this.hp || 0) / (this.maxHp || 1)));
         ctx.fillStyle = 'rgba(0,0,0,0.5)';
         ctx.fillRect(bx, by, barW, barH);
-        ctx.fillStyle = '#2ecc71';
+        // Player HP bar in red to match theme
+        ctx.fillStyle = '#e33';
         ctx.fillRect(bx, by, barW * frac, barH);
         ctx.strokeStyle = 'rgba(255,255,255,0.2)';
         ctx.strokeRect(bx, by, barW, barH);
