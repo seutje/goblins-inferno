@@ -108,7 +108,7 @@ export function initDebtUI(gameState) {
       const debuff = 0.75; // -25% speed for 8s
       p.stats.speedMultiplier *= debuff;
       if (!gameState._buffs) gameState._buffs = [];
-      gameState._buffs.push({ remaining: 60 * 8, undo: () => { p.stats.speedMultiplier /= debuff; } });
+      gameState._buffs.push({ key:'slow', label:'Slowed', icon:'⛓', color:'#ff6b6b', remaining: 60 * 8, undo: () => { p.stats.speedMultiplier /= debuff; } });
     }
     playSound('loan');
     refreshHUD();

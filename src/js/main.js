@@ -312,6 +312,7 @@ function gameLoop() {
     const fpsEl = document.getElementById('hud-fps');
     if (fpsEl && gameState._fps) fpsEl.textContent = String(gameState._fps);
     if (typeof gameState._refreshDebtHUD === 'function' && !gameState.paused) gameState._refreshDebtHUD();
+    if (typeof gameState._refreshBuffsHUD === 'function') gameState._refreshBuffsHUD();
     requestAnimationFrame(gameLoop);
 }
 
@@ -358,6 +359,24 @@ function init() {
     window.addEventListener('mousemove', updateMouse);
     window.addEventListener('mousedown', updateMouse);
     window.addEventListener('resize', resizeCanvas);
+
+    // Buff HUD: DOM rendering for active temporary buffs
+    const buffsHUD = document.getElementById('buffsHUD');
+    function refreshBuffsHUD() {
+        if (!buffsHUD) return;
+        const buffs = (gameState._buffs || []).filter(b => b && (b.label || b.icon));
+        buffsHUD.innerHTML = '';
+        for (const b of buffs) {
+            const pill = document.createElement('div'); pill.className = 'buff-pill';
+            const icon = document.createElement('span'); icon.className = 'buff-icon';
+            if (b.color) icon.style.background = b.color;
+            const label = document.createElement('span'); label.className = 'buff-label'; label.textContent = b.label || '';
+            const time = document.createElement('span'); time.className = 'buff-time'; time.textContent = Math.ceil((b.remaining || 0) / 60) + 's';
+            pill.appendChild(icon); pill.appendChild(label); pill.appendChild(time);
+            buffsHUD.appendChild(pill);
+        }
+    }
+    gameState._refreshBuffsHUD = refreshBuffsHUD;
     const btnMute = document.getElementById('btnMute');
     let muted = false;
     if (btnMute) btnMute.addEventListener('click', () => {

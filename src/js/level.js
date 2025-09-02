@@ -182,13 +182,13 @@ export function updateLevelSystem(gameState, canvas) {
         const roll = Math.floor(Math.random() * 3);
         if (roll === 0) {
           gameState.player.stats.speedMultiplier *= 1.25;
-          gameState._buffs.push({ remaining: duration, undo: () => { gameState.player.stats.speedMultiplier /= 1.25; } });
+          gameState._buffs.push({ key:'spd', label:'Speed', icon:'⚡', color:'#ffd34d', remaining: duration, undo: () => { gameState.player.stats.speedMultiplier /= 1.25; } });
         } else if (roll === 1) {
           gameState.player.stats.damageMultiplier *= 1.25;
-          gameState._buffs.push({ remaining: duration, undo: () => { gameState.player.stats.damageMultiplier /= 1.25; } });
+          gameState._buffs.push({ key:'dmg', label:'Damage', icon:'🔥', color:'#ff9a3d', remaining: duration, undo: () => { gameState.player.stats.damageMultiplier /= 1.25; } });
         } else {
           gameState.player.stats.fireRateMultiplier *= 1.25;
-          gameState._buffs.push({ remaining: duration, undo: () => { gameState.player.stats.fireRateMultiplier /= 1.25; } });
+          gameState._buffs.push({ key:'rof', label:'Fire Rate', icon:'💥', color:'#ffa84a', remaining: duration, undo: () => { gameState.player.stats.fireRateMultiplier /= 1.25; } });
         }
       }
       gameState.gems.splice(i, 1);
