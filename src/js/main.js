@@ -112,6 +112,34 @@ function updateCamera() {
     gameState.camera.y = y;
 }
 
+// Collision helpers: ellipses aligned to axes
+function entityEllipseRadii(e) {
+    const base = (e.size != null) ? e.size : Math.max((e.frameWidth || 0), (e.frameHeight || 0)) / 2;
+    // Characters are a bit taller than wide; bias ry > rx
+    const rx = base * 0.60;
+    const ry = base * 0.90;
+    return { rx, ry };
+}
+
+function circleVsEllipse(cx, cy, r, ex, ey, rx, ry) {
+    const dx = cx - ex;
+    const dy = cy - ey;
+    const erx = rx + r;
+    const ery = ry + r;
+    if (erx <= 0 || ery <= 0) return false;
+    return (dx * dx) / (erx * erx) + (dy * dy) / (ery * ery) <= 1;
+}
+
+function ellipseVsEllipse(x1, y1, rx1, ry1, x2, y2, rx2, ry2) {
+    // Approximate using axis-wise Minkowski sum (good for AABB-aligned ellipses)
+    const dx = x1 - x2;
+    const dy = y1 - y2;
+    const rx = rx1 + rx2;
+    const ry = ry1 + ry2;
+    if (rx <= 0 || ry <= 0) return false;
+    return (dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 1;
+}
+
 function damagePlayer(amount) {
     if (!gameState.player) return;
     const p = gameState.player;
@@ -170,25 +198,14 @@ function restartRun() {
 }
 
 function checkCollisions() {
-    // Circle (projectile) vs axis-aligned rectangle (enemy sprite bounds)
+    // Circle (projectile) vs enemy ellipse
     for (let pi = gameState.projectiles.length - 1; pi >= 0; pi--) {
         const p = gameState.projectiles[pi];
         for (let ei = gameState.enemies.length - 1; ei >= 0; ei--) {
             const e = gameState.enemies[ei];
-            const halfW = (e.size != null ? e.size : (e.frameWidth || 0) / 2);
-            const halfH = (e.size != null ? e.size : (e.frameHeight || 0) / 2);
-            const left = e.x - halfW;
-            const right = e.x + halfW;
-            const top = e.y - halfH;
-            const bottom = e.y + halfH;
-
-            const nearestX = Math.max(left, Math.min(p.x, right));
-            const nearestY = Math.max(top, Math.min(p.y, bottom));
-            const dx = p.x - nearestX;
-            const dy = p.y - nearestY;
+            const { rx, ry } = entityEllipseRadii(e);
             const r = (p.size || 0);
-
-            if (dx * dx + dy * dy <= r * r && p.faction === 'player') {
+            if (p.faction === 'player' && circleVsEllipse(p.x, p.y, r, e.x, e.y, rx, ry)) {
                 // Hit registered
                 let dmg = (p.damage || 0);
                 // Gnorp trait: extra damage when enemy is close to player
@@ -231,33 +248,23 @@ function checkCollisions() {
 function checkPlayerDamage() {
     const p = gameState.player;
     if (!p) return;
-    // Enemy projectile vs player circle
+    // Radii for player ellipse
+    const pr = entityEllipseRadii(p);
+    // Enemy projectile vs player ellipse
     for (let i = gameState.projectiles.length - 1; i >= 0; i--) {
         const proj = gameState.projectiles[i];
         if (proj.faction !== 'enemy') continue;
-        const dx = proj.x - p.x;
-        const dy = proj.y - p.y;
-        const rr = (proj.size || 0) + (p.size || 0);
-        if (dx * dx + dy * dy <= rr * rr) {
+        if (circleVsEllipse(proj.x, proj.y, (proj.size || 0), p.x, p.y, pr.rx, pr.ry)) {
             damagePlayer(proj.damage || 1);
             gameState.projectiles.splice(i, 1);
         }
     }
-    // Enemy rect vs player circle (contact)
+    // Enemy ellipse vs player ellipse (contact)
     for (let i = 0; i < gameState.enemies.length; i++) {
         const e = gameState.enemies[i];
         if (e.isBoss) continue; // optional: bosses damage via their projectiles/attacks
-        const halfW = (e.size != null ? e.size : (e.frameWidth || 0) / 2);
-        const halfH = (e.size != null ? e.size : (e.frameHeight || 0) / 2);
-        const left = e.x - halfW;
-        const right = e.x + halfW;
-        const top = e.y - halfH;
-        const bottom = e.y + halfH;
-        const nearestX = Math.max(left, Math.min(p.x, right));
-        const nearestY = Math.max(top, Math.min(p.y, bottom));
-        const dx = p.x - nearestX;
-        const dy = p.y - nearestY;
-        if (dx * dx + dy * dy <= (p.size * p.size)) {
+        const er = entityEllipseRadii(e);
+        if (ellipseVsEllipse(p.x, p.y, pr.rx, pr.ry, e.x, e.y, er.rx, er.ry)) {
             damagePlayer(e.contactDamage || 5);
         }
     }

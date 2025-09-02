@@ -1,5 +1,18 @@
 import { versioned } from './assets.js';
 
+// Shared image store so game code can reuse preloaded Image objects
+export const imageStore = new Map();
+export function getImage(path) {
+  const key = path;
+  let img = imageStore.get(key);
+  if (!img) {
+    img = new Image();
+    img.src = versioned(path);
+    imageStore.set(key, img);
+  }
+  return img;
+}
+
 const ASSETS = [
   // Characters
   'src/img/sprite-gnorp.png',
@@ -45,10 +58,10 @@ export function preloadAll(onProgress) {
   }
 
   const promises = ASSETS.map(path => new Promise(resolve => {
-    const img = new Image();
+    const img = getImage(path);
+    if (img.complete && (img.naturalWidth || 0) > 0) { tick(); resolve(); return; }
     img.onload = () => { tick(); resolve(); };
     img.onerror = () => { tick(); resolve(); };
-    img.src = versioned(path);
   }));
 
   return Promise.all(promises).then(() => {});

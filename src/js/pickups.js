@@ -1,5 +1,6 @@
 import { playSound } from './audio.js';
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 
 const SHEET_COLS = 6;
 const SHEET_ROWS = 5;
@@ -12,8 +13,8 @@ export function ensurePickups(gameState) {
 
 export function spawnHealthPickup(gameState, x, y, { heal = 25 } = {}) {
   ensurePickups(gameState);
-  const sprite = new Image();
-  sprite.src = versioned('src/img/sprite-heart.png');
+  // Reuse preloaded image to avoid first-frame fallback
+  const sprite = getImage('src/img/sprite-heart.png');
   gameState.pickups.push({
     type: 'health',
     x, y,
