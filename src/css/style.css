@@ -1,3 +1,26 @@
+:root {
+    /* Warm cavern palette derived from the provided frame */
+    --bg: #0e0705;
+    --canvas-bg: #1a0d09;
+    --panel-bg: #2b120d;
+    --panel-bg-2: #3a1b12;
+    --panel-border: #5d2d1b;
+    --hud-bg: rgba(34, 17, 12, 0.6);
+    --overlay: rgba(14, 7, 5, 0.7);
+    /* Slightly more yellow text */
+    --text: #f5d777;      /* was #f4d6a6 */
+    --text-dim: #e2c679;  /* was #d3b792 */
+    --accent: #f8c85a;
+    --accent-strong: #ffdf70;
+    /* Buttons shifted to a richer red */
+    --button-bg: #7a2318;       /* was #5a2a17 */
+    --button-hover: #8c2a1d;    /* was #6b331d */
+    --button-border: #9c3a28;   /* was #7a3a22 */
+    --choice-bg: #3a1b12;
+    --choice-hover: #442015;
+    --loading-grad: linear-gradient(90deg, #e07a3a, #f1b04a);
+}
+
 body {
     font-family: sans-serif;
     display: flex;
@@ -5,13 +28,12 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    background: #000;
+    background: var(--bg);
+    color: var(--text);
 }
 /* relocated under src/css per new structure */
 
-canvas {
-    background: #222;
-}
+canvas { background: var(--canvas-bg); }
 
 /* HUD */
 .hud {
@@ -21,30 +43,29 @@ canvas {
     display: flex;
     gap: 10px;
     align-items: center;
-    background: rgba(0,0,0,0.5);
-    color: #eee;
+    background: var(--hud-bg);
+    color: var(--text);
     padding: 6px 10px;
     border-radius: 6px;
-    border: 1px solid #444;
+    border: 1px solid var(--panel-border);
     z-index: 9;
 }
 
 .hud-btn {
-    background: #444;
-    color: #eee;
-    border: 1px solid #666;
+    background: var(--button-bg);
+    color: var(--text);
+    border: 1px solid var(--button-border);
     border-radius: 4px;
     padding: 4px 8px;
     cursor: pointer;
 }
-
-.hud-btn:hover { background: #555; }
+.hud-btn:hover { background: var(--button-hover); }
 
 /* Upgrade modal */
 .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: var(--overlay);
     display: none;
     align-items: center;
     justify-content: center;
@@ -52,9 +73,9 @@ canvas {
 }
 
 .modal-content {
-    background: #1b1b1b;
-    color: #eee;
-    border: 1px solid #444;
+    background: var(--panel-bg);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
     border-radius: 8px;
     padding: 16px;
     width: 600px;
@@ -69,18 +90,17 @@ canvas {
 
 .choice {
     flex: 1;
-    background: #2a2a2a;
-    color: #ddd;
-    border: 1px solid #555;
+    background: var(--choice-bg);
+    color: var(--text);
+    border: 1px solid var(--panel-border);
     border-radius: 6px;
     padding: 12px;
     text-align: left;
     cursor: pointer;
 }
-
-.choice:hover { background: #333; }
-.choice-title { font-weight: bold; margin-bottom: 6px; }
-.choice-desc { font-size: 0.9rem; color: #bbb; }
+.choice:hover { background: var(--choice-hover); }
+.choice-title { font-weight: bold; margin-bottom: 6px; color: var(--accent-strong); }
+.choice-desc { font-size: 0.9rem; color: var(--text-dim); }
 .rarity-normal { color: #ddd; }
 .rarity-rare { color: #33aaff; }
 .rarity-epic { color: #a64cff; }
@@ -90,16 +110,16 @@ canvas {
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: var(--overlay);
   display: none;
   align-items: center;
   justify-content: center;
   z-index: 20;
 }
 .loading-box {
-  background: #1b1b1b;
-  color: #eee;
-  border: 1px solid #444;
+  background: var(--panel-bg);
+  color: var(--text);
+  border: 1px solid var(--panel-border);
   border-radius: 8px;
   padding: 16px;
   width: 360px;
@@ -107,14 +127,14 @@ canvas {
 }
 .loading-title { margin-bottom: 8px; font-weight: bold; }
 .loading-bar {
-  background: #2a2a2a;
-  border: 1px solid #555;
+  background: var(--panel-bg-2);
+  border: 1px solid var(--panel-border);
   border-radius: 4px;
   height: 10px;
   overflow: hidden;
 }
 .loading-progress {
-  background: linear-gradient(90deg, #33aaff, #4cf);
+  background: var(--loading-grad);
   height: 100%;
   width: 0%;
 }
@@ -124,7 +144,7 @@ canvas {
     background-size: 100% 100%;
     border: none;
     box-shadow: none;
-    color: #eee;
+    color: var(--text);
     padding: 60px 80px;
     width: 720px;
     height: 540px;
