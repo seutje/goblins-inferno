@@ -445,7 +445,7 @@ export function drawBossHUD(gameState, ctx, canvas) {
   const w = canvas.width - pad * 2;
   const h = 14;
   const x = pad;
-  const y = pad;
+  const y = canvas.height - pad - h; // move to bottom of the canvas
   ctx.fillStyle = 'rgba(0,0,0,0.6)';
   ctx.fillRect(x, y, w, h);
   const frac = Math.max(0, Math.min(1, (b.hp || 0) / (b.hpMax || 1)));
