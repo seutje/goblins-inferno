@@ -140,6 +140,31 @@ export class CreditorChampion extends BaseBoss {
     }
     super.takeHit(projectile, gameState);
   }
+
+  draw(ctx) {
+    // Draw the base sprite first
+    super.draw(ctx);
+    // Blue sphere indicator while invulnerable (shieldActive)
+    if (this.shieldActive) {
+      const r = this.size + 10 + Math.sin(this.frame * 0.25) * 2;
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const g = ctx.createRadialGradient(this.x, this.y, Math.max(1, r * 0.35), this.x, this.y, r);
+      g.addColorStop(0, 'rgba(80, 170, 255, 0.35)');
+      g.addColorStop(1, 'rgba(80, 170, 255, 0.0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+      ctx.fill();
+      // Thin outer ring for clarity
+      ctx.strokeStyle = 'rgba(120, 200, 255, 0.7)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
 }
 
 export class InterestDragon extends BaseBoss {
@@ -400,22 +425,47 @@ export function updateBoss(gameState, canvas) {
 
   // Cleanup when boss dies
   if (gameState.boss && gameState.boss.hp <= 0) {
+    // Capture death location before clearing boss ref
+    const deathX = gameState.boss.x;
+    const deathY = gameState.boss.y;
+
     // Remove from enemies list
     const idx = gameState.enemies.indexOf(gameState.boss);
     if (idx >= 0) gameState.enemies.splice(idx, 1);
+
     // Rewards
     if (gameState.debt) gameState.debt.gold += 250;
+
     // Grant meta gem currency
     if (gameState.meta) {
       gameState.meta.gems = (gameState.meta.gems || 0) + 1;
       saveMeta(gameState.meta);
     }
-    for (let i = 0; i < 10; i++) {
+
+    // Spawn gems around the death position, clamped to world bounds
+    const W = (gameState.world?.width) || canvas.width;
+    const H = (gameState.world?.height) || canvas.height;
+    const count = 10;
+    for (let i = 0; i < count; i++) {
       const sprite = new Image();
       sprite.src = versioned('src/img/sprite-gem.png');
+
+      // Distribute roughly in a ring with slight jitter
+      const baseAngle = (i / count) * Math.PI * 2;
+      const jitter = (Math.random() - 0.5) * (Math.PI / 6);
+      const angle = baseAngle + jitter;
+      const radius = 30 + Math.random() * 40; // 30..70 px from center
+      let gx = deathX + Math.cos(angle) * radius;
+      let gy = deathY + Math.sin(angle) * radius;
+
+      // Clamp to world bounds with a small padding
+      const pad = 16;
+      gx = Math.max(pad, Math.min(W - pad, gx));
+      gy = Math.max(pad, Math.min(H - pad, gy));
+
       const gem = {
-        x: Math.max(16, Math.min(canvas.width - 16, gameState.boss.x + (Math.random() - 0.5) * 80)),
-        y: Math.max(16, Math.min(canvas.height - 16, gameState.boss.y + (Math.random() - 0.5) * 80)),
+        x: gx,
+        y: gy,
         size: 12,
         value: 2,
         color: '#9ff',
@@ -431,6 +481,7 @@ export function updateBoss(gameState, canvas) {
       };
       gameState.gems.push(gem);
     }
+
     gameState.boss = null;
     gameState._bossIndex = Math.min(gameState._bossIndex + 1, 3);
     if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
