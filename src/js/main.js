@@ -12,6 +12,7 @@ import { preloadAll } from './preload.js';
 import { repay } from './debt.js';
 import { initMeta, applyMetaAtRunStart } from './meta.js';
 import { updatePickups, drawPickups, spawnHealthPickup } from './pickups.js';
+import { getImage } from './preload.js';
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -110,6 +111,22 @@ function updateCamera() {
     const y = Math.max(halfH, Math.min(H - halfH, p.y));
     gameState.camera.x = x;
     gameState.camera.y = y;
+}
+
+// Ground tile pattern (25% scale)
+function ensureGroundPattern(gameState) {
+    if (gameState._groundPattern) return;
+    const img = getImage('src/img/tile-ground.png');
+    if (!img || !img.complete || !(img.naturalWidth > 0)) return; // try next frame
+    const tw = Math.max(1, Math.floor(img.naturalWidth * 0.25));
+    const th = Math.max(1, Math.floor(img.naturalHeight * 0.25));
+    const off = document.createElement('canvas');
+    off.width = tw; off.height = th;
+    const octx = off.getContext('2d');
+    octx.imageSmoothingEnabled = true;
+    octx.drawImage(img, 0, 0, tw, th);
+    const pattern = ctx.createPattern(off, 'repeat');
+    gameState._groundPattern = pattern;
 }
 
 // Collision helpers: ellipses aligned to axes
@@ -315,6 +332,14 @@ function gameLoop() {
     const camX = Math.round(gameState.camera.x - canvas.width / (2 * s));
     const camY = Math.round(gameState.camera.y - canvas.height / (2 * s));
     ctx.translate(-camX, -camY);
+    // Draw ground pattern across world
+    ensureGroundPattern(gameState);
+    if (gameState._groundPattern) {
+        ctx.save();
+        ctx.fillStyle = gameState._groundPattern;
+        ctx.fillRect(0, 0, gameState.world.width, gameState.world.height);
+        ctx.restore();
+    }
     // Background decor
     drawDecor(gameState, ctx);
     // Ground effects first so trails render behind characters

@@ -44,7 +44,9 @@ const ASSETS = [
   'src/img/rock4.png',
   'src/img/rock5.png',
   'src/img/rock6.png',
-  'src/img/rock7.png'
+  'src/img/rock7.png',
+  // Ground tile
+  'src/img/tile-ground.png'
 ];
 
 export function preloadAll(onProgress) {
