@@ -148,6 +148,14 @@ canvas {
 }
 .choice-title { font-weight: bold; margin-bottom: 6px; color: var(--accent-strong); }
 .choice-desc { font-size: 0.9rem; color: var(--text-dim); }
+
+/* Enhance readability in the upgrade modal with text shadows */
+#upgradeModal .choice-title {
+    text-shadow: 0 2px 0 #3a1b12, 0 0 8px rgba(0,0,0,0.55);
+}
+#upgradeModal .choice-desc {
+    text-shadow: 0 2px 0 #2a140d, 0 0 6px rgba(0,0,0,0.5);
+}
 .rarity-normal { color: #ddd; }
 .rarity-rare { color: #33aaff; }
 .rarity-epic { color: #a64cff; }
