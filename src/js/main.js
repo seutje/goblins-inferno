@@ -30,6 +30,8 @@ function resizeCanvas() {
             updateCamera();
         }
     }
+    // Update render scale for current device
+    gameState.renderScale = computeRenderScale();
 }
 
 const gameState = window.gameState = {
@@ -96,8 +98,9 @@ function updateCamera() {
     const p = gameState.player;
     if (!p) return;
     // Keep player centered, but clamp to world bounds so we don't show outside
-    const halfW = canvas.width / 2;
-    const halfH = canvas.height / 2;
+    const s = gameState.renderScale || 1;
+    const halfW = canvas.width / (2 * s);
+    const halfH = canvas.height / (2 * s);
     const W = gameState.world.width;
     const H = gameState.world.height;
     const x = Math.max(halfW, Math.min(W - halfW, p.x));
@@ -292,10 +295,12 @@ function gameLoop() {
         updateCamera();
     }
 
-    // Apply camera transform for world-space rendering
+    // Apply camera transform and scale for world-space rendering
     ctx.save();
-    const camX = Math.round(gameState.camera.x - canvas.width / 2);
-    const camY = Math.round(gameState.camera.y - canvas.height / 2);
+    const s = gameState.renderScale || 1;
+    ctx.scale(s, s);
+    const camX = Math.round(gameState.camera.x - canvas.width / (2 * s));
+    const camY = Math.round(gameState.camera.y - canvas.height / (2 * s));
     ctx.translate(-camX, -camY);
     // Ground effects first so trails render behind characters
     drawHazards(gameState, ctx);
@@ -351,10 +356,11 @@ function init() {
         const scaleY = canvas.height / rect.height;
         const mx = (e.clientX - rect.left) * scaleX;
         const my = (e.clientY - rect.top) * scaleY;
-        // Convert to world coordinates using current camera
-        const camX = (gameState.camera?.x || canvas.width / 2) - canvas.width / 2;
-        const camY = (gameState.camera?.y || canvas.height / 2) - canvas.height / 2;
-        gameState.mouse = { x: mx + camX, y: my + camY };
+        // Convert to world coordinates using current camera and render scale
+        const s = gameState.renderScale || 1;
+        const camX = (gameState.camera?.x || canvas.width / 2) - canvas.width / (2 * s);
+        const camY = (gameState.camera?.y || canvas.height / 2) - canvas.height / (2 * s);
+        gameState.mouse = { x: camX + mx / s, y: camY + my / s };
     }
     window.addEventListener('mousemove', updateMouse);
     window.addEventListener('mousedown', updateMouse);
@@ -445,6 +451,18 @@ function boot() {
 }
 
 boot();
+
+function computeRenderScale() {
+    // On touch/mobile devices, scale down the world so more is visible
+    const touchCapable = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (!touchCapable) return 1;
+    const minDim = Math.min(window.innerWidth, window.innerHeight);
+    // Heuristic scaling: more reduction for smaller screens
+    if (minDim <= 420) return 0.65;
+    if (minDim <= 520) return 0.75;
+    if (minDim <= 760) return 0.85;
+    return 0.95;
+}
 
 function setupTouchControls() {
     const container = document.getElementById('touchControls');
