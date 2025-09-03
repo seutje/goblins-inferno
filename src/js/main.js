@@ -185,7 +185,25 @@ function damagePlayer(amount) {
     p.hp = Math.max(0, p.hp - dmg);
     p.invuln = 60;
     p._flash = 10;
-    if (p.hp <= 0) onPlayerDeath();
+    // Show hurt animation when taking damage but not dying
+    if (p.hp > 0) {
+        if (gameState.character === 'Fizzle' || true) {
+            p.state = 'hurt';
+            p._stateLock = 18; // brief lock to display hurt frames
+            p.frame = 0;
+        }
+    } else {
+        // Dying: switch to death row and freeze on last frame visually
+        p.state = 'death';
+        p._dead = true;
+        // Jump directly to the final frame so it stays frozen even if paused
+        try {
+            const cols = (typeof p._sheetCols === 'function') ? p._sheetCols() : (p.animations?.death?.frames || 1);
+            const maxFrames = Math.max(1, Math.min((p.animations?.death?.frames || cols), cols));
+            p.frame = Math.max(0, maxFrames - 1);
+        } catch { p.frame = 0; }
+        onPlayerDeath();
+    }
 }
 
 function onPlayerDeath() {
@@ -342,6 +360,9 @@ function gameLoop() {
                     gameState._buffs.splice(i, 1);
                 }
             }
+        }
+        if (gameState._fizzleProcTimer && gameState._fizzleProcTimer > 0) {
+            gameState._fizzleProcTimer--;
         }
         updatePlayer();
         updateBoss(gameState, canvas);

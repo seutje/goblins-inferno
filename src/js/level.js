@@ -217,6 +217,8 @@ export function updateLevelSystem(gameState, canvas) {
           gameState.player.stats.fireRateMultiplier *= 1.25;
           gameState._buffs.push({ key:'rof', label:'Fire Rate', icon:'💥', color:'#ffa84a', remaining: duration, undo: () => { gameState.player.stats.fireRateMultiplier /= 1.25; } });
         }
+        // Trigger Fizzle's potion proc pose briefly
+        gameState._fizzleProcTimer = 24;
       }
       gameState.gems.splice(i, 1);
       // Level-up check

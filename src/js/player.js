@@ -50,6 +50,10 @@ export default class Player {
         this.frame = 0;
         this.frameTimer = 0;
         this.frameInterval = 10;
+        this._stateLock = 0; // frames to keep current state (e.g., hurt/proc)
+        this._dead = false;
+        // Sprite orientation: by default our sheets face left; flip when moving right
+        this.flipWhenRight = true;
 
         // Internal timers
         this._trailTimer = 0;
@@ -77,7 +81,19 @@ export default class Player {
             if (Math.abs(tv.dx) > 0.05) this.faceDir = tv.dx > 0 ? 1 : -1;
         }
 
-        this.state = moving ? 'walk' : 'idle';
+        // Default state from input
+        let desiredState = moving ? 'walk' : 'idle';
+        // Potion proc visual (Fizzle): override temporarily
+        if (this.gameState.character === 'Fizzle' && (this.gameState._fizzleProcTimer || 0) > 0) {
+            desiredState = 'proc';
+            this._stateLock = Math.max(this._stateLock, 6);
+        }
+        // If locked (hurt/proc), keep current state until timer ends
+        if (this._stateLock > 0 && (this.state === 'hurt' || this.state === 'proc')) {
+            this._stateLock--;
+        } else {
+            this.state = desiredState;
+        }
 
         const W = (this.gameState?.world?.width) || this.canvas.width;
         const H = (this.gameState?.world?.height) || this.canvas.height;
@@ -136,13 +152,23 @@ export default class Player {
         this.frameTimer++;
         if (this.frameTimer >= this.frameInterval) {
             this.frameTimer = 0;
-            const animation = this.animations[this.state];
-            this.frame = (this.frame + 1) % animation.frames;
+            const animation = this.animations[this.state] || this.animations['idle'];
+            const cols = this._sheetCols();
+            const maxFrames = Math.max(1, Math.min(animation.frames || cols, cols));
+            // For fixed frame animations (e.g. proc), don't advance
+            if (animation.fixedFrame == null) {
+                if (this.state === 'death' && this._dead) {
+                    // Freeze on last frame when dead
+                    this.frame = Math.min(this.frame + 1, maxFrames - 1);
+                } else {
+                    this.frame = (this.frame + 1) % maxFrames;
+                }
+            }
         }
     }
 
     draw(ctx) {
-        const animation = this.animations[this.state];
+        const animation = this.animations[this.state] || this.animations['idle'];
         const destW = this.size * 2;
         const destH = this.size * 2;
         // Blink visibility during invulnerability frames
@@ -153,11 +179,19 @@ export default class Player {
         if (this.sprite && this.sprite.complete && (this.sprite.naturalWidth || 0) > 0) {
             ctx.save();
             ctx.translate(this.x, this.y);
-            if (this.faceDir === 1) ctx.scale(-1, 1); // flip for right-facing
+            // Flip based on per-character default facing
+            const shouldFlip = this.flipWhenRight ? (this.faceDir === 1) : (this.faceDir === -1);
+            if (shouldFlip) ctx.scale(-1, 1);
+            const cols = this._sheetCols();
+            const maxFrames = Math.max(1, Math.min(animation.frames || cols, cols));
+            const useFrame = (animation.fixedFrame != null)
+                ? Math.max(0, Math.min(animation.fixedFrame, maxFrames - 1))
+                : Math.max(0, Math.min(this.frame, maxFrames - 1));
+            const si = this._sheetInfo();
             ctx.drawImage(
                 this.sprite,
-                this.frame * this.frameWidth,
-                animation.row * this.frameHeight,
+                si.offX + useFrame * this.frameWidth,
+                si.offY + (animation.row || 0) * this.frameHeight,
                 this.frameWidth,
                 this.frameHeight,
                 -destW / 2,
@@ -241,3 +275,24 @@ function rotate(v, angleRad) {
     const ca = Math.cos(angleRad), sa = Math.sin(angleRad);
     return { dx: v.dx*ca - v.dy*sa, dy: v.dx*sa + v.dy*ca };
 }
+
+// Instance method definition appended after class using prototype to keep patch minimal
+Player.prototype._sheetCols = function() {
+    return this._sheetInfo().cols;
+};
+
+Player.prototype._sheetInfo = function() {
+    const w = (this.sprite && (this.sprite.naturalWidth || 0)) || 0;
+    const h = (this.sprite && (this.sprite.naturalHeight || 0)) || 0;
+    const fw = Math.max(1, this.frameWidth || 1);
+    const fh = Math.max(1, this.frameHeight || 1);
+    const desiredCols = this.sheetCols || 0;
+    const desiredRows = this.sheetRows || 0;
+    const cols = Math.max(1, desiredCols || Math.floor(w / fw));
+    const rows = Math.max(1, desiredRows || Math.floor(h / fh));
+    let offX = Math.floor((w - cols * fw) / 2);
+    let offY = Math.floor((h - rows * fh) / 2);
+    if (offX < 0) offX = 0;
+    if (offY < 0) offY = 0;
+    return { cols, rows, offX, offY };
+};

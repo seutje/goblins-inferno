@@ -41,13 +41,24 @@ export const CHARACTERS = {
     trait: 'potions',
     sprite: 'src/img/sprite-fizzle.png',
     frameWidth: 170,
-    frameHeight: 200,
+    frameHeight: 205,
+    sheetCols: 6,
+    sheetRows: 5,
+    flipWhenRight: false, // Fizzle sheet faces right; flip when moving left
     animations: {
-        idle: { row: 0, frames: 4 },
-        walk: { row: 1, frames: 6 },
-        attack: { row: 2, frames: 4 },
-        hurt: { row: 3, frames: 4 },
-        death: { row: 4, frames: 4 }
+        // New sheet mapping:
+        // - Row 0: standing still (idle)
+        // - Row 1: running (walk)
+        // - Row 3: harm/death sequences
+        // - Row 2, frame index 2: potion proc pose
+        idle:  { row: 0, frames: 6 },
+        walk:  { row: 1, frames: 6 },
+        // Special single-frame pose when potion procs
+        proc:  { row: 2, frames: 1, fixedFrame: 2 }, // third frame (0-based index 2)
+        // Use only first two frames of 4th row when hurt
+        hurt:  { row: 3, frames: 2 },
+        // Use full 4th row for death; we'll freeze on last frame in code
+        death: { row: 3, frames: 6 }
     }
   }
 };
@@ -67,6 +78,9 @@ export function applyCharacterToPlayer(player, gameState, characterKey) {
   player.sprite.src = versioned(cfg.sprite);
   player.frameWidth = cfg.frameWidth;
   player.frameHeight = cfg.frameHeight;
+  if (cfg.sheetCols) player.sheetCols = cfg.sheetCols;
+  if (cfg.sheetRows) player.sheetRows = cfg.sheetRows;
+  if (typeof cfg.flipWhenRight === 'boolean') player.flipWhenRight = cfg.flipWhenRight;
   player.animations = cfg.animations;
 
   // Character-specific extras
