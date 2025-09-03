@@ -69,6 +69,8 @@ canvas {
     top: 8px;
     right: 8px;
     display: flex;
+    flex-direction: column; /* stack vertically */
+    align-items: flex-end;  /* align pills to right edge */
     gap: 8px;
     z-index: 9;
 }
