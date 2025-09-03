@@ -112,12 +112,26 @@ function wireMetaUI(gameState) {
 
   function open() {
     if (modal) modal.style.display = 'flex';
-    if (gameState) gameState.paused = true;
+    if (gameState) {
+      gameState._pausedBeforeMeta = !!gameState.paused;
+      gameState.paused = true;
+    }
     refresh();
   }
   function close() {
     if (modal) modal.style.display = 'none';
-    if (gameState) gameState.paused = false;
+    if (gameState) {
+      // If the run is over, stay paused and restore the game-over modal.
+      if (gameState.gameOver) {
+        gameState.paused = true;
+        const over = document.getElementById('gameOverModal');
+        if (over) over.style.display = 'flex';
+      } else {
+        // Otherwise restore prior pause state from before opening meta
+        gameState.paused = !!gameState._pausedBeforeMeta;
+      }
+      gameState._pausedBeforeMeta = undefined;
+    }
   }
   if (openBtn) openBtn.addEventListener('click', open);
   if (closeBtn) closeBtn.addEventListener('click', close);
