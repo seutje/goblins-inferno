@@ -399,9 +399,10 @@ function gameLoop() {
     drawGems(gameState, ctx);
     drawPickups(gameState, ctx);
     // Entities and projectiles above ground
-    drawPlayer();
-    drawEnemies();
+    // Draw order: projectiles -> enemies -> player (projectiles render behind player)
     drawProjectiles(gameState, ctx);
+    drawEnemies();
+    drawPlayer();
     ctx.restore();
     // Boss HUD and other UI draw in screen space
     drawBossHUD(gameState, ctx, canvas);
