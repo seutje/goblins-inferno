@@ -62,7 +62,7 @@ export class FirePatch {
             }
         }
     } else { // faction === 'enemy'
-        // Apply damage to player in radius
+        // Apply damage to player in radius (respect shields)
         const player = gameState.player;
         if (player && player.invuln <= 0) {
             const r = this.radius;
@@ -70,8 +70,17 @@ export class FirePatch {
             const dx = player.x - this.x;
             const dy = player.y - this.y;
             if ((dx * dx + dy * dy) <= r2) {
-                player.hp -= this.dps;
-                player.invuln = 60; // 1 second of invulnerability
+                let dmg = this.dps || 0;
+                if ((player.shield || 0) > 0) {
+                    const absorbed = Math.min(player.shield, dmg);
+                    player.shield -= absorbed;
+                    dmg -= absorbed;
+                    player.shieldRegenCooldown = Math.max(player.shieldRegenCooldown || 0, 120);
+                }
+                if (dmg > 0) {
+                    player.hp = Math.max(0, (player.hp || 0) - dmg);
+                    player.invuln = 60; // 1 second of invulnerability
+                }
             }
         }
     }

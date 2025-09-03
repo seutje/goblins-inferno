@@ -172,7 +172,17 @@ function damagePlayer(amount) {
     if (!gameState.player) return;
     const p = gameState.player;
     if (p.invuln && p.invuln > 0) return;
-    p.hp = Math.max(0, p.hp - amount);
+    let dmg = amount || 0;
+    // Absorb with shield first, if any
+    if ((p.shield || 0) > 0 && dmg > 0) {
+        const absorbed = Math.min(p.shield, dmg);
+        p.shield -= absorbed;
+        dmg -= absorbed;
+        // Delay shield regen when it takes a hit
+        p.shieldRegenCooldown = Math.max(p.shieldRegenCooldown || 0, 120);
+    }
+    if (dmg <= 0) return;
+    p.hp = Math.max(0, p.hp - dmg);
     p.invuln = 60;
     p._flash = 10;
     if (p.hp <= 0) onPlayerDeath();

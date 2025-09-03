@@ -68,4 +68,13 @@ export function applyCharacterToPlayer(player, gameState, characterKey) {
   player.frameWidth = cfg.frameWidth;
   player.frameHeight = cfg.frameHeight;
   player.animations = cfg.animations;
+
+  // Character-specific extras
+  if (characterKey === 'Fizzle') {
+    // Add a small regenerating shield that absorbs damage first
+    player.shieldMax = 20;
+    player.shield = player.shieldMax;
+    player.shieldRegenRate = 0.15; // per frame when regen is active
+    player.shieldRegenCooldown = 0; // regen starts after a brief delay once damaged
+  }
 }

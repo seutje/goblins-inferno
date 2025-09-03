@@ -4,7 +4,7 @@ import { spawnFirePatch } from './hazard.js';
 import { playSound } from './audio.js';
 
 export default class Player {
-    constructor(canvas, gameState) {
+  constructor(canvas, gameState) {
         this.canvas = canvas;
         this.gameState = gameState;
         const W = (gameState?.world?.width) || canvas.width;
@@ -17,9 +17,14 @@ export default class Player {
         this.frameHeight = 200;
         // Use a gameplay hit radius decoupled from visual frame size
         this.size = 24;
-        // Health & i-frames
+        // Health, shield & i-frames
         this.maxHp = 100;
         this.hp = this.maxHp;
+        // Shield properties (enabled for certain characters like Fizzle)
+        this.shieldMax = 0;
+        this.shield = 0;
+        this.shieldRegenRate = 0.12; // per frame
+        this.shieldRegenCooldown = 0; // frames until regen resumes
         this.invuln = 0; // frames of invulnerability after taking damage
         this.fireCooldown = 0;
         this.weapon = 'inferno';
@@ -90,6 +95,14 @@ export default class Player {
         }
 
         if (this.invuln > 0) this.invuln--;
+
+        // Shield regeneration after a short delay
+        if (this.shieldMax > 0) {
+            if (this.shieldRegenCooldown > 0) this.shieldRegenCooldown--;
+            else if (this.shield < this.shieldMax) {
+                this.shield = Math.min(this.shieldMax, this.shield + (this.shieldRegenRate || 0));
+            }
+        }
 
         if (this.fireCooldown <= 0) {
             if (this.weapon === 'inferno') {
@@ -185,6 +198,18 @@ export default class Player {
         ctx.fillRect(bx, by, barW * frac, barH);
         ctx.strokeStyle = 'rgba(255,255,255,0.2)';
         ctx.strokeRect(bx, by, barW, barH);
+
+        // Shield bar (blue), displayed above HP bar if shield is enabled
+        if ((this.shieldMax || 0) > 0) {
+            const sFrac = Math.max(0, Math.min(1, (this.shield || 0) / (this.shieldMax || 1)));
+            const sy = by - (barH + 2);
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(bx, sy, barW, barH);
+            ctx.fillStyle = '#4aa3ff'; // blue shield color
+            ctx.fillRect(bx, sy, barW * sFrac, barH);
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.strokeRect(bx, sy, barW, barH);
+        }
     }
 
     _fireWithMeta(shootFn, aim, baseSpreadDeg=6) {
