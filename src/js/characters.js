@@ -8,14 +8,17 @@ export const CHARACTERS = {
     stats: { baseSpeed: 2.5, damageMultiplier: 1.3, fireRateMultiplier: 1.0, projSizeMultiplier: 1.1 },
     trait: 'closeDamage',
     sprite: 'src/img/sprite-gnorp.png',
-    frameWidth: 175,
-    frameHeight: 200,
+    frameWidth: 170,
+    frameHeight: 205,
+    sheetCols: 6,
+    sheetRows: 5,
+    flipWhenRight: false, // new sheet faces right (same as Fizzle)
     animations: {
-        idle: { row: 0, frames: 3 },
-        walk: { row: 1, frames: 6 },
-        attack: { row: 2, frames: 3 },
-        hurt: { row: 3, frames: 1 },
-        death: { row: 4, frames: 2 }
+        idle:  { row: 0, frames: 6 },
+        walk:  { row: 1, frames: 6 },
+        // Row 3: use first 2 frames for hurt, full row for death
+        hurt:  { row: 3, frames: 2 },
+        death: { row: 3, frames: 6 }
     }
   },
   Ignis: {
