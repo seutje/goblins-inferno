@@ -530,39 +530,34 @@ export function drawBossHUD(gameState, ctx, canvas) {
     const sy = (b.y - camY) * s;
     const onScreen = sx >= 0 && sx <= canvas.width && sy >= 0 && sy <= canvas.height;
     if (!onScreen) {
-      const cx = canvas.width / 2;
-      const cy = canvas.height / 2;
-      const dx = sx - cx;
-      const dy = sy - cy;
-      const ang = Math.atan2(dy, dx);
-      // Find intersection with screen edges (inset by margin)
-      const margin = 24;
-      const halfW = (canvas.width / 2) - margin;
-      const halfH = (canvas.height / 2) - margin;
-      const cosA = Math.cos(ang) || 1e-6;
-      const sinA = Math.sin(ang) || 1e-6;
-      const tX = halfW / Math.abs(cosA);
-      const tY = halfH / Math.abs(sinA);
-      const t = Math.min(tX, tY);
-      const ax = cx + Math.cos(ang) * t;
-      const ay = cy + Math.sin(ang) * t;
-      // Draw a small arrow at (ax, ay) pointing in direction ang
-      ctx.save();
-      ctx.translate(ax, ay);
-      ctx.rotate(ang);
-      ctx.fillStyle = 'rgba(80,170,255,0.9)';
-      ctx.strokeStyle = 'rgba(0,40,80,0.9)';
-      ctx.lineWidth = 2;
-      const size = 12;
-      ctx.beginPath();
-      ctx.moveTo(size, 0);           // tip
-      ctx.lineTo(-size * 0.8, size * 0.6);  // back lower
-      ctx.lineTo(-size * 0.4, 0);    // notch
-      ctx.lineTo(-size * 0.8, -size * 0.6); // back upper
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-      ctx.restore();
+      // Draw the indicator around the player instead of screen edge
+      const p = gameState.player;
+      if (p) {
+        const psx = (p.x - camX) * s;
+        const psy = (p.y - camY) * s;
+        const dxw = b.x - p.x;
+        const dyw = b.y - p.y;
+        const ang = Math.atan2(dyw, dxw);
+        const ringRadius = 70; // pixels around player, clears HP/shield bars
+        const ax = psx + Math.cos(ang) * ringRadius;
+        const ay = psy + Math.sin(ang) * ringRadius;
+        ctx.save();
+        ctx.translate(ax, ay);
+        ctx.rotate(ang);
+        ctx.fillStyle = 'rgba(80,170,255,0.9)';
+        ctx.strokeStyle = 'rgba(0,40,80,0.9)';
+        ctx.lineWidth = 2;
+        const size = 12;
+        ctx.beginPath();
+        ctx.moveTo(size, 0);                 // tip
+        ctx.lineTo(-size * 0.8, size * 0.6); // back lower
+        ctx.lineTo(-size * 0.4, 0);          // notch
+        ctx.lineTo(-size * 0.8, -size * 0.6);// back upper
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
     }
   } catch {}
 }
