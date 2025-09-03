@@ -388,6 +388,7 @@ function gameLoop() {
     const fpsEl = document.getElementById('hud-fps');
     if (fpsEl && gameState._fps) fpsEl.textContent = String(gameState._fps);
     if (typeof gameState._refreshDebtHUD === 'function' && !gameState.paused) gameState._refreshDebtHUD();
+    if (typeof gameState._refreshStatsHUD === 'function') gameState._refreshStatsHUD();
     if (typeof gameState._refreshBuffsHUD === 'function') gameState._refreshBuffsHUD();
     requestAnimationFrame(gameLoop);
 }
@@ -467,6 +468,29 @@ function init() {
         }
     }
     gameState._refreshBuffsHUD = refreshBuffsHUD;
+
+    // Stats HUD: show key multipliers as percentages
+    const elFire = document.getElementById('stats-fire');
+    const elDmg = document.getElementById('stats-damage');
+    const elSpd = document.getElementById('stats-speed');
+    const elSize = document.getElementById('stats-size');
+    function pct(x) { return Math.round((x || 1) * 100) + '%'; }
+    function refreshStatsHUD() {
+        if (!elFire || !elDmg || !elSpd || !elSize) return;
+        const p = gameState.player;
+        if (!p || !p.stats) {
+            elFire.textContent = '100%';
+            elDmg.textContent = '100%';
+            elSpd.textContent = '100%';
+            elSize.textContent = '100%';
+            return;
+        }
+        elFire.textContent = pct(p.stats.fireRateMultiplier || 1);
+        elDmg.textContent = pct(p.stats.damageMultiplier || 1);
+        elSpd.textContent = pct(p.stats.speedMultiplier || 1);
+        elSize.textContent = pct(p.stats.projSizeMultiplier || 1);
+    }
+    gameState._refreshStatsHUD = refreshStatsHUD;
     const btnMute = document.getElementById('btnMute');
     const btnZoomIn = document.getElementById('btnZoomIn');
     const btnZoomOut = document.getElementById('btnZoomOut');
