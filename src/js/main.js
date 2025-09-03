@@ -291,10 +291,6 @@ function checkCollisions() {
                 // Remove projectile on hit unless it has penetration left
                 if (p.pierceLeft && p.pierceLeft > 0) {
                     p.pierceLeft--;
-                    // Nudge the projectile slightly forward to exit the enemy hitbox
-                    const mag = Math.hypot(p.dx || 0, p.dy || 0) || 1;
-                    p.x += (p.dx || 0) / mag * (r + 1);
-                    p.y += (p.dy || 0) / mag * (r + 1);
                 } else {
                     gameState.projectiles.splice(pi, 1);
                 }
