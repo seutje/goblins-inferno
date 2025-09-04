@@ -63,6 +63,29 @@ canvas {
     z-index: 9;
 }
 
+/* HUD dropdown menu panel */
+.hud-menu-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    background: var(--hud-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    padding: 12px;
+    /* Below modal overlay (10), above base HUD (9) is fine
+       but keep it at 9 so modals cover it while open */
+    z-index: 9;
+    min-width: 240px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    backdrop-filter: blur(2px);
+}
+.hud-menu-panel.open { display: flex; }
+.hud-zoom-row { display: flex; gap: 8px; }
+
 /* Buffs HUD (top-right) */
 .buffs-hud {
     position: fixed;

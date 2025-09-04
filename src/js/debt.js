@@ -104,7 +104,12 @@ export function initDebtUI(gameState) {
   gameState._refreshDebtHUD = refreshHUD;
 
   function openModal() { modal.style.display = 'flex'; gameState.paused = true; }
-  function closeModal() { modal.style.display = 'none'; gameState.paused = false; }
+  function closeModal() {
+    modal.style.display = 'none';
+    // After closing the loan shark, pause and open HUD menu
+    try { if (gameState && typeof gameState._openHudMenu === 'function') gameState._openHudMenu(); } catch {}
+    gameState.paused = true;
+  }
 
   if (btnOpen) btnOpen.addEventListener('click', openModal);
   if (btnClose) btnClose.addEventListener('click', closeModal);

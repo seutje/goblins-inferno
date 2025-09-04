@@ -518,6 +518,59 @@ function init() {
     const btnMute = document.getElementById('btnMute');
     const btnZoomIn = document.getElementById('btnZoomIn');
     const btnZoomOut = document.getElementById('btnZoomOut');
+    const btnMenu = document.getElementById('btnMenu');
+    const hudMenu = document.getElementById('hudMenuPanel');
+    const btnResume = document.getElementById('btnResume');
+    if (btnMenu && hudMenu) {
+        function openMenu() {
+            hudMenu.classList.add('open');
+            gameState._pausedBeforeMenu = !!gameState.paused;
+            gameState.paused = true;
+        }
+        function closeMenu(opts) {
+            const resume = !!(opts && opts.resume);
+            hudMenu.classList.remove('open');
+            // Restore pause state if no other modal is forcing pause
+            const anyModalOpen = !!document.querySelector('.modal[style*="display: flex"]');
+            if (resume) {
+                gameState.paused = false;
+            } else if (!anyModalOpen) {
+                gameState.paused = !!gameState._pausedBeforeMenu;
+            }
+            gameState._pausedBeforeMenu = undefined;
+        }
+        // Expose menu controls for other modules (shop/loan close hooks)
+        gameState._openHudMenu = openMenu;
+        gameState._closeHudMenu = closeMenu;
+        btnMenu.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (hudMenu.classList.contains('open')) closeMenu(); else openMenu();
+        });
+        // Close menu when clicking outside it
+        document.addEventListener('click', (e) => {
+            const t = e.target;
+            const anyModalOpen = !!document.querySelector('.modal[style*="display: flex"]');
+            if (anyModalOpen) return; // keep menu open behind modals
+            if (hudMenu.classList.contains('open') && !hudMenu.contains(t) && t !== btnMenu) closeMenu();
+        });
+        // Close when pressing Escape
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && hudMenu.classList.contains('open')) closeMenu(); });
+        // Close when any button inside the menu is activated, letting target UI handle pausing
+        hudMenu.addEventListener('click', (e) => {
+            const btn = e.target?.closest && e.target.closest('.hud-btn');
+            if (!btn) return;
+            const id = btn.id || '';
+            // Keep menu open when opening Shop or Loan Shark so it reappears when those close
+            if (id === 'btnMeta' || id === 'btnLoan') return;
+            closeMenu();
+        });
+        if (btnResume) {
+            btnResume.addEventListener('click', (e) => {
+                e.stopPropagation();
+                closeMenu({ resume: true });
+            });
+        }
+    }
     let muted = false;
     if (btnMute) btnMute.addEventListener('click', () => {
         muted = !muted;

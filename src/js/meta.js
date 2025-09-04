@@ -123,15 +123,15 @@ function wireMetaUI(gameState) {
   function close() {
     if (modal) modal.style.display = 'none';
     if (gameState) {
-      // If the run is over, stay paused and restore the game-over modal.
+      // If the run is over, keep paused and restore the game-over modal.
       if (gameState.gameOver) {
         gameState.paused = true;
         const over = document.getElementById('gameOverModal');
         if (over) over.style.display = 'flex';
-      } else {
-        // Otherwise restore prior pause state from before opening meta
-        gameState.paused = !!gameState._pausedBeforeMeta;
       }
+      // After closing the shop, pause the game and open the HUD menu
+      gameState.paused = true;
+      try { if (typeof gameState._openHudMenu === 'function') gameState._openHudMenu(); } catch {}
       gameState._pausedBeforeMeta = undefined;
     }
   }
