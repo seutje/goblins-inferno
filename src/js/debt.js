@@ -35,6 +35,7 @@ export function createDebtState({
     gold: stored?.gold ?? 0,
     interestPerMinute,
     autoRepayPerFrame,
+    _repaidThisRun: 0,
   };
   // Ensure we persist at least the initial state
   saveStoredDebt(state);
@@ -62,6 +63,8 @@ export function repay(state, amount) {
   const pay = Math.min(amount, state.gold, state.debt);
   state.gold -= pay;
   state.debt -= pay;
+  // Track how much was repaid this run (non-persistent)
+  state._repaidThisRun = (state._repaidThisRun || 0) + pay;
   saveStoredDebt(state);
   return state;
 }

@@ -65,6 +65,7 @@ const gameState = window.gameState = {
     nextLevelXp: 5,
     gems: [],
     totalGems: 0,
+    totalGoldEarned: 0,
     paused: false,
     upgradePool: [],
     upgradeChoices: [],
@@ -237,6 +238,8 @@ function restartRun() {
     gameState.level = 1;
     gameState.nextLevelXp = 5;
     gameState.totalGems = 0;
+    gameState.totalGoldEarned = 0;
+    if (gameState.debt) gameState.debt._repaidThisRun = 0;
     gameState.character = null;
     gameState.trait = null;
     gameState.upgradeChoices = [];
@@ -644,8 +647,8 @@ function init() {
     function openWinModal() {
         if (winStats) {
             const lvl = gameState.level;
-            const gems = gameState.totalGems;
-            winStats.textContent = `Level ${lvl} | Gems ${gems}`;
+            const repaid = Math.max(0, Math.floor(gameState.debt?._repaidThisRun || 0));
+            winStats.textContent = `Level ${lvl} | Debt Repaid ${repaid}`;
         }
         if (winModal) winModal.style.display = 'flex';
         gameState.paused = true;

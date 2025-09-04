@@ -436,8 +436,11 @@ export function updateBoss(gameState, canvas) {
     const idx = gameState.enemies.indexOf(gameState.boss);
     if (idx >= 0) gameState.enemies.splice(idx, 1);
 
-    // Rewards: grant gold on boss kill
-    if (gameState.debt) gameState.debt.gold += 250;
+    // Rewards: grant gold on boss kill and track total gold earned
+    if (gameState.debt) {
+      gameState.debt.gold += 250;
+      gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + 250;
+    }
 
     // Spawn gems around the death position, clamped to world bounds
     const W = (gameState.world?.width) || canvas.width;

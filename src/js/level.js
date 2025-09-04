@@ -197,9 +197,10 @@ export function updateLevelSystem(gameState, canvas) {
       // Collect
       gameState.xp += g.value;
       gameState.totalGems += g.value;
-      // Treat gem as gold to drive debt interactions
+      // Treat gem as gold to drive debt interactions and track total gold earned this run
       if (gameState.debt) {
         gameState.debt.gold += g.value;
+        gameState.totalGoldEarned = (gameState.totalGoldEarned || 0) + g.value;
         if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
       }
       // Fizzle trait: small chance to grant a temporary potion effect
