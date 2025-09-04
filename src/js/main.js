@@ -368,7 +368,8 @@ function gameLoop() {
         checkCollisions();
         checkPlayerDamage();
         if (gameState.player) updateLevelSystem(gameState, canvas);
-        if (gameState.debt) updateDebt(gameState.debt);
+        // Only update debt during an active run (when a player exists)
+        if (gameState.debt && gameState.player) updateDebt(gameState.debt);
         updateCamera();
     }
 
@@ -557,7 +558,18 @@ function init() {
         const ok = window.confirm('Reset all progression (meta upgrades and saved debt/gold)? This cannot be undone.');
         if (!ok) return;
         try { localStorage.removeItem('goblins_meta_v1'); } catch {}
-        try { localStorage.removeItem('goblins-inferno:debt'); } catch {}
+        // Reset debt/gold explicitly back to starting values (storage and in-memory)
+        try {
+            const resetPayload = JSON.stringify({ debt: 10000, gold: 0 });
+            try { localStorage.removeItem('goblins-inferno:debt'); } catch {}
+            localStorage.setItem('goblins-inferno:debt', resetPayload);
+        } catch {}
+        // Update in-memory state immediately in case reload is delayed
+        if (gameState.debt) {
+            gameState.debt.debt = 10000;
+            gameState.debt.gold = 0;
+            try { if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD(); } catch {}
+        }
         // Hard reload to ensure a clean state and UI
         const u = new URL(location.href);
         u.searchParams.set('v', String(Date.now()));
