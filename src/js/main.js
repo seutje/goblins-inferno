@@ -417,6 +417,8 @@ function gameLoop() {
 function init() {
     resizeCanvas();
     initAudio();
+    // Start muted by default so no sounds play until user opts in
+    try { setMuted(true); } catch {}
     initMeta(gameState);
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
@@ -563,8 +565,8 @@ function init() {
             const btn = e.target?.closest && e.target.closest('.hud-btn');
             if (!btn) return;
             const id = btn.id || '';
-            // Keep menu open for Shop, Loan Shark, and Zoom buttons
-            if (id === 'btnMeta' || id === 'btnLoan' || id === 'btnZoomIn' || id === 'btnZoomOut') return;
+            // Keep menu open for Shop, Loan Shark, Zoom, and Mute buttons
+            if (id === 'btnMeta' || id === 'btnLoan' || id === 'btnZoomIn' || id === 'btnZoomOut' || id === 'btnMute') return;
             closeMenu();
         });
         if (btnResume) {
@@ -574,12 +576,16 @@ function init() {
             });
         }
     }
-    let muted = false;
-    if (btnMute) btnMute.addEventListener('click', () => {
-        muted = !muted;
-        setMuted(muted);
-        btnMute.textContent = muted ? 'Unmute' : 'Mute';
-    });
+    // Reflect initial muted state in UI and maintain toggle without closing the menu
+    let muted = true;
+    if (btnMute) {
+        btnMute.textContent = 'Unmute';
+        btnMute.addEventListener('click', () => {
+            muted = !muted;
+            setMuted(muted);
+            btnMute.textContent = muted ? 'Unmute' : 'Mute';
+        });
+    }
     // Fullscreen toggle (show only on touch devices)
     const btnFS = document.getElementById('btnFullscreen');
     const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
