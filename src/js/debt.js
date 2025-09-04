@@ -114,7 +114,12 @@ export function initDebtUI(gameState) {
   }
 
   if (btnOpen) btnOpen.addEventListener('click', openModal);
-  if (btnClose) btnClose.addEventListener('click', closeModal);
+  if (btnClose) btnClose.addEventListener('click', (e) => {
+    // Prevent the document-level click handler from closing the HUD menu
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    closeModal();
+  });
 
   if (btnSimple) btnSimple.addEventListener('click', () => {
     // Simple Loan: +500 at 10% fixed interest

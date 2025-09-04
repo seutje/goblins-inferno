@@ -136,7 +136,12 @@ function wireMetaUI(gameState) {
     }
   }
   if (openBtn) openBtn.addEventListener('click', open);
-  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (closeBtn) closeBtn.addEventListener('click', (e) => {
+    // Prevent the document-level click handler from closing the HUD menu
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+    close();
+  });
   // Expose to other UI (e.g., victory screen)
   if (gameState) gameState._openMetaModal = open;
 }
