@@ -552,6 +552,17 @@ function init() {
     }
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
+    const btnReset = document.getElementById('btnReset');
+    if (btnReset) btnReset.addEventListener('click', () => {
+        const ok = window.confirm('Reset all progression (meta upgrades and saved debt/gold)? This cannot be undone.');
+        if (!ok) return;
+        try { localStorage.removeItem('goblins_meta_v1'); } catch {}
+        try { localStorage.removeItem('goblins-inferno:debt'); } catch {}
+        // Hard reload to ensure a clean state and UI
+        const u = new URL(location.href);
+        u.searchParams.set('v', String(Date.now()));
+        location.href = u.toString();
+    });
     const btnGameOverMeta = document.getElementById('btnGameOverMeta');
     if (btnGameOverMeta) btnGameOverMeta.addEventListener('click', () => {
         const over = document.getElementById('gameOverModal');
