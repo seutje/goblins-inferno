@@ -214,8 +214,7 @@ function onPlayerDeath() {
     const modal = document.getElementById('gameOverModal');
     const statsEl = document.getElementById('gameOverStats');
     if (statsEl) {
-        const inferno = gameState.meta?.gems || 0;
-        statsEl.textContent = `Level ${gameState.level} | Gems ${gameState.totalGems} | Inferno Gems ${inferno}`;
+        statsEl.textContent = `Level ${gameState.level} | Gems ${gameState.totalGems}`;
     }
     if (modal) modal.style.display = 'flex';
 }
@@ -425,6 +424,8 @@ function init() {
     // Scatter decorative rocks around edges
     initDecor(gameState, canvas);
     // Character selection
+    const startModal = document.getElementById('startModal');
+    const btnStartGame = document.getElementById('btnStartGame');
     const charModal = document.getElementById('charModal');
     const btnGnorp = document.getElementById('pickGnorp');
     const btnIgnis = document.getElementById('pickIgnis');
@@ -442,6 +443,10 @@ function init() {
     if (btnGnorp) btnGnorp.addEventListener('click', () => startAs('Gnorp'));
     if (btnIgnis) btnIgnis.addEventListener('click', () => startAs('Ignis'));
     if (btnFizzle) btnFizzle.addEventListener('click', () => startAs('Fizzle'));
+    if (btnStartGame) btnStartGame.addEventListener('click', () => {
+        if (startModal) startModal.style.display = 'none';
+        if (charModal) charModal.style.display = 'flex';
+    });
     // Mouse tracking for aim
     function updateMouse(e) {
         const rect = canvas.getBoundingClientRect();
@@ -564,8 +569,7 @@ function init() {
         if (winStats) {
             const lvl = gameState.level;
             const gems = gameState.totalGems;
-            const inferno = gameState.meta?.gems || 0;
-            winStats.textContent = `Level ${lvl} | Coins ${gems} | Inferno Gems ${inferno}`;
+            winStats.textContent = `Level ${lvl} | Gems ${gems}`;
         }
         if (winModal) winModal.style.display = 'flex';
         gameState.paused = true;

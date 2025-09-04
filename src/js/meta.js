@@ -2,7 +2,6 @@ const LS_KEY = 'goblins_meta_v1';
 
 function defaultMeta() {
   return {
-    gems: 0,
     upgrades: {
       multishot: 0,
       bounce: 0,
@@ -51,12 +50,12 @@ function wireMetaUI(gameState) {
   const modal = document.getElementById('metaModal');
   const openBtn = document.getElementById('btnMeta');
   const closeBtn = document.getElementById('metaClose');
-  const gemsEl = document.getElementById('metaGems');
+  const goldEl = document.getElementById('metaGold');
   const list = [
-    { key: 'multishot', label: 'Multishot', desc: '+2 shots spread per level', costBase: 1 },
-    { key: 'bounce', label: 'Bouncing Shots', desc: '+1 wall bounce per level', costBase: 1 },
-    { key: 'magnet', label: 'Magnetic Range', desc: '+20px pickup radius per level', costBase: 1 },
-    { key: 'pierce', label: 'Penetration', desc: '+1 enemy penetration per level', costBase: 1 }
+    { key: 'multishot', label: 'Multishot', desc: '+2 shots spread per level', costBase: 100 },
+    { key: 'bounce', label: 'Bouncing Shots', desc: '+1 wall bounce per level', costBase: 120 },
+    { key: 'magnet', label: 'Magnetic Range', desc: '+20px pickup radius per level', costBase: 80 },
+    { key: 'pierce', label: 'Penetration', desc: '+1 enemy penetration per level', costBase: 120 }
   ];
   const rows = {};
   list.forEach(item => {
@@ -71,21 +70,23 @@ function wireMetaUI(gameState) {
   function costOf(key, base) { const lvl = levelOf(key); return base * (lvl + 1); }
 
   function refresh() {
-    if (gemsEl) gemsEl.textContent = String(gameState.meta.gems || 0);
+    const curGold = Math.max(0, Math.floor(gameState.debt?.gold || 0));
+    if (goldEl) goldEl.textContent = String(curGold);
     list.forEach(item => {
       const lvl = levelOf(item.key);
       const cost = costOf(item.key, item.costBase);
       rows[item.key].levelEl.textContent = String(lvl);
       rows[item.key].costEl.textContent = String(cost);
-      rows[item.key].buyBtn.disabled = (gameState.meta.gems || 0) < cost || lvl >= 10;
+      rows[item.key].buyBtn.disabled = curGold < cost || lvl >= 10;
     });
   }
 
   list.forEach(item => {
     rows[item.key].buyBtn.addEventListener('click', () => {
       const cost = costOf(item.key, item.costBase);
-      if ((gameState.meta.gems || 0) >= cost) {
-        gameState.meta.gems -= cost;
+      const available = Math.max(0, Math.floor(gameState.debt?.gold || 0));
+      if (available >= cost) {
+        if (gameState.debt) gameState.debt.gold = Math.max(0, available - cost);
         gameState.meta.upgrades[item.key] = levelOf(item.key) + 1;
         // apply live effects where relevant
         if (item.key === 'magnet') {
@@ -105,6 +106,7 @@ function wireMetaUI(gameState) {
           gameState._metaMods.pierce = gameState.meta.upgrades.pierce || 0;
         }
         saveMeta(gameState.meta);
+        try { if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD(); } catch {}
         refresh();
       }
     });

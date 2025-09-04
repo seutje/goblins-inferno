@@ -121,8 +121,18 @@
         </div>
     </div>
 
+    <!-- Start Screen -->
+    <div id="startModal" class="modal" style="display:flex;">
+        <div class="modal-content start-content">
+            <div class="start-overlay">
+                <h1 class="start-title">Goblin's Inferno</h1>
+                <button id="btnStartGame" class="hud-btn start-btn">Start</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Character Selection Modal -->
-    <div id="charModal" class="modal" style="display:flex;">
+    <div id="charModal" class="modal" style="display:none;">
         <div class="modal-content">
             <h2>Choose Your Goblin</h2>
             <div class="choices">
@@ -183,7 +193,7 @@
     <div id="metaModal" class="modal" style="display:none;">
       <div class="modal-content">
         <h2>Meta Progression</h2>
-        <p>Inferno Gems: <b id="metaGems">0</b></p>
+        <p>Gold: <b id="metaGold">0</b></p>
         <div class="choices">
           <div class="choice">
             <div class="choice-title">Multishot</div>

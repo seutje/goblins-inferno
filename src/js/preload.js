@@ -18,10 +18,8 @@ const ASSETS = [
   'src/img/sprite-gnorp.png',
   'src/img/sprite-ignis.png',
   'src/img/sprite-fizzle.png',
-  // Character select preview sheets
-  'src/img/sprite-char-gnorp.png',
-  'src/img/sprite-char-ignis.png',
-  'src/img/sprite-char-fizzle.png',
+  // Start screen
+  'src/img/start.png',
   // Enemies
   'src/img/sprite-skeleton.png',
   'src/img/sprite-imp.png',

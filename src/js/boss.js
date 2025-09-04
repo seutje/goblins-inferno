@@ -1,6 +1,5 @@
 import { Enemy } from './enemy.js';
 import { versioned } from './assets.js';
-import { saveMeta } from './meta.js';
 import { spawnFirePatch, spawnBlackHole } from './hazard.js';
 import { Projectile } from './projectile.js';
 import { playSound } from './audio.js';
@@ -437,14 +436,8 @@ export function updateBoss(gameState, canvas) {
     const idx = gameState.enemies.indexOf(gameState.boss);
     if (idx >= 0) gameState.enemies.splice(idx, 1);
 
-    // Rewards
+    // Rewards: grant gold on boss kill
     if (gameState.debt) gameState.debt.gold += 250;
-
-    // Grant meta gem currency
-    if (gameState.meta) {
-      gameState.meta.gems = (gameState.meta.gems || 0) + 1;
-      saveMeta(gameState.meta);
-    }
 
     // Spawn gems around the death position, clamped to world bounds
     const W = (gameState.world?.width) || canvas.width;
@@ -471,7 +464,7 @@ export function updateBoss(gameState, canvas) {
         x: gx,
         y: gy,
         size: 12,
-        value: 2,
+        value: 5, // boss gems worth 5 coins
         color: '#9ff',
         // animation (matches little gems): row 2 (index 1)
         sprite,
