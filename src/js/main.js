@@ -560,8 +560,8 @@ function init() {
             const btn = e.target?.closest && e.target.closest('.hud-btn');
             if (!btn) return;
             const id = btn.id || '';
-            // Keep menu open when opening Shop or Loan Shark so it reappears when those close
-            if (id === 'btnMeta' || id === 'btnLoan') return;
+            // Keep menu open for Shop, Loan Shark, and Zoom buttons
+            if (id === 'btnMeta' || id === 'btnLoan' || id === 'btnZoomIn' || id === 'btnZoomOut') return;
             closeMenu();
         });
         if (btnResume) {

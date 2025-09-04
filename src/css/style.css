@@ -85,6 +85,7 @@ canvas {
 }
 .hud-menu-panel.open { display: flex; }
 .hud-zoom-row { display: flex; gap: 8px; }
+.hud-zoom-label { align-self: center; opacity: 0.9; }
 
 /* Buffs HUD (top-right) */
 .buffs-hud {
