@@ -565,7 +565,7 @@ function init() {
             const lvl = gameState.level;
             const gems = gameState.totalGems;
             const inferno = gameState.meta?.gems || 0;
-            winStats.textContent = `Level ${lvl} | Gems ${gems} | Inferno Gems ${inferno}`;
+            winStats.textContent = `Level ${lvl} | Coins ${gems} | Inferno Gems ${inferno}`;
         }
         if (winModal) winModal.style.display = 'flex';
         gameState.paused = true;
