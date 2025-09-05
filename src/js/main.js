@@ -643,6 +643,12 @@ function init() {
     }
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
+    const btnRestartRun = document.getElementById('btnRestartRun');
+    if (btnRestartRun) btnRestartRun.addEventListener('click', (e) => {
+        // Restart the current run but keep player's current gold (debt state untouched)
+        e.stopPropagation();
+        restartRun();
+    });
     const btnReset = document.getElementById('btnReset');
     if (btnReset) btnReset.addEventListener('click', () => {
         const ok = window.confirm('Reset all progression (meta upgrades and saved debt/gold)? This cannot be undone.');
