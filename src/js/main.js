@@ -451,6 +451,14 @@ function init() {
     if (btnFizzle) btnFizzle.addEventListener('click', () => startAs('Fizzle'));
     if (btnStartGame) btnStartGame.addEventListener('click', () => {
         if (startModal) startModal.style.display = 'none';
+        // On mobile/touch devices, attempt to enter fullscreen on start
+        const isTouchStart = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        try {
+            if (isTouchStart && !fsActive()) {
+                // Prefer full document for consistent UI
+                reqFS(document.documentElement);
+            }
+        } catch {}
         if (charModal) charModal.style.display = 'flex';
     });
     // Mouse tracking for aim
@@ -598,12 +606,32 @@ function init() {
         const fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
         if (fn) fn.call(document);
     }
+    function tryLockLandscape() {
+        try {
+            const o = (screen && screen.orientation) ? screen.orientation : null;
+            if (o && typeof o.lock === 'function') {
+                // Most mobile browsers require fullscreen before lock; ignore failures
+                o.lock('landscape').catch(() => {});
+            }
+        } catch {}
+    }
     function updateFSLabel() { if (btnFS) btnFS.textContent = fsActive() ? 'Exit Fullscreen' : 'Fullscreen'; }
     if (btnFS) {
         if (isTouch) btnFS.style.display = 'inline-block';
         btnFS.addEventListener('click', () => { fsActive() ? exitFS() : reqFS(document.documentElement); });
-        document.addEventListener('fullscreenchange', updateFSLabel);
-        document.addEventListener('webkitfullscreenchange', updateFSLabel);
+        function onFSChange() {
+            updateFSLabel();
+            try {
+                if (fsActive()) {
+                    if (isTouch) tryLockLandscape();
+                } else {
+                    const o = (screen && screen.orientation) ? screen.orientation : null;
+                    if (o && typeof o.unlock === 'function') o.unlock();
+                }
+            } catch {}
+        }
+        document.addEventListener('fullscreenchange', onFSChange);
+        document.addEventListener('webkitfullscreenchange', onFSChange);
         updateFSLabel();
     }
     // Touch zoom buttons
