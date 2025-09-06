@@ -650,6 +650,42 @@ function init() {
         btnZoomIn.addEventListener('click', () => { const a = anchor(); applyZoom(gameState.zoom * 1.1, a.x, a.y); });
         btnZoomOut.addEventListener('click', () => { const a = anchor(); applyZoom(gameState.zoom / 1.1, a.x, a.y); });
     }
+
+    // Double-tap to open menu (touch devices)
+    if (isTouch) {
+        let lastTapTime = 0;
+        let lastX = 0, lastY = 0;
+        const TAP_MS = 300;
+        const TAP_DIST = 40; // px
+        function isIgnoredTarget(el) {
+            if (!el || !el.closest) return false;
+            // Ignore taps on virtual sticks, menu panel, or modals
+            return !!(el.closest('.stick') || el.closest('#hudMenuPanel') || el.closest('.modal'));
+        }
+        document.addEventListener('touchend', (e) => {
+            // Only during a run
+            if (!gameState.player) return;
+            const anyModalOpen = !!document.querySelector('.modal[style*="display: flex"]');
+            if (anyModalOpen) return;
+            if (isIgnoredTarget(e.target)) return;
+            if (!e.changedTouches || e.changedTouches.length !== 1) { lastTapTime = 0; return; }
+            const now = performance.now();
+            const t = e.changedTouches[0];
+            const x = t.clientX, y = t.clientY;
+            if (now - lastTapTime < TAP_MS) {
+                const dx = x - lastX, dy = y - lastY;
+                if (dx*dx + dy*dy <= TAP_DIST*TAP_DIST) {
+                    if (typeof gameState._openHudMenu === 'function') {
+                        e.preventDefault();
+                        gameState._openHudMenu();
+                    }
+                    lastTapTime = 0;
+                    return;
+                }
+            }
+            lastTapTime = now; lastX = x; lastY = y;
+        }, { passive: false });
+    }
     const btnRestart = document.getElementById('btnRestart');
     if (btnRestart) btnRestart.addEventListener('click', restartRun);
     const btnRestartRun = document.getElementById('btnRestartRun');
