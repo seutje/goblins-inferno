@@ -39,3 +39,5 @@ To run the game, use a simple HTTP server from the npm ecosystem. The **Code Gob
   npm install
 
 * **Execution:** After installation, run `npm start` to serve the project root at http://localhost:8000. To bust caches for CSS/JS, append `?v=YOUR_VERSION` to the page URL (for example, `http://localhost:8000/index.html?v=dev1`).
+
+* **Live Reload Note:** Do not manually edit `live-reload.json`. It is automatically updated by a separate Node server process running in another terminal. Just commit the updated file whenever the Node server has changed it.
