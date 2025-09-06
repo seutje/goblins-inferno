@@ -125,10 +125,15 @@ export class CreditorChampion extends BaseBoss {
         const dx = player.x - this.x;
         const dy = player.y - this.y;
         const d = Math.hypot(dx, dy) || 1;
+        // Ensure reflected projectile size does not include player's powerup multipliers
+        const sizeMul = (gameState.player?.stats?.projSizeMultiplier) || 1;
+        const dmgMul = (gameState.player?.stats?.damageMultiplier) || 1;
+        const baseSize = projectile.size ? (projectile.size / sizeMul) : 5;
+        const baseDamage = (typeof projectile.damage === 'number') ? (projectile.damage / dmgMul) : 3;
         const reflectedProj = new Projectile(this.x, this.y, {
-          damage: projectile.damage * 1.5, // Reflected projectile is stronger
-          speed: projectile.speed * 1.2,
-          size: projectile.size,
+          damage: baseDamage * 1.5, // Reflected projectile is stronger, without player buffs
+          speed: projectile.speed * 1.2, // speed does not depend on player buffs
+          size: baseSize,
           color: 'purple',
           dx: dx / d,
           dy: dy / d,
