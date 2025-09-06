@@ -1,6 +1,6 @@
 # **Technical Development Plan for Goblin's Inferno**
 
-This document provides specific instructions for AI agents regarding the technical implementation of "Goblin's Inferno". All agents must adhere to these guidelines to ensure a cohesive and functional project. Read `CONCEPT.md` to ensure adherence to the agree upon game logic.
+This document provides specific instructions for AI agents regarding the technical implementation of "Goblin's Inferno". All agents must adhere to these guidelines to ensure a cohesive and functional project. Read `DESIGN.md` to ensure adherence to the agree upon game logic.
 
 ## **Code Structure**
 
