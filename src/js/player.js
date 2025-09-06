@@ -1,6 +1,7 @@
 import { fireInfernoBlast, fireFlameStream, fireVolatileOrb } from './projectile.js';
 import { versioned } from './assets.js';
 import { spawnFirePatch } from './hazard.js';
+import { drawBar } from './ui.js';
 import { playSound } from './audio.js';
 
 export default class Player {
@@ -219,30 +220,34 @@ export default class Player {
             ctx.restore();
         }
 
-        // HP bar above the player
-        const barW = Math.max(24, destW);
-        const barH = 6;
+        // HP bar above the player (styled via UI helper)
+        const barW = Math.max(28, destW);
+        const barH = 5;
         const bx = this.x - barW / 2;
-        const by = this.y - destH / 2 - 10;
+        const by = this.y - destH / 2 - 12;
         const frac = Math.max(0, Math.min(1, (this.hp || 0) / (this.maxHp || 1)));
-        ctx.fillStyle = 'rgba(0,0,0,0.5)';
-        ctx.fillRect(bx, by, barW, barH);
-        // Player HP bar in red to match theme
-        ctx.fillStyle = '#e33';
-        ctx.fillRect(bx, by, barW * frac, barH);
-        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-        ctx.strokeRect(bx, by, barW, barH);
+        // Styled draw; if it throws for any reason, fall back
+        try { drawBar(ctx, 'hp', bx, by, barW, barH, frac); } catch {
+            ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            ctx.fillRect(bx, by, barW, barH);
+            ctx.fillStyle = '#e33';
+            ctx.fillRect(bx, by, barW * frac, barH);
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.strokeRect(bx, by, barW, barH);
+        }
 
         // Shield bar (blue), displayed above HP bar if shield is enabled
         if ((this.shieldMax || 0) > 0) {
             const sFrac = Math.max(0, Math.min(1, (this.shield || 0) / (this.shieldMax || 1)));
-            const sy = by - (barH + 2);
-            ctx.fillStyle = 'rgba(0,0,0,0.5)';
-            ctx.fillRect(bx, sy, barW, barH);
-            ctx.fillStyle = '#4aa3ff'; // blue shield color
-            ctx.fillRect(bx, sy, barW * sFrac, barH);
-            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-            ctx.strokeRect(bx, sy, barW, barH);
+            const sy = by - (barH + 3);
+            try { drawBar(ctx, 'shield', bx, sy, barW, barH, sFrac); } catch {
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillRect(bx, sy, barW, barH);
+                ctx.fillStyle = '#4aa3ff';
+                ctx.fillRect(bx, sy, barW * sFrac, barH);
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.strokeRect(bx, sy, barW, barH);
+            }
         }
     }
 
