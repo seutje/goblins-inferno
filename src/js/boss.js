@@ -3,6 +3,7 @@ import { versioned } from './assets.js';
 import { spawnFirePatch, spawnBlackHole } from './hazard.js';
 import { Projectile } from './projectile.js';
 import { playSound } from './audio.js';
+import { drawBar } from './ui.js';
 
 class BaseBoss extends Enemy {
   constructor(canvas, gameState) {
@@ -502,20 +503,24 @@ export function drawBossHUD(gameState, ctx, canvas) {
   if (!b) return;
   const pad = 10;
   const w = canvas.width - pad * 2;
-  const h = 14;
+  const h = 28; // Doubled height
   const x = pad;
-  const y = canvas.height - pad - h; // move to bottom of the canvas
-  ctx.fillStyle = 'rgba(0,0,0,0.6)';
-  ctx.fillRect(x, y, w, h);
+  const y = canvas.height - pad - h;
   const frac = Math.max(0, Math.min(1, (b.hp || 0) / (b.hpMax || 1)));
-  ctx.fillStyle = '#e33';
-  ctx.fillRect(x, y, w * frac, h);
-  ctx.strokeStyle = '#555';
-  ctx.strokeRect(x, y, w, h);
-  ctx.fillStyle = '#eee';
-  ctx.font = '12px sans-serif';
-  ctx.textAlign = 'left';
-  ctx.fillText(`${b.name}  ${Math.ceil((b.hp||0))}/${Math.ceil((b.hpMax||0))}`, x + 4, y + h - 3);
+
+  // Use the styled bar drawing function
+  drawBar(ctx, 'health', x, y, w, h, frac);
+
+  // Draw text over the bar
+  ctx.fillStyle = '#FFD700'; // Gold color for text
+  ctx.shadowColor = 'rgba(0,0,0,0.9)';
+  ctx.shadowBlur = 4;
+  ctx.font = 'bold 16px sans-serif'; // Larger font
+  ctx.textAlign = 'center';
+  ctx.fillText(`${b.name}  ${Math.ceil((b.hp||0))}/${Math.ceil((b.hpMax||0))}`, x + w / 2, y + h - 7); // Adjusted y-pos
+  // Reset shadow
+  ctx.shadowBlur = 0;
+
 
   // Off-screen arrow indicator pointing toward the boss
   try {
