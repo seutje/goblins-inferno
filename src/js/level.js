@@ -1,6 +1,7 @@
 // Leveling, gems, and upgrades
 import { playSound } from './audio.js';
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 
 const GEM_SHEET_COLS = 6;
 const GEM_SHEET_ROWS = 5;
@@ -101,8 +102,7 @@ export function initLevelSystem(gameState, canvas) {
 
 // Spawn a coin pickup at a specific world position
 export function spawnCoin(gameState, x, y, { value = 1 } = {}) {
-  const sprite = new Image();
-  sprite.src = versioned('src/img/sprite-coin.png');
+  const sprite = getImage('src/img/sprite-coin.png');
   const W = (gameState.world?.width) || (gameState.canvasWidth || Infinity);
   const H = (gameState.world?.height) || (gameState.canvasHeight || Infinity);
   const pad = 16;
@@ -130,8 +130,7 @@ export function updateLevelSystem(gameState, canvas) {
   // Spawn gems periodically for now (until enemy loot is wired)
   if (gameState._gemTimer-- <= 0) {
     // Regular world pickups are coins (boss drops remain gems)
-    const sprite = new Image();
-    sprite.src = versioned('src/img/sprite-coin.png');
+    const sprite = getImage('src/img/sprite-coin.png');
     const W = (gameState.world?.width) || canvas.width;
     const H = (gameState.world?.height) || canvas.height;
     const coin = {

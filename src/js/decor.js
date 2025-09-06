@@ -1,4 +1,5 @@
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 
 const ROCK_PATHS = [
   'src/img/rock1.png',
@@ -18,7 +19,7 @@ export function initDecor(gameState, canvas) {
   const spawnClear = 220; // clear circle around world center
   const minDist = 80; // minimum spacing between decor items
   const placements = [];
-  const imgs = ROCK_PATHS.map(p => { const img = new Image(); img.src = versioned(p); return img; });
+  const imgs = ROCK_PATHS.map(p => getImage(p));
 
   // number of rocks proportional to world area (clamped)
   const area = W * H;

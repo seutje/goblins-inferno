@@ -1,3 +1,4 @@
+import { getImage } from './preload.js';
 const SHEET_COLS = 6;
 const SHEET_ROWS = 5;
 const FRAME_W = 170;
@@ -30,8 +31,7 @@ export class Projectile {
         // Track which enemies have been hit to avoid re-hitting the same one when piercing
         this.hitSet = new WeakSet();
         if (sprite) {
-            this.sprite = new Image();
-            this.sprite.src = sprite;
+            this.sprite = (typeof sprite === 'string') ? getImage(sprite) : sprite;
         }
     }
 
@@ -88,14 +88,14 @@ export class Projectile {
     }
 }
 
-import { versioned } from './assets.js';
+// no longer need versioned here; sprites are fetched via getImage
 
 export function fireInfernoBlast(gameState, x, y, dir) {
     const s = gameState.player?.stats || { damageMultiplier: 1, projSizeMultiplier: 1 };
     const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
         x, y,
-        { damage: 2 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: versioned('src/img/sprite-projectile.png'), frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 0, frameInterval: 6, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
+        { damage: 2 * s.damageMultiplier, speed: 6, size: 5 * s.projSizeMultiplier, color: 'red', sprite: 'src/img/sprite-projectile.png', frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 0, frameInterval: 6, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
     ));
 }
 
@@ -104,7 +104,7 @@ export function fireFlameStream(gameState, x, y, dir) {
     const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
         x, y,
-        { damage: 1.0 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: versioned('src/img/sprite-projectile.png'), frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 1, frameInterval: 3, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
+        { damage: 1.0 * s.damageMultiplier, speed: 8, size: 3 * s.projSizeMultiplier, color: 'orange', sprite: 'src/img/sprite-projectile.png', frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 1, frameInterval: 3, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
     ));
 }
 
@@ -113,7 +113,7 @@ export function fireVolatileOrb(gameState, x, y, dir) {
     const v = normDir(dir);
     gameState.projectiles.push(new Projectile(
         x, y,
-        { damage: 6 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: versioned('src/img/sprite-projectile.png'), frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 2, frameInterval: 8, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
+        { damage: 6 * s.damageMultiplier, speed: 2, size: 10 * s.projSizeMultiplier, color: 'purple', sprite: 'src/img/sprite-projectile.png', frameWidth: FRAME_W, frameHeight: FRAME_H, dx: v.dx, dy: v.dy, sheetCols: SHEET_COLS, sheetRows: SHEET_ROWS, row: 2, frameInterval: 8, bouncesLeft: (gameState._injectBounces||0), pierceLeft: (gameState._injectPierce||0) }
     ));
 }
 

@@ -2,6 +2,7 @@
 import { spawnHealthPickup } from './pickups.js';
 import { spawnCoin } from './level.js';
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 
 const SHEET_COLS = 6;
 const SHEET_ROWS = 5;
@@ -19,8 +20,7 @@ export class FirePatch {
     this.type = 'fire';
     this.faction = faction;
     // Animated sprite sheet (like heart pickup)
-    this.sprite = new Image();
-    this.sprite.src = versioned('src/img/sprite-fire.png');
+    this.sprite = getImage('src/img/sprite-fire.png');
     this.frame = 0;
     this.frameTimer = 0;
     this.frameInterval = 6;

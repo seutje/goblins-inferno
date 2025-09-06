@@ -4,6 +4,7 @@ import { spawnFirePatch, spawnBlackHole } from './hazard.js';
 import { Projectile } from './projectile.js';
 import { playSound } from './audio.js';
 import { drawBar } from './ui.js';
+import { getImage } from './preload.js';
 
 class BaseBoss extends Enemy {
   constructor(canvas, gameState) {
@@ -33,7 +34,7 @@ export class CreditorChampion extends BaseBoss {
     this.abilityCooldown = 180; // Time between abilities
     this.shieldTimer = 0; // Countdown for shield duration
     this.shieldActive = false;
-    this.sprite.src = versioned('src/img/sprite-champion.png');
+    this.sprite = getImage('src/img/sprite-champion.png');
   }
 
   update() {
@@ -182,7 +183,7 @@ export class InterestDragon extends BaseBoss {
     this.abilityCooldown = 150; // Time between abilities
     this.shieldTimer = 0; // Countdown for shield duration
     this.shieldActive = false;
-    this.sprite.src = versioned('src/img/sprite-dragon.png');
+    this.sprite = getImage('src/img/sprite-dragon.png');
     this._absorbPhase = 0; // visual pulse for absorb state
   }
 
@@ -341,7 +342,7 @@ export class DebtCollector extends BaseBoss {
     this.speed = 1.0;
     this.absorbTimer = 0; // when >0, absorbing projectiles
     this.reflectBurst = 0; // counts reflected shots queued
-    this.sprite.src = versioned('src/img/sprite-collector.png');
+    this.sprite = getImage('src/img/sprite-collector.png');
   }
 
   update() {
@@ -453,8 +454,7 @@ export function updateBoss(gameState, canvas) {
     const H = (gameState.world?.height) || canvas.height;
     const count = 10;
     for (let i = 0; i < count; i++) {
-      const sprite = new Image();
-      sprite.src = versioned('src/img/sprite-gem.png');
+      const sprite = getImage('src/img/sprite-gem.png');
 
       // Distribute roughly in a ring with slight jitter
       const baseAngle = (i / count) * Math.PI * 2;

@@ -2,13 +2,22 @@ import { versioned } from './assets.js';
 
 // Shared image store so game code can reuse preloaded Image objects
 export const imageStore = new Map();
+function normalizeKey(path) {
+  // Use path without query as the cache key so callers can pass versioned or raw
+  const q = path.indexOf('?');
+  return q >= 0 ? path.slice(0, q) : path;
+}
 export function getImage(path) {
-  const key = path;
+  const key = normalizeKey(path);
   let img = imageStore.get(key);
+  const src = versioned(key);
   if (!img) {
     img = new Image();
-    img.src = versioned(path);
+    img.src = src;
     imageStore.set(key, img);
+  } else if (img.src !== src && (!img.complete || (img.naturalWidth || 0) === 0)) {
+    // Ensure src reflects current version only if not yet loaded
+    img.src = src;
   }
   return img;
 }

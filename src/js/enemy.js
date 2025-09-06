@@ -1,4 +1,5 @@
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 
 const SHEET_COLS = 6;
 const SHEET_ROWS = 5; // updated: 5 rows tall, 6 columns wide
@@ -106,7 +107,7 @@ export class DebtSkeleton extends Enemy {
     super(canvas, gameState);
     this.speed = 1;
     this.hp = 10;
-        this.sprite.src = versioned('src/img/sprite-skeleton.png');
+        this.sprite = getImage('src/img/sprite-skeleton.png');
     this.contactDamage = 10;
     this.faceDir = -1;
   }
@@ -117,7 +118,7 @@ export class LoanerImp extends Enemy {
     super(canvas, gameState);
     this.speed = 2;
     this.hp = 20;
-        this.sprite.src = versioned('src/img/sprite-imp.png');
+        this.sprite = getImage('src/img/sprite-imp.png');
     this.angle = Math.random() * Math.PI * 2;
     this.contactDamage = 12;
     this.faceDir = -1;
@@ -158,7 +159,7 @@ export class BailiffOgre extends Enemy {
     super(canvas, gameState);
     this.speed = 0.75;
     this.hp = 50;
-        this.sprite.src = versioned('src/img/sprite-ogre.png');
+        this.sprite = getImage('src/img/sprite-ogre.png');
     this.chargeCooldown = 0;
     this.contactDamage = 18;
     this.faceDir = -1;

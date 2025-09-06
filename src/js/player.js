@@ -1,5 +1,6 @@
 import { fireInfernoBlast, fireFlameStream, fireVolatileOrb } from './projectile.js';
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 import { spawnFirePatch } from './hazard.js';
 import { drawBar } from './ui.js';
 import { playSound } from './audio.js';
@@ -37,8 +38,8 @@ export default class Player {
             projSizeMultiplier: 1
         };
 
-        this.sprite = new Image();
-        this.sprite.src = versioned('src/img/sprite-goblin.png');
+        // Reuse preloaded sprite to avoid first-frame fallback
+        this.sprite = getImage('src/img/sprite-goblin.png');
         this.animations = {
             idle: { row: 0, frames: 3 },
             walk: { row: 1, frames: 6 },

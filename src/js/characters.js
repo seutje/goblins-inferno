@@ -1,5 +1,6 @@
 // Character selection and trait wiring
 import { versioned } from './assets.js';
+import { getImage } from './preload.js';
 
 export const CHARACTERS = {
   Gnorp: {
@@ -78,7 +79,7 @@ export function applyCharacterToPlayer(player, gameState, characterKey) {
   player.stats.projSizeMultiplier *= cfg.stats.projSizeMultiplier;
   gameState.trait = cfg.trait;
   // set character-specific sprite and animation properties
-  player.sprite.src = versioned(cfg.sprite);
+  player.sprite = getImage(cfg.sprite);
   player.frameWidth = cfg.frameWidth;
   player.frameHeight = cfg.frameHeight;
   if (cfg.sheetCols) player.sheetCols = cfg.sheetCols;
