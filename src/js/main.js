@@ -566,8 +566,17 @@ function init() {
             if (anyModalOpen) return; // keep menu open behind modals
             if (hudMenu.classList.contains('open') && !hudMenu.contains(t) && t !== btnMenu) closeMenu();
         });
-        // Close when pressing Escape
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && hudMenu.classList.contains('open')) closeMenu(); });
+        // Toggle menu with Escape: open if closed; if open, close and resume
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                if (hudMenu.classList.contains('open')) {
+                    closeMenu({ resume: true });
+                } else {
+                    openMenu();
+                }
+            }
+        });
         // Close when any button inside the menu is activated, letting target UI handle pausing
         hudMenu.addEventListener('click', (e) => {
             const btn = e.target?.closest && e.target.closest('.hud-btn');
