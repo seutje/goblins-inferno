@@ -35,6 +35,9 @@ export function initAudio() {
 
 export function setMuted(muted) {
   audioState.enabled = !muted;
+  if (typeof window !== 'undefined' && window.Tone && window.Tone.Destination) {
+    window.Tone.Destination.mute = muted;
+  }
 }
 
 function beep({ freq = 440, duration = 0.08, type = 'sine', gain = 0.03 } = {}) {
@@ -84,5 +87,26 @@ export function playSound(kind) {
       break;
     default:
       break;
+  }
+}
+
+export async function playMusic() {
+  if (typeof window === 'undefined' || !window.Tone || !window.Midi) return;
+  if (!audioState.enabled) return;
+  try {
+    await window.Tone.start();
+    const res = await fetch('src/midi/alkan.mid');
+    if (!res.ok) return;
+    const data = await res.arrayBuffer();
+    const midi = new window.Midi(data);
+    const synth = new window.Tone.PolySynth(window.Tone.Synth).toDestination();
+    const now = window.Tone.now();
+    midi.tracks.forEach(track => {
+      track.notes.forEach(note => {
+        synth.triggerAttackRelease(note.name, note.duration, note.time + now);
+      });
+    });
+  } catch (err) {
+    console.error('Failed to play music', err);
   }
 }
