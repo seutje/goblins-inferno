@@ -99,7 +99,8 @@ export async function playMusic() {
     if (!res.ok) return;
     const data = await res.arrayBuffer();
     const midi = new window.Midi(data);
-    const synth = new window.Tone.PolySynth(window.Tone.Synth).toDestination();
+    const gain = new window.Tone.Gain(0.1).toDestination(); // reduce volume by 90%
+    const synth = new window.Tone.PolySynth(window.Tone.Synth).connect(gain);
     const now = window.Tone.now();
     midi.tracks.forEach(track => {
       track.notes.forEach(note => {
