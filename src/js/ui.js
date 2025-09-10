@@ -36,8 +36,9 @@ function drawBarStyled(ctx, kind, x, y, w, h, frac) {
   if (fw > 0) {
     const grad = ctx.createLinearGradient(x, y, x, y + h);
     if (kind === 'shield') {
-      grad.addColorStop(0, '#5bcaff');
-      grad.addColorStop(1, '#3daeec');
+      // Match boss arrow colors for player shield bar
+      grad.addColorStop(0, '#50aaff');
+      grad.addColorStop(1, '#002850');
     } else { // health
       grad.addColorStop(0, '#e84f39');
       grad.addColorStop(1, '#d73e28');
