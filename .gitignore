@@ -24,3 +24,6 @@ yarn-error.log*
 
 # WSL
 *:Zone.Identifier
+
+# Audio
+src/midi/*.mid

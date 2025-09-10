@@ -7,7 +7,7 @@ import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { initDecor, drawDecor } from './decor.js';
 import { updateBoss, drawBossHUD } from './boss.js';
-import { initAudio, playSound, setMuted } from './audio.js';
+import { initAudio, playSound, setMuted, playMusic } from './audio.js';
 import { preloadAll } from './preload.js';
 import { repay } from './debt.js';
 import { initMeta, applyMetaAtRunStart } from './meta.js';
@@ -444,6 +444,8 @@ function init() {
         applyMetaAtRunStart(gameState);
         if (charModal) charModal.style.display = 'none';
         if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
+        setMuted(false);
+        playMusic();
     }
 
     if (btnGnorp) btnGnorp.addEventListener('click', () => startAs('Gnorp'));
