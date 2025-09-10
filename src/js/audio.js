@@ -126,7 +126,7 @@ export async function playMusic() {
     window.Tone.Transport.stop();
     window.Tone.Transport.cancel(0);
 
-    const gain = new window.Tone.Gain(0.1).toDestination(); // reduce volume by 90%
+    const gain = new window.Tone.Gain(0.03).toDestination(); // reduce volume by 90%
     // square wave for a chiptune vibe
     const synth = new window.Tone.PolySynth(window.Tone.Synth, {
       oscillator: { type: 'square' }
