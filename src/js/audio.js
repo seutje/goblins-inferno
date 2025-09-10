@@ -136,7 +136,7 @@ export async function playMusic() {
     const part = new window.Tone.Part((time, note) => {
       const lower = window.Tone
         .Frequency(note.midi, 'midi')
-        .transpose(-12)
+        .transpose(-7)
         .toNote();
       synth.triggerAttackRelease(lower, note.duration, time);
     }, track.notes).start(0);
@@ -146,7 +146,7 @@ export async function playMusic() {
     // simple percussion to match the melody
     const drum = new window.Tone.MembraneSynth().connect(gain);
     const beat = new window.Tone.Sequence((time) => {
-      drum.triggerAttackRelease('C1', '8n', time);
+      drum.triggerAttackRelease('C1', '4n', time);
     }, [0, 2], '2n').start(0);
     beat.loop = true;
 
