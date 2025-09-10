@@ -134,7 +134,11 @@ export async function playMusic() {
 
     const track = midi.tracks[0];
     const part = new window.Tone.Part((time, note) => {
-      synth.triggerAttackRelease(note.name, note.duration, time);
+      const lower = window.Tone
+        .Frequency(note.midi, 'midi')
+        .transpose(-12)
+        .toNote();
+      synth.triggerAttackRelease(lower, note.duration, time);
     }, track.notes).start(0);
     part.loop = true;
     part.loopEnd = midi.duration;
@@ -142,7 +146,7 @@ export async function playMusic() {
     // simple percussion to match the melody
     const drum = new window.Tone.MembraneSynth().connect(gain);
     const beat = new window.Tone.Sequence((time) => {
-      drum.triggerAttackRelease('C2', '8n', time);
+      drum.triggerAttackRelease('C1', '8n', time);
     }, [0, 2], '2n').start(0);
     beat.loop = true;
 
