@@ -121,14 +121,34 @@ export async function playMusic() {
     if (!res.ok) return;
     const data = await res.arrayBuffer();
     const midi = new window.Midi(data);
+
+    // stop any existing sequences before starting again
+    window.Tone.Transport.stop();
+    window.Tone.Transport.cancel(0);
+
     const gain = new window.Tone.Gain(0.1).toDestination(); // reduce volume by 90%
-    const synth = new window.Tone.PolySynth(window.Tone.Synth).connect(gain);
-    const now = window.Tone.now();
-    midi.tracks.forEach(track => {
-      track.notes.forEach(note => {
-        synth.triggerAttackRelease(note.name, note.duration, note.time + now);
-      });
-    });
+    // square wave for a chiptune vibe
+    const synth = new window.Tone.PolySynth(window.Tone.Synth, {
+      oscillator: { type: 'square' }
+    }).connect(gain);
+
+    const track = midi.tracks[0];
+    const part = new window.Tone.Part((time, note) => {
+      synth.triggerAttackRelease(note.name, note.duration, time);
+    }, track.notes).start(0);
+    part.loop = true;
+    part.loopEnd = midi.duration;
+
+    // simple percussion to match the melody
+    const drum = new window.Tone.MembraneSynth().connect(gain);
+    const beat = new window.Tone.Sequence((time) => {
+      drum.triggerAttackRelease('C2', '8n', time);
+    }, [0, 2], '2n').start(0);
+    beat.loop = true;
+
+    window.Tone.Transport.loop = true;
+    window.Tone.Transport.loopEnd = midi.duration;
+    window.Tone.Transport.start();
   } catch (err) {
     console.error('Failed to play music', err);
   }
