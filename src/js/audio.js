@@ -7,6 +7,27 @@ const audioState = {
   output: null, // final node before destination (e.g., compressor or masterGain)
 };
 
+const MUTE_KEY = 'goblins-inferno:muted';
+
+function canStore() {
+  try { return typeof localStorage !== 'undefined'; } catch { return false; }
+}
+
+export function loadMuted() {
+  if (!canStore()) return true;
+  try {
+    const val = localStorage.getItem(MUTE_KEY);
+    return val === null ? true : val === '1';
+  } catch {
+    return true;
+  }
+}
+
+function saveMuted(muted) {
+  if (!canStore()) return;
+  try { localStorage.setItem(MUTE_KEY, muted ? '1' : '0'); } catch {}
+}
+
 export function initAudio() {
   if (typeof window === 'undefined' || typeof window.AudioContext === 'undefined') return;
   if (!audioState.ctx) {
@@ -38,6 +59,7 @@ export function setMuted(muted) {
   if (typeof window !== 'undefined' && window.Tone && window.Tone.Destination) {
     window.Tone.Destination.mute = muted;
   }
+  saveMuted(muted);
 }
 
 function beep({ freq = 440, duration = 0.08, type = 'sine', gain = 0.03 } = {}) {

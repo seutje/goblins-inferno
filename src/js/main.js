@@ -7,7 +7,7 @@ import { applyCharacterToPlayer } from './characters.js';
 import { updateHazards, drawHazards } from './hazard.js';
 import { initDecor, drawDecor } from './decor.js';
 import { updateBoss, drawBossHUD } from './boss.js';
-import { initAudio, playSound, setMuted, playMusic } from './audio.js';
+import { initAudio, playSound, setMuted, playMusic, loadMuted } from './audio.js';
 import { preloadAll } from './preload.js';
 import { repay } from './debt.js';
 import { initMeta, applyMetaAtRunStart } from './meta.js';
@@ -417,8 +417,10 @@ function gameLoop() {
 function init() {
     resizeCanvas();
     initAudio();
-    // Start muted by default so no sounds play until user opts in
-    try { setMuted(true); } catch {}
+    const initialMuted = loadMuted();
+    let muted = initialMuted;
+    // Apply persisted mute preference (defaulting to muted)
+    try { setMuted(initialMuted); } catch {}
     initMeta(gameState);
     // Initialize debt & HUD
     gameState.debt = createDebtState({ initialDebt: 10000, autoRepayPerFrame: 0.1 });
@@ -444,7 +446,7 @@ function init() {
         applyMetaAtRunStart(gameState);
         if (charModal) charModal.style.display = 'none';
         if (typeof gameState._refreshDebtHUD === 'function') gameState._refreshDebtHUD();
-        setMuted(false);
+        setMuted(muted);
         playMusic();
     }
 
@@ -595,10 +597,9 @@ function init() {
             });
         }
     }
-    // Reflect initial muted state in UI and maintain toggle without closing the menu
-    let muted = true;
+    // Reflect muted state from storage and allow toggling without closing the menu
     if (btnMute) {
-        btnMute.textContent = 'Unmute';
+        btnMute.textContent = muted ? 'Unmute' : 'Mute';
         btnMute.addEventListener('click', () => {
             muted = !muted;
             setMuted(muted);
