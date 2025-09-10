@@ -604,6 +604,7 @@ function init() {
             muted = !muted;
             setMuted(muted);
             btnMute.textContent = muted ? 'Unmute' : 'Mute';
+            if (!muted) playMusic();
         });
     }
     // Fullscreen toggle (show only on touch devices)
